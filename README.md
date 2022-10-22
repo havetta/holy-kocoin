@@ -7,7 +7,7 @@
 > create a `.env` file with the following content:
 
 ``` js
-exchange=bybit
+exchange=binanceusdm
 apikey=ADD YOUR API KEY
 secret=ADD YOUR API SECRET
 ```
@@ -15,10 +15,10 @@ secret=ADD YOUR API SECRET
 
 | File         | Description |
 | ------------ | ----------- |
-| main.ts      | execute bot with command "node dist/main" |
-| runner.ts    | runs one whole update cycle every second |
-| exchange.ts  | cctx api to communicate with exchange |
-| coingecko.ts | get crypto prices from coingecko.com |
+| main.js      | execute bot with command "node dist/main" |
+| runner.js    | runs one whole update cycle every second |
+| exchange.js  | cctx api to communicate with exchange |
+| coingecko.js | get crypto prices from coingecko.com |
 |  |   |
 
 
