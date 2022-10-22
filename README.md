@@ -1,4 +1,10 @@
 # holy-kocoin
+ - Configuration
+> create a ".env" file with the following content:
+\
+`exchange=bybit`\
+`apikey=ADD YOUR API KEY`\
+`secret=ADD YOUR API SECRET`
 
  - Project files:
 
