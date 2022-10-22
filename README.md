@@ -1,12 +1,17 @@
 # holy-kocoin
- - Configuration
-> create a ".env" file with the following content:
-\
-`exchange=bybit`\
-`apikey=ADD YOUR API KEY`\
-`secret=ADD YOUR API SECRET`
+ 
+ ## Run
+ > in the terminal type `npm t`
+ 
+ ## Configuration
+> create a `.env` file with the following content:
 
- - Project files:
+``` js
+exchange=bybit
+apikey=ADD YOUR API KEY
+secret=ADD YOUR API SECRET
+```
+ ## Project files:
 
 | File         | Description |
 | ------------ | ----------- |
