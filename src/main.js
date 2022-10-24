@@ -1,5 +1,5 @@
 // RUN using cmd:  "npm t"
-import { mainRun } from "./runner.js";
+import { mainRun } from "./mainRun.js";
 
 import dotenv from "dotenv";
 

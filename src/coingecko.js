@@ -1,7 +1,6 @@
 import axios from "axios";
-import { log } from "./utils/logger.js";
 
-const btcPrice = async (ticker) => {
+export async function btcPrice(ticker) {
   const url = "https://api.coingecko.com/api/v3/simple/price";
   
   let params = `?`;
@@ -15,5 +14,3 @@ const btcPrice = async (ticker) => {
   // const json = await response.json();
   return json;
 }
-
-export { btcPrice };

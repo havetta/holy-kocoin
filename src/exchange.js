@@ -1,4 +1,4 @@
-import ccxt from "ccxt"
+import ccxt from "ccxt";
 import { log } from "./utils/logger.js";
 
 const exchanges = async () => {
