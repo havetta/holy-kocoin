@@ -8,6 +8,7 @@
 
 ``` js
 exchange=binanceusdm
+symbol=ETH/USDT
 apikey=ADD YOUR API KEY
 secret=ADD YOUR API SECRET
 ```
