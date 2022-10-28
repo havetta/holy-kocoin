@@ -2,7 +2,7 @@ import ccxt from "ccxt";
 
 let state = null;
 
-function setInitialState() {
+export async function setInitialState() {
   const exchange = new ccxt[process.env.exchange]({
     apiKey: process.env.apiKey,
     secret: process.env.secret,
@@ -12,10 +12,16 @@ function setInitialState() {
     // },
   });
 
+  await exchange.load_time_difference();
+
+  console.log(`Trading ${process.env.symbol} on ${process.env.exchange}`);
+
   state = {
     exchange: exchange,
     lastPrice: 0,
-    buyOrderCreated: false,
+    buyOrderCreated: true,
+    buyPrice: 0,
+    symbol: process.env.symbol,
   };
 }
 
