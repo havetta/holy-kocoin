@@ -7,10 +7,15 @@ function setInitialState() {
     apiKey: process.env.apiKey,
     secret: process.env.secret,
     enableRateLimit: true,
+    // options: {
+    //   defaultType: "future",
+    // },
   });
 
   state = {
     exchange: exchange,
+    lastPrice: 0,
+    buyOrderCreated: false,
   };
 }
 

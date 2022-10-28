@@ -1,9 +1,11 @@
-const log = (str) => {
+export function log(str) {
   console.table(str);
-}
+};
 
-const err = (str) => {
+export function sameline(str) {
+  process.stdout.write(`${str}\r`);
+};
+
+export function err(str) {
   console.error(str);
-}
-
-export { log, err };
+};

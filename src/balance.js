@@ -4,10 +4,10 @@ import { getExchange } from "./store.js";
 
 export async function balance() {
   const res = await getExchange().fetchBalance();
-  log(res);
-  log(res.free[`BTC`]);
-  log(res.free[`ETH`]);
-  log(res.free[`USDT`]);
+  // log(res.free[`BTC`]);
+  // log(res.free[`ETH`]);
+  // log(res.free[`USDT`]);
+  return res;
 }
 
 export async function fetchTicker() {
@@ -17,11 +17,15 @@ export async function fetchTicker() {
 
 export async function openOrders() {
   const res = await getExchange().fetchOpenOrders(process.env.symbol);
-  log(res);
+  return res;
 }
 
 export async function orderBook() {
   const res = await getExchange().fetchOrderBook(process.env.symbol);
-  log(res);
+  return res;
 }
 
+export async function positions() {
+  const res = await getExchange().fetchPositions();
+  return res;
+}
