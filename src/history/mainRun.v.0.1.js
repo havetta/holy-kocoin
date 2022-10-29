@@ -1,12 +1,11 @@
 import { balance, fetchTicker, openOrders, positions } from "./balance.js";
-import { createOrder, createMarketOrder } from "./order.js";
+import { createOrder } from "./order.js";
 import { setInitialState, getState } from "./store.js";
 import { exchanges, fetchMarkets, kukoinZeroFees } from "./exchange.js";
 import { log, sameline } from "./utils/logger.js";
 
 const mainRun = async () => {
   await setInitialState();
-
 
   setInterval(async () => {
     try
@@ -26,12 +25,9 @@ const mainRun = async () => {
       if (state.buyPrice === 0)
       {
         state.buyPrice = price;
+
         log(`RESET buyPrice: ${state.buyPrice}`);
       }
-
-      const stopLossPrice = price - price * 0.006; // 0.6%
-      const takeProfitPrice = price + price * 0.001; // 0.1%
-      await createMarketOrder("buy", 0.008, stopLossPrice, takeProfitPrice);
 
       ///////////////////////////////////////////////////////////
       if (state.buyOrderCreated)
@@ -81,7 +77,7 @@ const mainRun = async () => {
       log(e?.message);
       log(e?.stack);
     }
-  }, 2000);
+  }, 1000);
 }
 
 export { mainRun };
