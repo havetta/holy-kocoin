@@ -1,9 +1,19 @@
 import ccxt from "ccxt";
 
-let state = null;
+export const state = {
+  exchange: null,
+  lastPrice: 0,
+  buyOrderCreated: false,
+  buyPrice: 0,
+  symbol: '',
+  cancelledOrders: [],
+};
 
 export async function setInitialState() {
-  const exchange = new ccxt[process.env.exchange]({
+
+  state.symbol = process.env.symbol;
+
+  state.exchange = new ccxt[process.env.exchange]({
     apiKey: process.env.apiKey,
     secret: process.env.secret,
     enableRateLimit: true,
@@ -12,21 +22,18 @@ export async function setInitialState() {
     // },
   });
 
-  await exchange.load_time_difference();
+  await state.exchange.load_time_difference();
 
-  console.log(`Trading ${process.env.symbol} on ${process.env.exchange}`);
-
-  state = {
-    exchange: exchange,
-    lastPrice: 0,
-    buyOrderCreated: true,
-    buyPrice: 0,
-    symbol: process.env.symbol,
-  };
+  console.log("\x1b[42m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[44m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[45m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[46m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[47m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
 }
 
 export function getExchange() {
-  if (!state)
+  if (!state.exchange)
     setInitialState();
 
   return state.exchange;

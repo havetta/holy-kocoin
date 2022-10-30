@@ -1,27 +1,22 @@
-import ccxt from "ccxt";
-import { log } from "./utils/logger.js";
-import { getExchange } from "./store.js";
+import { getExchange, state } from "./store.js";
 
 export async function balance() {
   const res = await getExchange().fetchBalance();
-  // log(res.free[`BTC`]);
-  // log(res.free[`ETH`]);
-  // log(res.free[`USDT`]);
   return res;
 }
 
 export async function fetchTicker() {
-  const res = await getExchange().fetchTicker(process.env.symbol);
+  const res = await getExchange().fetchTicker(state.symbol);
   return res;
 }
 
 export async function openOrders() {
-  const res = await getExchange().fetchOpenOrders(process.env.symbol);
+  const res = await getExchange().fetchOpenOrders(state.symbol);
   return res;
 }
 
 export async function orderBook() {
-  const res = await getExchange().fetchOrderBook(process.env.symbol);
+  const res = await getExchange().fetchOrderBook(state.symbol);
   return res;
 }
 
