@@ -1,10 +1,10 @@
 // RUN using cmd:  "npm t"
-import { mainRun } from "./mainRun.js";
+import { mainRunSpot } from "./mainRunSpot.js";
 
 import dotenv from "dotenv";
 
 dotenv.config();
 
 (async () => {
-  mainRun();
+  mainRunSpot();
 })();

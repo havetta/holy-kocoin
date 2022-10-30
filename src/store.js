@@ -24,10 +24,6 @@ export async function setInitialState() {
 
   await state.exchange.load_time_difference();
 
-  console.log("\x1b[42m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
-  console.log("\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
-  console.log("\x1b[44m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
-  console.log("\x1b[45m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
   console.log("\x1b[46m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
   console.log("\x1b[47m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
 }

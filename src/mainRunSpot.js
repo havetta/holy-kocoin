@@ -4,7 +4,7 @@ import { setInitialState, state } from "./store.js";
 import { exchanges, fetchMarkets, kukoinZeroFees } from "./exchange.js";
 import { log, table, sameline, warn, err } from "./utils/logger.js";
 
-const mainRun = async () => {
+const mainRunSpot = async () => {
 
   function oneLine(first, msg1, msg2, msg3) {
     let msg = first;
@@ -25,48 +25,34 @@ const mainRun = async () => {
 
       const price = Math.trunc(ticker?.last)
       if (state.lastPrice === 0)
-        state.lastPrice = Math.trunc(ticker?.last);
+        state.lastPrice = price;
+      const priceWith2decimals = `${price}.${(new String(ticker?.last*100 - price*100) + "00").substring(0,2)}`;
 
       const freeBtc = bal?.free[`BTC`];
       const freeUsdt = bal?.free[`USDT`];
+      const balanceStr = `BTC:${new String(freeBtc).padStart(7," ")} USDT:${new String(freeUsdt).padStart(7," ")}`;
 
       const btcToBuy = Math.trunc(freeUsdt / price * 10000) / 10000;
 
       if (state.buyPrice === 0)
       {
-        state.buyPrice = price ;
-        console.log("\x1b[1m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
-        console.log("\x1b[31m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
-        console.log("\x1b[32m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
-        console.log("\x1b[33m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
-        console.log("\x1b[34m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
-        console.log("\x1b[35m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
-        console.log("\x1b[36m%s\x1b[0m", `RESET buyPrice: ${state.buyPrice}`);
+        state.buyPrice = price;
+        console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m current\x1b[36m ${ticker?.last}\x1b[0m`);
       }
 
-      oneLine(`wait`, state.lastPrice, Math.trunc(ticker?.last*100), `BTC:${freeBtc} USDT:${freeUsdt}`);
+      oneLine(`wait`, state.lastPrice, priceWith2decimals, balanceStr);
       
 
       ///////////////////////////////////////////////////////////
       // CANCEL BUY ORDERS (every x seconds)
       cancelOldOrders();
 
-      // ///////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////
+      // BUY
       if (freeUsdt >= 11) {
-        // const orders = await openOrders();
-        // const buys = orders.filter(i => i.side === "buy" && i.symbol === state.symbol);
-        
-        // let buyOrderLog = ``;
-        // state.buyOrderCreated = false;
-        // if (buys.length > 0)
-        // {
-        //   state.buyOrderCreated = true;
-        //   buyOrderLog = `.... buy order at: ${buys?.[0]?.price}`;
-        // } 
-
         state.buyPrice = price < state.lastPrice ? price : state.lastPrice;
         state.buyPrice = state.buyPrice - 3;
-        oneLine(`\x1b[42m.BUY`, state.buyPrice, Math.trunc(ticker?.last*100), `BTC:${freeBtc} USDT:${freeUsdt}\n`);
+        oneLine(`\x1b[42mBUY `, state.buyPrice, priceWith2decimals, balanceStr + "\n");
 
         // const stopLossPrice = price - 300;//Math.trunc(price * 0.0006); // 0.06% = 20000 * 0.0006 = 12
         // const takeProfPrice = price + 300;//Math.trunc(price * 0.0001); // 0.01% = 20000 * 0.0001 = 2
@@ -76,34 +62,26 @@ const mainRun = async () => {
       }
 
       ///////////////////////////////////////////////////////////
+      // SELL
       if (freeBtc >= 0.0005) {
         let higherPrice = price > state.lastPrice ? price : state.lastPrice;
         ++higherPrice;
-        oneLine(`\x1b[41mSELL`, higherPrice, Math.trunc(ticker?.last*100), `BTC:${freeBtc} USDT:${freeUsdt}\n`);
+        oneLine(`\x1b[41mSELL`, higherPrice, priceWith2decimals, balanceStr + "\n");
 
         await createOrder("sell", 0.0005, higherPrice);
       }
 
-      // ///////////////////////////////////////////////////////////
-      // else if (freeBtc > 0) {
-      //   const sellPrice = state.buyPrice + 20;
-      //   log(`SELL: Sell price ${sellPrice} .... Price now: ${price} .... Balance: BTC:${freeBtc} USDT:${btcToBuy} !!!!!!!!!!!!`);
-      //   await createOrder("sell", 0.008, sellPrice);
-      //   state.buyOrderCreated = false;
-      // }
-      // else {
-      //   sameline(`ELSE: Last price ${state.lastPrice} .... Price now: ${price}                                       `);
-      // }
-
+      ///////////////////////////////////////////////////////////
+      // Memorize last price
       state.lastPrice = Math.trunc(ticker?.last);
     }
     catch(e) {
       err(e?.message);
-      //warn(e?.stack);
+      warn(e?.stack);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
 
-export { mainRun };
+export { mainRunSpot };
