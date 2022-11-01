@@ -9,6 +9,7 @@
 ``` js
 exchange=binanceusdm
 symbol=BTC/USDT
+spread=YOUR PRICE BUY TO SELL DIFFERECE
 tradeSum=YOUR AMOUNT TO TRADE WITH
 apikey=ADD YOUR API KEY
 secret=ADD YOUR API SECRET

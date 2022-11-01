@@ -6,6 +6,7 @@ dotenv.config();
 export const state = {
   exchange: null,
   symbol: process.env.symbol,
+  spread: process.env.spread,
   tradeSum: process.env.tradeSum,
 
   price: 0,
@@ -17,6 +18,9 @@ export const state = {
   buyOrderCreated: false,
   stopLossOrder: false,
   cancelledOrders: [],
+
+  freeBtc: 0,
+  freeUsdt: 0,
 };
 
 export async function initExchange() {

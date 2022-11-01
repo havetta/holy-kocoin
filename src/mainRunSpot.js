@@ -40,7 +40,7 @@ const mainRunSpot = async () => {
       if (state.buyPrice === 0)
       {
         const orders = await getExchange().fetchClosedOrders(state.symbol);
-        const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy" && new Date(i.datetime) > new Date().setDate( new Date().getDate() - 1 ));
+        const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy" && new Date(i.datetime) > new Date().setDate( new Date().getDate() - 3 ));
         if (buys.length > 0)
           state.buyPrice = buys[buys.length-1].price;
         else
@@ -61,14 +61,12 @@ const mainRunSpot = async () => {
       // BUY
       // if (state.freeUsdt >= 10 && downTrend && !lastDownTrend) {
       //   const lowerPrice = state.price < state.lastPrice ? state.price : state.lastPrice;
-      //   state.buyPrice = lowerPrice - 0.5;
+      //   state.buyPrice = lowerPrice - state.spread / 10;
       //   oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.price), balanceStr + "\n");
-
-      //   const stopLossPrice = state.price - 300;//Math.trunc(state.price * 0.0006); // 0.06% = 20000 * 0.0006 = 12
-      //   const takeProfPrice = state.price + 300;//Math.trunc(state.price * 0.0001); // 0.01% = 20000 * 0.0001 = 2
+      //   const stopLossPrice = state.price - state.spread * 10; //Math.trunc(state.price * 0.0006); // 0.06% = 20000 * 0.0006 = 12
+      //   const takeProfPrice = state.price + state.spread * 10; //Math.trunc(state.price * 0.0001); // 0.01% = 20000 * 0.0001 = 2
       //   await getExchange().createMarketBuyOrder(state.symbol, state.tradeSum);
       //   // await createOrder("buy", state.tradeSum, state.buyPrice);
-  
       //   state.buyOrderCreated = true;
       // }
 
@@ -79,25 +77,24 @@ const mainRunSpot = async () => {
         state.buyOrderCreated = false;
 
         if (state.buyPrice < state.avgPrice) {
-          const currPrice = state.avgPrice - 5;
+          const currPrice = state.lastPrice - state.spread;
           if (state.buyPrice < currPrice || state.recentPrices[0] < currPrice || state.lastPrice < currPrice) {
             let higherPrice = state.price > state.lastPrice ? state.price : state.lastPrice;
             if (higherPrice <= state.buyPrice)
-              higherPrice = state.buyPrice + 0.5;
+              higherPrice = state.buyPrice + state.spread / 10;
             oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}  buyOrder: ${state.buyOrderCreated}\n`);
 
             // await getExchange().createMarketSellOrder(state.symbol, state.tradeSum);
             await createOrder("sell", state.tradeSum, higherPrice);
-
           }
         }
         // STOP LOSS
         else
         {
-          if (!state.stopLossOrder && state.avgPrice < state.buyPrice - 5) {
+          if (!state.stopLossOrder && state.avgPrice < state.buyPrice - state.spread) {
             // CREATE STOP LOSS
             oneLine(`\x1b[4mSTOP`, twoDecimals(state.buyPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   ${balanceStr}\n`);
-            await createOrderStopPrice("sell", state.tradeSum, state.avgPrice - 100, state.avgPrice - 10);
+            await createOrderStopPrice("sell", state.tradeSum, state.avgPrice - state.spread * 10, state.avgPrice - state.spread * 3);
             state.stopLossOrder = true;
           }
         }

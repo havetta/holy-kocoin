@@ -32,11 +32,11 @@ export function runWebSocket() {
 
       ///////////////////////////////////////////////////////////
       // BUY
-      if (state.freeUsdt >= 10 && !state.buyOrderCreated && state.recentPrices[0] - 4 > state.price) {
+      if (state.freeUsdt >= 10 && !state.buyOrderCreated && state.recentPrices[0] - state.spread > state.price) {
         oneLine(`\x1b[42mBUY `, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}\n`);
 
-        getExchange().createMarketBuyOrder(state.symbol, 0.0042);
-        // await createOrder("buy", 0.0042, state.buyPrice);
+        getExchange().createMarketBuyOrder(state.symbol, state.tradeSum);
+        // await createOrder("buy", state.tradeSum, state.buyPrice);
 
         state.buyOrderCreated = true;
         state.stopLossOrder = false;
