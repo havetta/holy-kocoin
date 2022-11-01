@@ -100,10 +100,10 @@ export async function cancelOrder(id) {
 }
 
 export async function cancelOldOrders() {
-  if (new Date().getSeconds() % 10 === 0) { // every x seconds
+  if (new Date().getSeconds() % 15 === 0) { // every x seconds
     const orders = await getExchange().fetchOpenOrders(state.symbol);
     const xMinutesAgo = new Date(new Date() - 0.5 * 60000); // minus x minutes
-    const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy");
+    const buys = orders.filter(i => i.symbol === state.symbol && i.side === "sell");
     // for (let i in buys) {
     if (buys.length > 0) { let i = 0;
       const id = buys[i].id;

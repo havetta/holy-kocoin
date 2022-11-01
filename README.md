@@ -8,7 +8,8 @@
 
 ``` js
 exchange=binanceusdm
-symbol=ETH/USDT
+symbol=BTC/USDT
+tradeSum=YOUR AMOUNT TO TRADE WITH
 apikey=ADD YOUR API KEY
 secret=ADD YOUR API SECRET
 ```

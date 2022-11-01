@@ -6,6 +6,7 @@ dotenv.config();
 export const state = {
   exchange: null,
   symbol: process.env.symbol,
+  tradeSum: process.env.tradeSum,
 
   price: 0,
   avgPrice: 0,

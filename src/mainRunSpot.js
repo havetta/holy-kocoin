@@ -33,7 +33,7 @@ const mainRunSpot = async () => {
 
       state.freeBtc = bal?.free[`BTC`];
       state.freeUsdt = bal?.free[`USDT`];
-      const balanceStr = `BTC:${leftPad(state.freeBtc, 8)} USDT:${leftPad(state.freeUsdt, 8)}`;
+      const balanceStr = `BTC : ${leftPad(state.freeBtc, 8)}  USDT : ${leftPad(state.freeUsdt, 8)}`;
 
       const btcToBuy = Math.trunc(state.freeUsdt / state.price * 10000) / 10000;
 
@@ -66,8 +66,8 @@ const mainRunSpot = async () => {
 
       //   const stopLossPrice = state.price - 300;//Math.trunc(state.price * 0.0006); // 0.06% = 20000 * 0.0006 = 12
       //   const takeProfPrice = state.price + 300;//Math.trunc(state.price * 0.0001); // 0.01% = 20000 * 0.0001 = 2
-      //   await getExchange().createMarketBuyOrder(state.symbol, 0.0042);
-      //   // await createOrder("buy", 0.0042, state.buyPrice);
+      //   await getExchange().createMarketBuyOrder(state.symbol, state.tradeSum);
+      //   // await createOrder("buy", state.tradeSum, state.buyPrice);
   
       //   state.buyOrderCreated = true;
       // }
@@ -79,15 +79,15 @@ const mainRunSpot = async () => {
         state.buyOrderCreated = false;
 
         if (state.buyPrice < state.avgPrice) {
-          const currPrice = state.avgPrice - 4;
+          const currPrice = state.avgPrice - 5;
           if (state.buyPrice < currPrice || state.recentPrices[0] < currPrice || state.lastPrice < currPrice) {
-            // let higherPrice = state.price > state.lastPrice ? state.price : state.lastPrice;
-            // if (higherPrice <= state.buyPrice)
-            //   higherPrice = state.buyPrice + 0.5;
+            let higherPrice = state.price > state.lastPrice ? state.price : state.lastPrice;
+            if (higherPrice <= state.buyPrice)
+              higherPrice = state.buyPrice + 0.5;
             oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}  buyOrder: ${state.buyOrderCreated}\n`);
 
-            await getExchange().createMarketSellOrder(state.symbol, 0.0042);
-            // await createOrder("sell", 0.0042, higherPrice);
+            // await getExchange().createMarketSellOrder(state.symbol, state.tradeSum);
+            await createOrder("sell", state.tradeSum, higherPrice);
 
           }
         }
@@ -97,7 +97,7 @@ const mainRunSpot = async () => {
           if (!state.stopLossOrder && state.avgPrice < state.buyPrice - 5) {
             // CREATE STOP LOSS
             oneLine(`\x1b[4mSTOP`, twoDecimals(state.buyPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   ${balanceStr}\n`);
-            await createOrderStopPrice("sell", 0.0042, state.avgPrice - 100, state.avgPrice - 10);
+            await createOrderStopPrice("sell", state.tradeSum, state.avgPrice - 100, state.avgPrice - 10);
             state.stopLossOrder = true;
           }
         }
