@@ -1,47 +1,57 @@
-import { balance, fetchTicker, openOrders, positions } from "./balance.js";
-import { cancelOldOrders, createOrder, createOrderStopPrice } from "./order.js";
-import { setInitialState, state } from "./store.js";
-import { exchanges, fetchMarkets, kukoinZeroFees } from "./exchange.js";
-import { log, table, sameline, warn, err } from "./utils/logger.js";
+import { runWebSocket } from "./webSocket.js";
+import { isDownTrend } from "./priceTrends.js";
+import { balance, fetchTicker, openOrders, positions } from "./services/balance.js";
+import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./services/order.js";
+import { state, getExchange, initExchange } from "./store.js";
+import { exchanges, fetchMarkets, kukoinZeroFees } from "./services/exchange.js";
+import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
+import { twoDecimals, leftPad } from "./utils/formatter.js";
 
+// GET PRICE OVER BINANCE WEBSOCKET
+runWebSocket();
+
+// USING CCXT
 const mainRunSpot = async () => {
 
-  function oneLine(first, msg1, msg2, msg3) {
-    let msg = first;
-    msg += ` \x1b[1m\x1b[44m`;
-    msg += ` At price \x1b[43m${msg1}\x1b[44m ....`;
-    msg += ` Price now: \x1b[45m${msg2}\x1b[44m ....`;
-    msg += ` Balance: ${msg3} ....`;
-    process.stdout.write(`${msg}\x1b[m\r`);
-  }
+  await initExchange();
 
-  await setInitialState();
-
+  let downTrend = false;
+  let lastDownTrend = false;
   while (1) {
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    if (state.price === 0)
+      continue;
+
     try
     {
-      // Load currect BTC ticker price + Load free USDT and BTC balance
-      const [ticker, bal] = await Promise.all([fetchTicker(), balance()]);
+      const [bal] = await Promise.all([balance()]);
 
-      const price = Math.trunc(ticker?.last)
       if (state.lastPrice === 0)
-        state.lastPrice = price;
-      const priceWith2decimals = `${price}.${(new String(ticker?.last*100 - price*100) + "00").substring(0,2)}`;
+        state.lastPrice = state.price;
 
-      const freeBtc = bal?.free[`BTC`];
-      const freeUsdt = bal?.free[`USDT`];
-      const balanceStr = `BTC:${new String(freeBtc).padStart(7," ")} USDT:${new String(freeUsdt).padStart(7," ")}`;
+      state.freeBtc = bal?.free[`BTC`];
+      state.freeUsdt = bal?.free[`USDT`];
+      const balanceStr = `BTC:${leftPad(state.freeBtc, 8)} USDT:${leftPad(state.freeUsdt, 8)}`;
 
-      const btcToBuy = Math.trunc(freeUsdt / price * 10000) / 10000;
+      const btcToBuy = Math.trunc(state.freeUsdt / state.price * 10000) / 10000;
 
       if (state.buyPrice === 0)
       {
-        state.buyPrice = price;
-        console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m current\x1b[36m ${ticker?.last}\x1b[0m`);
+        const orders = await getExchange().fetchClosedOrders(state.symbol);
+        const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy" && new Date(i.datetime) > new Date().setDate( new Date().getDate() - 1 ));
+        if (buys.length > 0)
+          state.buyPrice = buys[buys.length-1].price;
+        else
+          state.buyPrice = state.price;
+        console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m last\x1b[36m ${state.buyPrice}\x1b[0m`);
       }
 
-      oneLine(`wait`, state.lastPrice, priceWith2decimals, balanceStr);
+      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Buy: ${twoDecimals(state.buyPrice)}   buyOrder: ${state.buyOrderCreated}`);
       
+      lastDownTrend = downTrend;
+      downTrend = isDownTrend();
 
       ///////////////////////////////////////////////////////////
       // CANCEL BUY ORDERS (every x seconds)
@@ -49,38 +59,70 @@ const mainRunSpot = async () => {
 
       ///////////////////////////////////////////////////////////
       // BUY
-      if (freeUsdt >= 11) {
-        state.buyPrice = price < state.lastPrice ? price : state.lastPrice;
-        state.buyPrice = state.buyPrice - 3;
-        oneLine(`\x1b[42mBUY `, state.buyPrice, priceWith2decimals, balanceStr + "\n");
+      // if (state.freeUsdt >= 10 && downTrend && !lastDownTrend) {
+      //   const lowerPrice = state.price < state.lastPrice ? state.price : state.lastPrice;
+      //   state.buyPrice = lowerPrice - 0.5;
+      //   oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.price), balanceStr + "\n");
 
-        // const stopLossPrice = price - 300;//Math.trunc(price * 0.0006); // 0.06% = 20000 * 0.0006 = 12
-        // const takeProfPrice = price + 300;//Math.trunc(price * 0.0001); // 0.01% = 20000 * 0.0001 = 2
-        await createOrder("buy", 0.0005, state.buyPrice);
+      //   const stopLossPrice = state.price - 300;//Math.trunc(state.price * 0.0006); // 0.06% = 20000 * 0.0006 = 12
+      //   const takeProfPrice = state.price + 300;//Math.trunc(state.price * 0.0001); // 0.01% = 20000 * 0.0001 = 2
+      //   await getExchange().createMarketBuyOrder(state.symbol, 0.0042);
+      //   // await createOrder("buy", 0.0042, state.buyPrice);
   
-        state.buyOrderCreated = true;
-      }
+      //   state.buyOrderCreated = true;
+      // }
+
 
       ///////////////////////////////////////////////////////////
       // SELL
-      if (freeBtc >= 0.0005) {
-        let higherPrice = price > state.lastPrice ? price : state.lastPrice;
-        ++higherPrice;
-        oneLine(`\x1b[41mSELL`, higherPrice, priceWith2decimals, balanceStr + "\n");
+      if (state.freeBtc >= 0.001) {
+        state.buyOrderCreated = false;
 
-        await createOrder("sell", 0.0005, higherPrice);
+        if (state.buyPrice < state.avgPrice) {
+          const currPrice = state.avgPrice - 4;
+          if (state.buyPrice < currPrice || state.recentPrices[0] < currPrice || state.lastPrice < currPrice) {
+            // let higherPrice = state.price > state.lastPrice ? state.price : state.lastPrice;
+            // if (higherPrice <= state.buyPrice)
+            //   higherPrice = state.buyPrice + 0.5;
+            oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}   buyOrder: ${state.buyOrderCreated}\n`);
+
+            await getExchange().createMarketSellOrder(state.symbol, 0.0042);
+            // await createOrder("sell", 0.0042, higherPrice);
+
+          }
+        }
+        // STOP LOSS
+        else
+        {
+          if (!state.stopLossOrder && state.avgPrice < state.buyPrice - 5) {
+            // CREATE STOP LOSS
+            oneLine(`\x1b[4mSTOP`, state.buyPrice, twoDecimals(state.price), balanceStr + "\n");
+            await createOrderStopPrice("sell", 0.0042, state.avgPrice - 100, state.avgPrice - 10);
+            state.stopLossOrder = true;
+          }
+        }
+      }
+
+      if (state.stopLossOrder && state.buyPrice < state.avgPrice) {
+        const orders = await getExchange().fetchOpenOrders(state.symbol);
+        const sells = orders.filter(i => i.symbol === state.symbol && i.side === "sell");
+        for (let i in sells) {
+          await cancelOrder(sells[i].id);
+          state.stopLossOrder = false;
+        }
       }
 
       ///////////////////////////////////////////////////////////
       // Memorize last price
-      state.lastPrice = Math.trunc(ticker?.last);
+      state.lastPrice = state.avgPrice;
+      state.recentPrices.push(state.price);
+      if(state.recentPrices.length > 20)  // keep last x prices
+        state.recentPrices.shift();
     }
     catch(e) {
       err(e?.message);
-      warn(e?.stack);
+      // warn(e?.stack);
     }
-
-    await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
 

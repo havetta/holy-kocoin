@@ -1,4 +1,4 @@
-import { getExchange, state } from "./store.js";
+import { getExchange, state } from "../store.js";
 
 export async function balance() {
   const res = await getExchange().fetchBalance();

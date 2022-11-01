@@ -1,9 +1,8 @@
 import ccxt from "ccxt";
-import { log } from "./utils/logger.js";
 
 const exchanges = async () => {
   ccxt.exchanges.forEach(function(exchangeName){
-    log(exchangeName);
+    console.log(exchangeName);
   });
 }
 
@@ -20,8 +19,8 @@ const fetchMarkets = async () => {
       
       if(res.length > 0)
       {
-        log(exchangeName);
-        log(res);
+        console.log(exchangeName);
+        console.log(res);
       }
     }
   });
@@ -36,8 +35,8 @@ const kukoinZeroFees = async () => {
       .filter(i => i["taker"] === 0)
     
   if(res.length > 0)
-    log(`Kucoin zero fee trading pairs:`)
-    log(res);
+    console.log(`Kucoin zero fee trading pairs:`)
+    console.log(res);
 }
 
 export { exchanges, fetchMarkets, kukoinZeroFees };

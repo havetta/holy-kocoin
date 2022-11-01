@@ -1,17 +1,24 @@
 import ccxt from "ccxt";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const state = {
   exchange: null,
+  symbol: process.env.symbol,
+
+  price: 0,
+  avgPrice: 0,
   lastPrice: 0,
-  buyOrderCreated: false,
+  recentPrices: [],
   buyPrice: 0,
-  symbol: '',
+
+  buyOrderCreated: false,
+  stopLossOrder: false,
   cancelledOrders: [],
 };
 
-export async function setInitialState() {
-
-  state.symbol = process.env.symbol;
+export async function initExchange() {
 
   state.exchange = new ccxt[process.env.exchange]({
     apiKey: process.env.apiKey,
@@ -24,13 +31,13 @@ export async function setInitialState() {
 
   await state.exchange.load_time_difference();
 
-  console.log("\x1b[46m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
   console.log("\x1b[47m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
 }
 
 export function getExchange() {
   if (!state.exchange)
-    setInitialState();
+    initExchange();
 
   return state.exchange;
 }

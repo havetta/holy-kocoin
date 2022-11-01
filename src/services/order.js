@@ -1,16 +1,13 @@
-import { getExchange, state } from "./store.js";
-import { err } from "./utils/logger.js";
+import { getExchange, state } from "../store.js";
 
 export async function createOrder(side, amount, price) {
-  const symbol = state.symbol;
   const type = "limit"; // or market
-  const res = await getExchange().createOrder(symbol, type, side, amount, price);
+  const res = await getExchange().createOrder(state.symbol, type, side, amount, price);
   return res;
 }
 
 
 export async function createOrderStopPrice(side, amount, price, stopPrice) {
-  const symbol = state.symbol;
   const type = "limit"; // or market
   const params = {
     // "stopLoss": {
@@ -28,12 +25,11 @@ export async function createOrderStopPrice(side, amount, price, stopPrice) {
     // "type": "stopLimit",
   };
 
-  const res = await getExchange().createOrder(symbol, type, side, amount, price, params);
+  const res = await getExchange().createOrder(state.symbol, type, side, amount, price, params);
   return res;
 }
 
 export async function createMarketOrderLimitTPSL(side, amount, stopLossPrice, takeProfitPrice) {
-  const symbol = state.symbol;
   const params = {
     "takeProfitPrice": 21000,
     "takeProfitTimeInForce": "GTC",
@@ -57,12 +53,11 @@ export async function createMarketOrderLimitTPSL(side, amount, stopLossPrice, ta
     // }
   };
 
-  const res = await getExchange().createMarketOrder(symbol, side, amount, params);
+  const res = await getExchange().createMarketOrder(state.symbol, side, amount, params);
   return res;
 }
 
 export async function createMarketOrderTPSL(side, amount, stopLossPrice, takeProfitPrice) {
-  const symbol = state.symbol;
   const params = {
     "stopLossPrice": 20000,
     "stopLossTimeInForce": "GTC",
@@ -80,14 +75,13 @@ export async function createMarketOrderTPSL(side, amount, stopLossPrice, takePro
   //   }
   // };
 
-  const res = await getExchange().createMarketOrder(symbol, side, amount, params);
+  const res = await getExchange().createMarketOrder(state.symbol, side, amount, params);
   return res;
 }
 
-export async function cancelOrder(id) {
-  const symbol = state.symbol;
+export async function cancelAllOrders() {
   try {
-    const res = await getExchange().cancelOrder(id, symbol);
+    const res = await getExchange().cancelAllOrders(state.symbol);
     return res;
   }
   catch(e) {
@@ -95,11 +89,21 @@ export async function cancelOrder(id) {
   }
 }
 
+export async function cancelOrder(id) {
+  try {
+    const res = await getExchange().cancelOrder(id, state.symbol);
+    return res;
+  }
+  catch(e) {
+    console.error(`\x1b[1m\x1b[31m${e?.message}\x1b[0m`);
+  }
+}
+
 export async function cancelOldOrders() {
   if (new Date().getSeconds() % 10 === 0) { // every x seconds
     const orders = await getExchange().fetchOpenOrders(state.symbol);
-    const xMinutesAgo = new Date(new Date() - 0.2 * 60000); // minus x minutes
-    const buys = orders.filter(i => i.symbol === state.symbol); // i.side === "buy" && 
+    const xMinutesAgo = new Date(new Date() - 0.5 * 60000); // minus x minutes
+    const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy");
     // for (let i in buys) {
     if (buys.length > 0) { let i = 0;
       const id = buys[i].id;
@@ -107,6 +111,8 @@ export async function cancelOldOrders() {
         cancelOrder(id);
         state.cancelledOrders.push(id);
       }
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
   else {
