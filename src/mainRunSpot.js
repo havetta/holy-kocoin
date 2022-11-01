@@ -48,7 +48,7 @@ const mainRunSpot = async () => {
         console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m last\x1b[36m ${state.buyPrice}\x1b[0m`);
       }
 
-      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Buy: ${twoDecimals(state.buyPrice)}   buyOrder: ${state.buyOrderCreated}`);
+      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Buy : ${twoDecimals(state.buyPrice)}  buyOrder: ${state.buyOrderCreated}`);
       
       lastDownTrend = downTrend;
       downTrend = isDownTrend();
@@ -84,7 +84,7 @@ const mainRunSpot = async () => {
             // let higherPrice = state.price > state.lastPrice ? state.price : state.lastPrice;
             // if (higherPrice <= state.buyPrice)
             //   higherPrice = state.buyPrice + 0.5;
-            oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}   buyOrder: ${state.buyOrderCreated}\n`);
+            oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}  buyOrder: ${state.buyOrderCreated}\n`);
 
             await getExchange().createMarketSellOrder(state.symbol, 0.0042);
             // await createOrder("sell", 0.0042, higherPrice);
@@ -96,7 +96,7 @@ const mainRunSpot = async () => {
         {
           if (!state.stopLossOrder && state.avgPrice < state.buyPrice - 5) {
             // CREATE STOP LOSS
-            oneLine(`\x1b[4mSTOP`, state.buyPrice, twoDecimals(state.price), balanceStr + "\n");
+            oneLine(`\x1b[4mSTOP`, twoDecimals(state.buyPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   ${balanceStr}\n`);
             await createOrderStopPrice("sell", 0.0042, state.avgPrice - 100, state.avgPrice - 10);
             state.stopLossOrder = true;
           }

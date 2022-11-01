@@ -28,17 +28,18 @@ export function runWebSocket() {
       state.price = p;
 
       p9 = p8; p8 = p7; p7 = p8; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
-      state.avgPrice = (p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 10;
+      state.avgPrice = (p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 10;  
 
       ///////////////////////////////////////////////////////////
       // BUY
       if (state.freeUsdt >= 10 && !state.buyOrderCreated && state.recentPrices[0] - 4 > state.price) {
-        oneLine(`\x1b[42mBUY `, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent:  ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}\n`);
+        oneLine(`\x1b[42mBUY `, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}\n`);
 
         getExchange().createMarketBuyOrder(state.symbol, 0.0042);
         // await createOrder("buy", 0.0042, state.buyPrice);
 
         state.buyOrderCreated = true;
+        state.stopLossOrder = false;
         state.buyPrice = state.avgPrice;
       }
     }
