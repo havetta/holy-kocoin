@@ -25,14 +25,14 @@ ws.on('message', function incoming(data) {
     p9 = p8 = p7 = p6 = p5 = p4 = p3 = p2 = p1 = p0 = p;
   }
 
-  p9 = p8; p8 = p7; p7 = p8; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
+  p9 = p8; p8 = p7; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
   
   const diff = p - state.rangeStart;
   if (diff > 100 || diff < -100) {
     state.rangeStart = p;
   }
 
-  const avg = (p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 10;
+  const avg = (p + p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 11;
 
   const diffP = diff;
   const diffA = avg - state.rangeStart;

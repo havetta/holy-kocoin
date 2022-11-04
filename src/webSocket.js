@@ -27,20 +27,30 @@ export function runWebSocket() {
       
       state.price = p;
 
-      p9 = p8; p8 = p7; p7 = p8; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
-      state.avgPrice = (p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 10;  
+      p9 = p8; p8 = p7; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
+      state.avgPrice = (p + p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 11;  
 
+
+      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.price),
+      `Recent: ${twoDecimals(state.recentPrices[0])}   Buy : ${twoDecimals(state.buyPrice)}  stopLoss: ${state.stopLossOrder} Free: ${twoDecimals(state.freeBtc)}`);
+    
+      
       ///////////////////////////////////////////////////////////
       // BUY
-      if (state.freeUsdt >= 10 && !state.buyOrderCreated && state.recentPrices[0] - state.spread > state.price) {
-        oneLine(`\x1b[42mBUY `, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}\n`);
+      if (!state.buyOrderCreated
+        && state.freeUsdt >= state.tradeSum * (state.avgPrice - state.spread)
+        && state.recentPrices[0] - state.spread > state.price)
+      {
+        state.buyPrice = state.avgPrice - state.spread / 2;
 
-        getExchange().createMarketBuyOrder(state.symbol, state.tradeSum);
-        // await createOrder("buy", state.tradeSum, state.buyPrice);
+        oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.price),
+          `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}           \n`);
+
+        // getExchange().createMarketBuyOrder(state.symbol, state.tradeSum);
+        getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSum, state.buyPrice);
 
         state.buyOrderCreated = true;
         state.stopLossOrder = false;
-        state.buyPrice = state.avgPrice;
       }
     }
     catch(e) {

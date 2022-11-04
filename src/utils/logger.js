@@ -25,9 +25,12 @@ export function err(msg) {
 export function oneLine(first, msg1, msg2, msg3) {
   let msg = first;
   msg += ` \x1b[1m\x1b[44m`;
-  msg += ` Avg price: \x1b[46m${msg1}\x1b[44m ....`;
-  msg += ` Price now: \x1b[45m${msg2}\x1b[44m ....`;
-  msg += ` ${msg3}`;
+  if (msg1)
+    msg += ` Avg price: \x1b[46m${msg1}\x1b[44m ....`;
+  if (msg2)
+    msg += ` Price now: \x1b[45m${msg2}\x1b[44m ....`;
+  if (msg3)
+    msg += ` ${msg3}`;
   process.stdout.write(`${msg}\x1b[m\r`);
 }
 

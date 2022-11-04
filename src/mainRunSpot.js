@@ -14,10 +14,12 @@ runWebSocket();
 const mainRunSpot = async () => {
 
   await initExchange();
+  const orders = await getExchange().fetchOpenOrders(state.symbol);
 
   let downTrend = false;
   let lastDownTrend = false;
   while (1) {
+    oneLine(`\x1b[1m\x1b[45mTICK`);
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -48,8 +50,6 @@ const mainRunSpot = async () => {
         console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m last\x1b[36m ${state.buyPrice}\x1b[0m`);
       }
 
-      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Buy : ${twoDecimals(state.buyPrice)}  buyOrder: ${state.buyOrderCreated}`);
-      
       lastDownTrend = downTrend;
       downTrend = isDownTrend();
 
@@ -73,16 +73,22 @@ const mainRunSpot = async () => {
 
       ///////////////////////////////////////////////////////////
       // SELL
-      if (state.freeBtc >= 0.001) {
+      if (state.freeBtc >= state.tradeSum) {
         state.buyOrderCreated = false;
 
-        if (state.buyPrice < state.avgPrice) {
+        if (state.avgPrice > state.buyPrice) { // current price avarage ABOVE buy price (WINNING TRADE)
           const currPrice = state.lastPrice - state.spread;
-          if (state.buyPrice < currPrice || state.recentPrices[0] < currPrice || state.lastPrice < currPrice) {
+
+          if (state.buyPrice < currPrice
+            || state.recentPrices[0] < currPrice
+            || state.lastPrice < currPrice)
+          {
             let higherPrice = state.price > state.lastPrice ? state.price : state.lastPrice;
+
             if (higherPrice <= state.buyPrice)
-              higherPrice = state.buyPrice + state.spread / 10;
-            oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}  buyOrder: ${state.buyOrderCreated}\n`);
+              higherPrice = state.buyPrice + state.spread / 3;
+            oneLine(`\x1b[41mSELL`, twoDecimals(state.avgPrice), twoDecimals(state.price),
+              `Recent: ${twoDecimals(state.recentPrices[0])}   Last: ${twoDecimals(state.lastPrice)}  stopLoss: ${state.stopLossOrder}           \n`);
 
             // await getExchange().createMarketSellOrder(state.symbol, state.tradeSum);
             await createOrder("sell", state.tradeSum, higherPrice);
@@ -91,18 +97,33 @@ const mainRunSpot = async () => {
         // STOP LOSS
         else
         {
-          if (!state.stopLossOrder && state.avgPrice < state.buyPrice - state.spread) {
-            // CREATE STOP LOSS
-            oneLine(`\x1b[4mSTOP`, twoDecimals(state.buyPrice), twoDecimals(state.price), `Recent: ${twoDecimals(state.recentPrices[0])}   ${balanceStr}\n`);
-            await createOrderStopPrice("sell", state.tradeSum, state.avgPrice - state.spread * 10, state.avgPrice - state.spread * 3);
-            state.stopLossOrder = true;
+          const orders = await getExchange().fetchOpenOrders(state.symbol);
+          const sells = orders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
+          if (sells.length === 0)
+            state.stopLossOrder = false; // Reset stoploss flag needed, boolean value not consistent at all times
+
+          if (!state.stopLossOrder
+            && state.avgPrice < state.buyPrice) // current price avarage BELLOW buy price (LOSING TRADE)
+          {
+            if (sells.length === 0) {
+              // CREATE STOP LOSS
+              oneLine(`\x1b[4mSTOP`, twoDecimals(state.buyPrice), twoDecimals(state.price),
+                `Recent: ${twoDecimals(state.recentPrices[0])}   ${balanceStr}           `);
+
+              //await createOrderStopPrice("sell", state.tradeSum, state.avgPrice - state.spread * 15, state.avgPrice - state.spread * 14);
+              //state.stopLossOrder = true;
+            }
           }
         }
       }
 
-      if (state.stopLossOrder && state.buyPrice < state.avgPrice) {
+      ///////////////////////////////////////////////////////////
+      // CANCEL STOP LOSS
+      if (state.stopLossOrder
+        && state.avgPrice > state.buyPrice + state.spread / 2) // current price avarage ABOVE buy price plus half spread (WINNING TRADE)
+      {
         const orders = await getExchange().fetchOpenOrders(state.symbol);
-        const sells = orders.filter(i => i.symbol === state.symbol && i.side === "sell");
+        const sells = orders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
         for (let i in sells) {
           await cancelOrder(sells[i].id);
           state.stopLossOrder = false;
@@ -113,7 +134,7 @@ const mainRunSpot = async () => {
       // Memorize last price
       state.lastPrice = state.avgPrice;
       state.recentPrices.push(state.price);
-      if(state.recentPrices.length > 20)  // keep last x prices
+      if(state.recentPrices.length > 15)  // keep last x prices
         state.recentPrices.shift();
     }
     catch(e) {

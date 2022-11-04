@@ -36,8 +36,7 @@ export async function initExchange() {
 
   await state.exchange.load_time_difference();
 
-  console.log("\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
-  console.log("\x1b[47m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  console.log("\x1b[1m\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
 }
 
 export function getExchange() {
