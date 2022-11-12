@@ -1,5 +1,26 @@
 import { state } from "./store.js";
 
+export function recentPriceAvg(from, count) {
+  const len = state.recentPrices.length;
+
+  if (from < 0)
+    from = len + from - 1; // from the end of recent prices
+
+  let to = from + count - 1;
+  if (from >= len)
+    from = len - 1;
+  if (to >= len)
+    to = len - 1;
+
+  let avg = 0;
+  for (let i = from; i <= to; i++) {
+    avg += state.recentPrices[i];
+  }
+  
+  avg = avg / count;
+  return avg;
+}
+
 export function isDownTrend() {
   let res = true;
 
@@ -9,19 +30,8 @@ export function isDownTrend() {
   if (l < 5)
     return false;
   
-  let p1, p2, p3, p4;
-
-  p1 = p[0];
-  p2 = p[1];
-  p3 = p[2];
-  p4 = p[3];
-  const oldAvg = (p1 + p2 + p3 + p4) / 4;
-
-  p1 = p[l-1];
-  p2 = p[l-2];
-  p3 = p[l-3];
-  p4 = p[l-4];
-  const newAvg = (p1 + p2 + p3 + p4) / 4;
+  const oldAvg = recentPriceAvg(0, 5);
+  const newAvg = recentPriceAvg(-5, 5);
 
   if (oldAvg <= newAvg+1)
     res = false;

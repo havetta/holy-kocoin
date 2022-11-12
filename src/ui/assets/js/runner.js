@@ -7,12 +7,10 @@ import { exchanges, fetchMarkets, kukoinZeroFees } from "./services/exchange.js"
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 import { twoDecimals, leftPad } from "./utils/formatter.js";
 
-
-// GET PRICE OVER BINANCE WEBSOCKET
-runWebSocket();
-
 // TOP LEVEL AWAIT WORKAROUNT
-const mainRunSpot = async () => {
+const runner = async () => {
+
+
   let orders = [];
   let downTrend = false;
   let lastDownTrend = false;
@@ -167,4 +165,4 @@ const mainRunSpot = async () => {
   }
 }
 
-export { mainRunSpot };
+export { runner };
