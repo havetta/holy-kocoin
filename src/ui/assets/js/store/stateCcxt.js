@@ -7,6 +7,6 @@ export const stateCcxt = reactive({
   apiKey: null,
   secret: null,
 
-  currPrice: 0,
+  curPrice: 0,
   tradeSymbol: "BTC/USDT",
 })

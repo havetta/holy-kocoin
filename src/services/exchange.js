@@ -1,11 +1,14 @@
 import ccxt from "ccxt";
 
+///////////////////////////////////////////////////////////
 const exchanges = async () => {
   ccxt.exchanges.forEach(function(exchangeName){
     console.log(exchangeName);
   });
 }
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 const fetchMarkets = async () => {
   ccxt.exchanges.forEach(async exchangeName => {
     let exchange = new ccxt[exchangeName]();
@@ -25,7 +28,9 @@ const fetchMarkets = async () => {
     }
   });
 }
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 const kukoinZeroFees = async () => {
   let exchange = new ccxt["kucoin"]();
 
@@ -38,5 +43,7 @@ const kukoinZeroFees = async () => {
     console.log(`Kucoin zero fee trading pairs:`)
     console.log(res);
 }
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 export { exchanges, fetchMarkets, kukoinZeroFees };

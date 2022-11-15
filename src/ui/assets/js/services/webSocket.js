@@ -6,7 +6,7 @@ ws.onmessage = function (event) {
   try {
     const btc = JSON.parse(event.data);
     const p = new Number(btc.p);
-    stateCcxt.currPrice = p;
+    stateCcxt.curPrice = p;
   }
   catch(e) {
     console.error(e?.message);

@@ -17,8 +17,8 @@ let p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
 const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${state.symbol.toLowerCase().replace("/", "")}@trade`);
 ws.on('message', function incoming(data) {
   const btc = JSON.parse(data);
-  state.price = new Number(btc.p);
-  const p = state.price * 10;
+  state.curPrice = new Number(btc.p);
+  const p = state.curPrice * 10;
 
   if (state.rangeStart === 0) {
     state.rangeStart = p;
@@ -44,7 +44,7 @@ ws.on('message', function incoming(data) {
   msg = msg.padStart(200);
   msg = msg.slice(0, priceAt) + "." + msg.slice(priceAt);
   msg = msg.slice(0, avgAt) + color + msg.slice(avgAt);
-  process.stdout.write(twoDecimals(state.price) + msg + "|\n");
+  process.stdout.write(twoDecimals(state.curPrice) + msg + "|\n");
 });
 
 

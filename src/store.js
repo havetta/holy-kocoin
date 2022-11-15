@@ -3,26 +3,32 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+///////////////////////////////////////////////////////////
 export const state = {
   exchange: null,
   symbol: process.env.symbol,
   spread: process.env.spread,
-  tradeSum: process.env.tradeSum,
+  tradeSums: process.env.tradeSums.split("|"),
 
-  price: 0,
+  curPrice: 0,
   avgPrice: 0,
   lastPrice: 0,
   recentPrices: [],
-  buyPrice: 0,
 
+  buyPrice: 0,
   buyOrderCreated: false,
+
+  stopPrice: 0,
   stopLossOrder: false,
+
   cancelledOrders: [],
 
   freeBtc: 0,
   freeUsdt: 0,
 };
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 export async function initExchange() {
 
   state.exchange = new ccxt[process.env.exchange]({
@@ -38,18 +44,27 @@ export async function initExchange() {
 
   console.log("\x1b[1m\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
 }
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 export function getExchange() {
   if (!state.exchange)
     initExchange();
 
   return state.exchange;
 }
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 export function getState() {
   return state;
 }
+///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
 export function setState(newState) {
   state = newState;
 }
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////

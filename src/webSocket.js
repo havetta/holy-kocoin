@@ -2,7 +2,7 @@ import WebSocket from "ws";
 import BinanceApi from "node-binance-api";
 
 import { state, getExchange } from "./store.js";
-import { recentPriceAvg } from "./priceTrends.js";
+import { recentPriceAvg } from "./helpers/priceTrends.js";
 import { err, oneLine } from "./utils/logger.js";
 import { twoDecimals } from "./utils/formatter.js";
 
@@ -22,25 +22,29 @@ export function runWebSocket() {
       const btc = JSON.parse(data);
       const p = new Number(btc.p);
       
-      state.price = p;
-      state.avgPrice = recentPriceAvg(-5, 5);  
+      state.curPrice = p;
+      state.avgPrice = recentPriceAvg(-15, 15);
 
-      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.price),
-      `Recent: ${twoDecimals(recentPriceAvg(0, 5))}   Buy : ${twoDecimals(state.buyPrice)}  stopLoss: ${state.stopLossOrder} Free: ${twoDecimals(state.freeBtc)}`);
+      state.recentPrices.push(state.curPrice);
+      if(state.recentPrices.length > 300)  // keep last x prices
+        state.recentPrices.shift();
+
+      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.curPrice),
+        `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}`);
       
       // ///////////////////////////////////////////////////////////
       // // BUY
       // if (!state.buyOrderCreated
-      //   && state.freeUsdt >= state.tradeSum * (state.avgPrice - state.spread)
-      //   && recentPriceAvg(0, 5) - state.spread > recentPriceAvg(-5, 5))
+      //   && state.freeUsdt >= state.tradeSums[0] * (state.avgPrice - state.spread)
+      //   && recentPriceAvg(0, 15) - state.spread > recentPriceAvg(-15, 15))
       // {
       //   state.buyPrice = state.avgPrice - state.spread / 2;
 
-      //   oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.price),
-      //     `Recent: ${twoDecimals(recentPriceAvg(0, 5))}   Last: ${twoDecimals(state.lastPrice)}           \n`);
+      //   oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
+      //     `Recent: ${twoDecimals(recentPriceAvg(0, 15))}   Last: ${twoDecimals(state.lastPrice)}           \n`);
 
-      //   // getExchange().createMarketBuyOrder(state.symbol, state.tradeSum);
-      //   getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSum, state.buyPrice);
+      //   // getExchange().createMarketBuyOrder(state.symbol, state.tradeSums[0]);
+      //   getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSums[0], state.buyPrice);
 
       //   state.buyOrderCreated = true;
       //   state.stopLossOrder = false;
