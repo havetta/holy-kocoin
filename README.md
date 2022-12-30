@@ -7,7 +7,7 @@
 > create a `.env` file with the following content:
 
 ``` js
-exchange=binanceusdm
+exchange=binanceusdm (FOR SPOT USE binance)
 symbol=BTC/USDT
 spread=YOUR PRICE (IN USDT) FLUCTUATION DIFFERECE FOR BUY SIGNAL AND STOP LOSS SELL PRICE
 tradeSums=PIPE SEPARATED LIST OF YOUR AMOUNTS (IN BTC) TO TRADE WITH, AMOUNTS MUST BE UNIQUE EX.: 0.15|0.21|0.22

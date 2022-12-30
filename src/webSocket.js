@@ -15,7 +15,6 @@ export function runWebSocket() {
   //   console.table(btc)
   // });
 
-  let p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
   const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${state.symbol.toLowerCase().replace("/", "")}@trade`);
   ws.on('message', function incoming(data) {
     try {
@@ -23,32 +22,15 @@ export function runWebSocket() {
       const p = new Number(btc.p);
       
       state.curPrice = p;
-      state.avgPrice = recentPriceAvg(-15, 15);
+      state.avgPrice = recentPriceAvg(-5, 5);
 
       state.recentPrices.push(state.curPrice);
-      if(state.recentPrices.length > 300)  // keep last x prices
+      if(state.recentPrices.length > 30)  // keep last x prices
         state.recentPrices.shift();
 
       oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.curPrice),
         `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}`);
       
-      // ///////////////////////////////////////////////////////////
-      // // BUY
-      // if (!state.buyOrderCreated
-      //   && state.freeUsdt >= state.tradeSums[0] * (state.avgPrice - state.spread)
-      //   && recentPriceAvg(0, 15) - state.spread > recentPriceAvg(-15, 15))
-      // {
-      //   state.buyPrice = state.avgPrice - state.spread / 2;
-
-      //   oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
-      //     `Recent: ${twoDecimals(recentPriceAvg(0, 15))}   Last: ${twoDecimals(state.lastPrice)}           \n`);
-
-      //   // getExchange().createMarketBuyOrder(state.symbol, state.tradeSums[0]);
-      //   getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSums[0], state.buyPrice);
-
-      //   state.buyOrderCreated = true;
-      //   state.stopLossOrder = false;
-      // }
     }
     catch(e) {
       err(e?.message);

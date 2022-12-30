@@ -7,7 +7,7 @@ dotenv.config();
 export const state = {
   exchange: null,
   symbol: process.env.symbol,
-  spread: process.env.spread,
+  spread: parseFloat(process.env.spread),
   tradeSums: process.env.tradeSums.split("|"),
 
   curPrice: 0,
@@ -16,6 +16,7 @@ export const state = {
   recentPrices: [],
 
   buyPrice: 0,
+  buyPrice2: 0,
   buyOrderCreated: false,
 
   stopPrice: 0,
@@ -24,12 +25,14 @@ export const state = {
   cancelledOrders: [],
 
   freeBtc: 0,
-  freeUsdt: 0,
+  freeUsd: 0,
 };
 ///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 export async function initExchange() {
+  if (state.exchange)
+    return;
 
   state.exchange = new ccxt[process.env.exchange]({
     apiKey: process.env.apiKey,

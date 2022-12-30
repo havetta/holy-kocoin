@@ -1,24 +1,31 @@
 import { ref, defineAsyncComponent } from "vue";
 import { app, stateCcxt, statePanel } from "appImports"
-import { getExchange } from "../services/exchange.js"
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     let rightSidePanel;
 
-    const orders = ref({
-      data: []
+    const state = ref({
+      count: 0,
+      message: ""
     })
 
-    const state = ref({
-      count: 0
-    })
+    const sellSpot = async () => {
+      const response = await fetch("http://localhost:3333/sell");
+      const json = await response.json();
+      
+      console.warn(json);
+      state.value.message = json;
+    }
 
     const buySpot = async () => {
       state.value.count++;
 
-      const exch = await getExchange();
-      orders = await exch.fetchClosedOrders(stateCcxt.tradeSymbol);
+      const response = await fetch("http://localhost:3333/buy");
+      const json = await response.json();
+
+      console.warn(json);
+      state.value.message = json;
 
       if (!rightSidePanel) {
         // rightSidePanel = await import("./rightSidePanel.js");
@@ -37,7 +44,7 @@ export default {
 
     return {
       buySpot,
-      orders,
+      sellSpot,
       state,
     }
   },
@@ -46,32 +53,20 @@ export default {
   },
   template: `
 <section class="py-3">
-  <table class="">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>2018</th>
-      <th>2017</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(sale,i) in orders.data" :key="i">
-      <th scope="row">{{ sale.Month  }}</th>  
-      <td>{{ sale.Sale }}</td> 
-      <td>{{ sales[1][i].Sale }}</td>  
-    </tr>
-  </tbody>
-  </table>
+  <button @click="buySpot()" class="bg-green-400 rounded-full p-20 text-9xl">
+  Buy 
+  </button>
+  <button @click="sellSpot()" class="bg-red-400 rounded-full p-20 text-9xl">
+  Sell 
+  </button>
 
+  <div>{{ state.message }}</div>
   <input
     :value="state.count" @input="event => text = event.target.value"
     class="block py-4 px-3 w-full text-sm text-indigo-600 placeholder-gray-200 font-medium outline-none bg-transparent border border-gray-400 hover:border-red focus:border-green-500 rounded-lg"
     type="text" placeholder="Doe">
 
   <input :value="state.count" @input="event => text = event.target.value" />
-  <button @click="buySpot()" class="bg-yellow-400 rounded-full p-2 text-xl">
-    Buy Amount 
-  </button>
 
 
   <div class="container px-4 mx-auto">

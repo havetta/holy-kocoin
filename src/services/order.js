@@ -112,26 +112,24 @@ export async function cancelOrder(id) {
 ///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
-export async function cancelOldOrders(orders) {
+export async function cancelOldOrders(orders, olderThanMinutes, filterSide, ignoreType) {
   let res = false;
 
-  if (new Date().getSeconds() % 30 === 0) { // every x seconds
-    const xMinutesAgo = new Date(new Date() - 2 * 60000); // minus x minutes
-    const filtered = orders.filter(i => i.symbol === state.symbol && i.type != "stop_loss_limit"); //  && i.side === "sell"
-    // for (let i in filtered) {
-    if (filtered.length > 0) {
-      let i = 0;
-      const id = filtered[i].id;
-      if (new Date(filtered[i].datetime) < xMinutesAgo && !state.cancelledOrders.includes(id)) {
-        oneLine(`\x1b[43mCANCEL \n`);
-        cancelOrder(id);
-        res = true;
-        state.cancelledOrders.push(id);
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      state.buyOrderCreated = false;
+  const xMinutesAgo = new Date(new Date() - olderThanMinutes * 60000); // minus x minutes
+  const filtered = orders.filter(i => i.symbol === state.symbol && i.side === filterSide && i.type != ignoreType);
+  // for (let i in filtered) {
+  if (filtered.length > 0) {
+    let i = 0;
+    const id = filtered[i].id;
+    if (new Date(filtered[i].datetime) < xMinutesAgo && !state.cancelledOrders.includes(id)) {
+      oneLine(`\x1b[43mCANCEL ${filterSide} \n`);
+      cancelOrder(id);
+      res = true;
+      state.cancelledOrders.push(id);
     }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    state.buyOrderCreated = false;
   }
   else {
     if (state.cancelledOrders.length > 500)

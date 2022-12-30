@@ -19,6 +19,6 @@ app.mount('#app');
 //////////////////////////////////////////////////////////////////////////////
 // CCXT library
 (async () => {
-  await import("https://unpkg.com/ccxt"); // "https://unpkg.com/ccxt@1.92.30/dist/ccxt.browser.js"
-  stateCcxt.ccxt = ccxt;
+  // await import("https://unpkg.com/ccxt"); // "https://unpkg.com/ccxt@1.92.30/dist/ccxt.browser.js"
+  // stateCcxt.ccxt = ccxt;
 })();

@@ -108,11 +108,10 @@
 
     <!-- Content -->
     <article v-show="state.loggedIn" :class="{ isvisible: true }" class="initial-hide">
-      <div class="text-center bg-slate-50 text-gray-800 py-20 px-6">
-        <h1 class="text-5xl font-bol">Trade panel</h1>
+      <div class="text-center bg-slate-500 text-gray-800 py-20 px-6">
 
           <!-- Chart built with Chart.js 3 -->
-        <section class="m-4 flex flex-col items-center antialiased bg-gray-100 text-gray-600">
+        <!-- <section class="m-4 flex flex-col items-center antialiased bg-gray-100 text-gray-600">
           <div class="max-w-3xl lg:w-1/2 p-4 sm:px-6 h-full">
             <div class="flex flex-col bg-white shadow-lg rounded-sm border border-gray-200">
               <header class="px-5 py-4 border-b border-gray-100 flex items-center">
@@ -125,18 +124,18 @@
               </div>
             </div>
           </div>
-        </section>
+        </section> -->
 
-        <div class="my-4">
-          <button @click="statePanel.openSidePanel = !statePanel.openSidePanel" class="bg-gray-300 py-2 px-6 rounded-full text-xl">Show Exchanges</button>
-        </div>
-        <hr class="my-4" />
-        <tradePanel v-show="stateCcxt.ccxt != null"></tradePanel>
+        <tradePanel></tradePanel>
 
         <details>
           <summary>Details</summary>
           Something small enough to escape casual notice.
         </details>
+
+        <div class="my-4">
+          <button @click="statePanel.openSidePanel = !statePanel.openSidePanel" class="bg-gray-300 py-2 px-6 rounded-full text-xl">Show Exchanges</button>
+        </div>
       </div>
 
       <!-- Footer -->
