@@ -30,12 +30,26 @@ fastify.get('/sell', async (request, reply) => {
 ///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
+fastify.get('/balance', async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  
+  const bal = await getExchange().fetchBalance();
+  const pairBTC = state.symbol.split('/')[0];
+  const pairUSD = state.symbol.split('/')[1];
+  state.freeBtc = bal?.free[pairBTC];
+  state.freeUsd = bal?.free[pairUSD];
+
+  return { status: 'balance', BTC_free: state.freeBtc, BTC_total: bal?.total[pairBTC], USD_free: state.freeUsd, USD_total: bal?.total[pairUSD] }
+});
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
 fastify.get('/orders', async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   
   const orders = await getExchange().fetchOpenOrders(state.symbol);
 
-  return { status: 'orders', orders }
+  return orders
 });
 ///////////////////////////////////////////////////////////
 
@@ -50,7 +64,7 @@ fastify.get('/cancel', async (request, reply) => {
     const id = filtered[i].id;
     await getExchange().cancelOrder(id, state.symbol);
   }
-  return { status: 'cancel', orders }
+  return orders
 });
 ///////////////////////////////////////////////////////////
 

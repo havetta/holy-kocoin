@@ -82,7 +82,7 @@ const mainRunSpot = async () => {
 
       ///////////////////////////////////////////////////////////
       // CANCEL BUY OR SELL ORDERS (every x minutes)
-      await cancelOldOrders(orders, 1, "buy", "stop_loss_limit");
+      await cancelOldOrders(orders, 30, "buy", "stop_loss_limit");
 
       // if (await cancelOldOrders(orders, 150, "sell", "stop_loss_limit")) {
       //   state.buyPrice = latest;
