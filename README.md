@@ -1,6 +1,6 @@
 # holy-kocoin
  
- ## Run thit BTC trading bot
+ ## Run this BTC trading bot
  > in the terminal type `npm t`
  
  ## Configuration
