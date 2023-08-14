@@ -26,6 +26,7 @@ export const state = {
 
   freeBtc: 0,
   freeUsd: 0,
+  balanceStr: ""
 };
 ///////////////////////////////////////////////////////////
 
