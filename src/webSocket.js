@@ -4,7 +4,7 @@ import BinanceApi from "node-binance-api";
 import { state, getExchange } from "./store.js";
 import { recentPriceAvg } from "./helpers/priceTrends.js";
 import { err, oneLine } from "./utils/logger.js";
-import { twoDecimals } from "./utils/formatter.js";
+import { twoDecimals, rightPad } from "./utils/formatter.js";
 
 export function runWebSocket() {
 
@@ -28,7 +28,8 @@ export function runWebSocket() {
       if(state.recentPrices.length > 30)  // keep last x prices
         state.recentPrices.shift();
 
-      oneLine(`wait`, twoDecimals(state.avgPrice), twoDecimals(state.curPrice),
+      const tick = rightPad(Math.random(), 4);
+      oneLine(tick, twoDecimals(state.avgPrice), twoDecimals(state.curPrice),
         `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}`);
       
     }

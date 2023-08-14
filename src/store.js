@@ -35,12 +35,12 @@ export async function initExchange() {
     return;
 
   state.exchange = new ccxt[process.env.exchange]({
-    apiKey: process.env.apiKey,
+    apiKey: process.env.apikey,
     secret: process.env.secret,
     enableRateLimit: true,
-    // options: {
-    //   defaultType: "future",
-    // },
+    options: {
+      defaultType: "spot",//future
+    },
   });
 
   await state.exchange.load_time_difference();

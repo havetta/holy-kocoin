@@ -23,7 +23,7 @@ export function leftPad(str, len) {
 export function rightPad(str, len) {
   let res = new String(str);
   res = res.padStart(len," ");
-  res = res.substring(res.length - len - 1, len);
+  res = res.substring(res.length - len);
   return res;
 }
 ///////////////////////////////////////////////////////////

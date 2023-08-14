@@ -2,9 +2,11 @@ import ccxt from "ccxt";
 
 ///////////////////////////////////////////////////////////
 const exchanges = async () => {
+  let exList = "";
   ccxt.exchanges.forEach(function(exchangeName){
-    console.log(exchangeName);
+    exList += `${exchangeName} | `;
   });
+  console.warn(exList);
 }
 ///////////////////////////////////////////////////////////
 

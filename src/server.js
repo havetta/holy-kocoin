@@ -39,7 +39,14 @@ fastify.get('/balance', async (request, reply) => {
   state.freeBtc = bal?.free[pairBTC];
   state.freeUsd = bal?.free[pairUSD];
 
-  return { status: 'balance', BTC_free: state.freeBtc, BTC_total: bal?.total[pairBTC], USD_free: state.freeUsd, USD_total: bal?.total[pairUSD] }
+  return {
+    status: 'balance',
+    _____________BTC_free__: state.freeBtc,
+    _____________BTC_total__: bal?.total[pairBTC],
+    _____________: '',
+    _____________USD_free__: state.freeUsd,
+    _____________USD_total__: bal?.total[pairUSD]
+  }
 });
 ///////////////////////////////////////////////////////////
 
