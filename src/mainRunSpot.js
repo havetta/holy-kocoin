@@ -39,7 +39,7 @@ const mainRunSpot = async () => {
   console.log(`BTC: ${bal?.free['BTC']}`);
   
   orders = await getExchange().fetchOpenOrders(state.symbol);
-  console.log(`\x1b[1m\x1b[43mOPEN \x1b[92m ORDERS\x1b[103m`);  // 1m is bold, 0m is reset
+  console.log(`\x1b[1m\x1b[43mOPEN \x1b[90m ORDERS\x1b[103m`);  // 1m is bold, 0m is reset
   console.table(orders.map(i => i.info));
 
   orders = await getExchange().fetchClosedOrders(state.symbol);
@@ -121,7 +121,7 @@ const mainRunSpot = async () => {
       if ( state.freeUsd >= state.curPrice * state.tradeSums[0]
         //&& state.curPrice < state.lastPrice
         //&& state.avgPrice > state.curPrice
-        && !upTrend
+        //&& !upTrend
         && !state.buyOrderCreated
         )
       {

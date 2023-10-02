@@ -15,22 +15,25 @@ export function runWebSocket() {
   //   console.table(btc)
   // });
 
-  const fluentSymbol = state.symbol; // `BTC/USDT`;
-  let url = `wss://stream.binance.com:9443/ws/${fluentSymbol.toLowerCase().replace("/", "")}@trade`;
-  if (process.env.exchange === "bybit")
+  const wsExchange = "binance";// process.env.exchange;
+
+  const quicklyChangingPriceSymbol = state.symbol.toLowerCase().replace("/", ""); // `BTC/USDT`;
+  let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol}@trade`;
+  if (wsExchange === "bybit")
     url = `wss://stream.bybit.com/v5/public/spot`;
 
   const ws = new WebSocket(url);
   ws.on('open', function (e) {
     console.log(`\x1b[1m\x1b[33m onopen`);
-    ws.send(`{"op":"subscribe","args":["tickers.BTCUSDC"]}`);
+    if (wsExchange === "bybit")
+      ws.send(`{"op":"subscribe","args":["tickers.BTCUSDC"]}`);
   });
   
   ws.on('message', function incoming(data) {
     try {
       const btc = JSON.parse(data);
       let p = new Number(btc?.p);
-      if (!btc?.p)
+      if (wsExchange === "bybit")
         p = new Number(btc?.data?.lastPrice);
         
       state.curPrice = p;

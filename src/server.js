@@ -78,7 +78,7 @@ fastify.get('/cancel', async (request, reply) => {
 ///////////////////////////////////////////////////////////
 const start = async () => {
   try {
-    await fastify.listen({ port: 3333 })
+    await fastify.listen({ port: process.env.port })
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
