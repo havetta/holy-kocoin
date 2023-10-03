@@ -10,18 +10,21 @@ import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
 
 ///////////////////////////////////////////////////////////
 // GET PRICE OVER BINANCE WEBSOCKET
+///////////////////////////////////////////////////////////
 runWebSocket();
 ///////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////
 // START WEB SERVER
+///////////////////////////////////////////////////////////
 fastify.get('/', async (request, reply) => { return 'running'; });
 ///////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////
 // TOP LEVEL AWAIT WORKAROUNT
+///////////////////////////////////////////////////////////
 const mainRunSpot = async () => {
   let orders = [];
   let upTrend = false;
@@ -29,24 +32,25 @@ const mainRunSpot = async () => {
   let lastDownTrend = false;
 
   // LOAD LIST OF ORDERS
-  await exchanges()
+  await exchanges();
   await initExchange();
   const bal = await getExchange().fetchBalance();
-  console.table(bal);
+  console.log(`BTC: ${bal?.free['BTC']}`);
   console.log(`USDT: ${bal?.free['USDT']}`);
   console.log(`USDC: ${bal?.free['USDC']}`);
   console.log(`TUSD: ${bal?.free['TUSD']}`);
-  console.log(`BTC: ${bal?.free['BTC']}`);
   
   orders = await getExchange().fetchOpenOrders(state.symbol);
-  console.log(`\x1b[1m\x1b[43mOPEN \x1b[90m ORDERS\x1b[103m`);  // 1m is bold, 0m is reset
+  console.log(`\x1b[1m\x1b[42mOPEN \x1b[91m ORDERS\x1b[104m`);  // 1m is bold, 0m is reset
   console.table(orders.map(i => i.info));
+  for (let i in orders) {
+    await cancelOrder(orders[i].id);
+  }
 
   orders = await getExchange().fetchClosedOrders(state.symbol);
   console.log(`\x1b[45mCLOSED \x1b[93m ORDERS\x1b[101m`);  // 1m is bold, 0m is resets
   console.table(orders.map(i => i.info));
   //await getExchange().createOrder("BTC/USDC", "limit", "buy", 0.01, 29353);
-  //await getExchange().createOrder("BTC/USDC", "limit", "sell", 0.01, 29333);
 
   // WAIT FOR FIRST BTC PRICE
   while (state.curPrice === 0) {
@@ -63,7 +67,8 @@ const mainRunSpot = async () => {
       state.buyPrice = buys[buys.length-1].price;
     else
       state.buyPrice = state.curPrice;
-
+    
+    state.recentBuyPrices.push(state.buyPrice);
     state.buyPrice2 = state.buyPrice;
     console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m last\x1b[36m ${state.buyPrice}\x1b[0m`);
   }
@@ -72,7 +77,8 @@ const mainRunSpot = async () => {
 
 ///////////////////////////////////////////////////////////
 // LOOP
-  while (1) {
+///////////////////////////////////////////////////////////
+while (1) {
     oneLine(`\x1b[1m\x1b[45m${rightPad(Math.random(), 4)}`);
 
     // Wait x miliseconds
@@ -98,7 +104,8 @@ const mainRunSpot = async () => {
       let latest = state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice;
 
       ///////////////////////////////////////////////////////////
-      // CANCEL BUY OR SELL ORDERS (every x minutes)
+      // CANCEL BUY OR SELL ORDERS (every x minutes) ////////////
+      ///////////////////////////////////////////////////////////
       await cancelOldOrders(orders, 120, "buy", "stop_loss_limit"); // ignore stoploss
 
       // if (await cancelOldOrders(orders, 150, "sell", "stop_loss_limit")) {
@@ -114,7 +121,8 @@ const mainRunSpot = async () => {
       }
 
       ///////////////////////////////////////////////////////////
-      // BUY
+      // BUY  ///////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////
       const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy");
       state.buyOrderCreated = buys.length > 0;
 
@@ -122,13 +130,17 @@ const mainRunSpot = async () => {
         //&& state.curPrice < state.lastPrice
         //&& state.avgPrice > state.curPrice
         //&& !upTrend
-        && !state.buyOrderCreated
+        //&& !state.buyOrderCreated
         )
       {
-        await new Promise(resolve => setTimeout(resolve, 5*60*1000)); // 5 minutes
+        await new Promise(resolve => setTimeout(resolve, 1*60*1000)); // x minutes * 60 seconds * 1000 miliseconds
 
         state.buyPrice2 = state.buyPrice;
         state.buyPrice = state.curPrice - state.spread;
+
+        state.recentBuyPrices.push(state.buyPrice);
+        if(state.recentBuyPrices.length > 10)  // keep last x prices
+          state.recentBuyPrices.shift();
       
         oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}      ${state.balanceStr}\n`);
@@ -148,11 +160,11 @@ const mainRunSpot = async () => {
       }
 
       ///////////////////////////////////////////////////////////
-      // SELL
-
+      // SELL ///////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////
       if (state.freeBtc >= state.tradeSums[0])
       {
-        let atPrice = state.buyPrice// > state.buyPrice2 ? state.buyPrice : state.buyPrice2;
+        let atPrice = //Math.max(...state.recentBuyPrices);
         atPrice = atPrice + state.spread;
         
         oneLine(`\x1b[41mSELL`, twoDecimals(atPrice), twoDecimals(state.curPrice),
@@ -167,6 +179,7 @@ const mainRunSpot = async () => {
 /*
       ///////////////////////////////////////////////////////////
       // STOP LOSS
+      ///////////////////////////////////////////////////////////
       const stopLoss = orders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
       state.stopLossOrder = stopLoss.length > 0;
       let stopPrice = latest-state.spread*2;
@@ -201,6 +214,7 @@ const mainRunSpot = async () => {
 
       // ///////////////////////////////////////////////////////////
       // // CANCEL STOP LOSS
+      ///////////////////////////////////////////////////////////
       // if (state.stopLossOrder
       //   && state.avgPrice > state.buyPrice + state.spread / 2) // current price avarage ABOVE buy price plus half spread (WINNING TRADE)
       // {

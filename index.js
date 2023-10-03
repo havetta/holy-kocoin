@@ -1,3 +1,3 @@
 // RUN using cmd:  "npm t"
-import { main } from "./src/main.js";
+import { main } from "./src/index.js";
 console.log(main);

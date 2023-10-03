@@ -17,6 +17,7 @@ export const state = {
 
   buyPrice: 0,
   buyPrice2: 0,
+  recentBuyPrices: [],
   buyOrderCreated: false,
 
   stopPrice: 0,

@@ -1,9 +1,16 @@
 import Fastify from 'fastify'
-import { state, getExchange } from "./store.js";
+import FastifyCORS from '@fastify/cors'
+import { state, getExchange } from './store.js'
 
 export const fastify = Fastify({ logger: false });
-///////////////////////////////////////////////////////////
 
+await fastify.register((instance, options, done) => {
+  instance.register(FastifyCORS, {origin: "*"});
+  done();
+});
+
+///////////////////////////////////////////////////////////
+// buy
 ///////////////////////////////////////////////////////////
 fastify.get('/buy', async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
@@ -15,8 +22,9 @@ fastify.get('/buy', async (request, reply) => {
   
   return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice }
 });
-///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+// sell
 ///////////////////////////////////////////////////////////
 fastify.get('/sell', async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
@@ -27,12 +35,13 @@ fastify.get('/sell', async (request, reply) => {
 
   return { status: 'sell', symbol: state.symbol, sellPrice: sellPrice }
 });
-///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+// balance
 ///////////////////////////////////////////////////////////
 fastify.get('/balance', async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
-  
+
   const bal = await getExchange().fetchBalance();
   const pairBTC = state.symbol.split('/')[0];
   const pairUSD = state.symbol.split('/')[1];
@@ -40,16 +49,16 @@ fastify.get('/balance', async (request, reply) => {
   state.freeUsd = bal?.free[pairUSD];
 
   return {
-    status: 'balance',
-    _____________BTC_free__: state.freeBtc,
-    _____________BTC_total__: bal?.total[pairBTC],
-    _____________: '',
-    _____________USD_free__: state.freeUsd,
-    _____________USD_total__: bal?.total[pairUSD]
+    BTC_free: state.freeBtc,
+    BTC_total: bal?.total[pairBTC],
+    ___: '',
+    USD_free: state.freeUsd,
+    USD_total: bal?.total[pairUSD]
   }
 });
-///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+// orders
 ///////////////////////////////////////////////////////////
 fastify.get('/orders', async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
@@ -58,8 +67,20 @@ fastify.get('/orders', async (request, reply) => {
 
   return orders
 });
-///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+// ordersClosed
+///////////////////////////////////////////////////////////
+fastify.get('/ordersClosed', async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  
+  const orders = await getExchange().fetchClosedOrders(state.symbol);
+
+  return orders
+});
+
+///////////////////////////////////////////////////////////
+// cancel
 ///////////////////////////////////////////////////////////
 fastify.get('/cancel', async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
@@ -73,8 +94,9 @@ fastify.get('/cancel', async (request, reply) => {
   }
   return orders
 });
-///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+// listen 
 ///////////////////////////////////////////////////////////
 const start = async () => {
   try {

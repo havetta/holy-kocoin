@@ -114,9 +114,10 @@ export async function cancelOrder(id) {
 ///////////////////////////////////////////////////////////
 export async function cancelOldOrders(orders, olderThanMinutes, filterSide, ignoreType) {
   let res = false;
+  const sideUpperCase = filterSide.toUpperCase();
 
   const xMinutesAgo = new Date(new Date() - olderThanMinutes * 60000); // minus x minutes
-  const filtered = orders.filter(i => i.symbol === state.symbol && i.side === filterSide && i.type != ignoreType);
+  const filtered = orders.filter(i => i.symbol === state.symbol && i.side.toUpperCase() === sideUpperCase && i.type != ignoreType);
   // for (let i in filtered) {
   if (filtered.length > 0) {
     let i = 0;
