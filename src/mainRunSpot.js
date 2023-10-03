@@ -164,7 +164,7 @@ while (1) {
       ///////////////////////////////////////////////////////////
       if (state.freeBtc >= state.tradeSums[0])
       {
-        let atPrice = //Math.max(...state.recentBuyPrices);
+        let atPrice = Math.max(...state.recentBuyPrices);
         atPrice = atPrice + state.spread;
         
         oneLine(`\x1b[41mSELL`, twoDecimals(atPrice), twoDecimals(state.curPrice),
