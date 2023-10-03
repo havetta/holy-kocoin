@@ -139,7 +139,7 @@ while (1) {
         state.buyPrice = state.curPrice - state.spread;
 
         state.recentBuyPrices.push(state.buyPrice);
-        if(state.recentBuyPrices.length > 10)  // keep last x prices
+        if(state.recentBuyPrices.length > 3)  // keep last x prices
           state.recentBuyPrices.shift();
       
         oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),

@@ -18,9 +18,13 @@ fastify.get('/buy', async (request, reply) => {
   let lower = state.curPrice < state.avgPrice ? state.curPrice : state.avgPrice;
   state.buyPrice = lower - state.spread;
 
-  await getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSums[0], state.buyPrice);
-  
-  return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice }
+  try {
+    await getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSums[0], state.buyPrice);
+    return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice }
+  }
+  catch(e) {
+    return { error: e?.message }
+  }
 });
 
 ///////////////////////////////////////////////////////////
@@ -34,6 +38,34 @@ fastify.get('/sell', async (request, reply) => {
   await getExchange().createOrder(state.symbol, "limit", "sell", state.tradeSums[0], sellPrice);
 
   return { status: 'sell', symbol: state.symbol, sellPrice: sellPrice }
+});
+
+///////////////////////////////////////////////////////////
+// price
+///////////////////////////////////////////////////////////
+fastify.get('/price', async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  
+  return {
+    curPrice: state.curPrice,
+    avgPrice: state.avgPrice,
+    lastPrice: state.lastPrice,
+    recentPrices: state.recentPrices,
+  }
+});
+
+///////////////////////////////////////////////////////////
+// buyPrice
+///////////////////////////////////////////////////////////
+fastify.get('/buyPrice', async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  
+  return {
+    buyPrice: state.buyPrice,
+    buyPrice2: state.buyPrice2,
+    buyOrderCreated: state.buyOrderCreated,
+    recentBuyPrices: state.recentBuyPrices,
+  }
 });
 
 ///////////////////////////////////////////////////////////
@@ -51,7 +83,6 @@ fastify.get('/balance', async (request, reply) => {
   return {
     BTC_free: state.freeBtc,
     BTC_total: bal?.total[pairBTC],
-    ___: '',
     USD_free: state.freeUsd,
     USD_total: bal?.total[pairUSD]
   }

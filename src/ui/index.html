@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
-  
+  <link href="https://cdn.jsdelivr.net/npm/json-formatter-js@2.3.4/dist/json-formatter.min.css" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style type="text/css">
@@ -20,88 +21,69 @@
   <main class="pt-20">
     <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 p-4 lg:p-8">
 
-      <button hx-get="http://localhost:3333/balance" hx-target="#content" class="btn btn-primary">
-        Balance
-      </button>
+      <button hx-get="http://localhost:3333/price" hx-target="#content" class="btn bg-yellow-500">price</button>
+      <button hx-get="http://localhost:3333/buyPrice" hx-target="#content" class="btn bg-amber-400">buyPrice</button>
+      <button hx-get="http://localhost:3333/balance" hx-target="#content" class="btn bg-orange-400">balance</button>
+      <button hx-get="http://localhost:3333/orders" hx-target="#content" class="btn bg-blue-400">orders</button>
+      <button hx-get="http://localhost:3333/ordersClosed" hx-target="#content" class="btn bg-cyan-300">closed</button>
+      <button hx-get="http://localhost:3333/buy" hx-target="#content" class="btn btn-accent">buy</button>
+      <button hx-get="http://localhost:3333/sell" hx-target="#content" class="btn btn-secondary">sell</button>
+      <button hx-get="http://localhost:3333/cancel" hx-target="#content" class="btn btn-primary">cancel</button>
 
-      <button hx-get="http://localhost:3333/ordersClosed"
-      hx-swap="innerHTML"
-      hx-target="#content"
-      mustache-template="sometemplate"
-      class="btn btn-primary">
-        Closed Orders
-      </button>
-
-      <p id="content" class="m-8"></p>
-
-      <template id="sometemplate">
-        <p> {% raw %}{{total}}{% endraw %} and {% raw %}{{limit}}{% endraw %}</p>
-      </template>
+      <p id="jsonformated" class="m-8 text-sm"></p>
+      <p id="content" class="m-8 text-xs"></p>
 
       <aside class="flex items-center mb-1">
-        <h1 class="flex-grow text-xl">Latest News</h1>
-        <!-- hx-trigger="load, click" makes sure that api gets called on pageload AND on click  !-->
+        <h1 class="flex-grow text-xl">Open Orders</h1>
         <button class="py-2 px-4 rounded bg-blue-500 text-white flex-grow-0"
                 type="button"
                 hx-trigger="load, click"
-                hx-get="https://node-hnapi.herokuapp.com/news?page=0" 
-                nunjucks-template="gistlist"
+                hx-get="http://localhost:3333/orders" 
+                nunjucks-template="nunjucksTemplate"
                 hx-target="#list"
-                hx-swap="innerHTML">
-          Reload
-        </button>   
+                hx-swap="innerHTML">Reload</button>   
       </aside>
 
       <p id="list" class="m-8"></p>
 
-      <script id="gistlist" type="nunjucks">
-        {% for gist in gists %}
+      <script id="nunjucksTemplate" type="nunjucks">
+        {% for itm in jsonData %}
           <li class="relative -mb-px block border p-1 border-grey">
-            <a href="{{gist.url}}" class="font-bold">{{gist.title}}</a> ({{gist.time_ago}})<br>
+            <b>{{itm.side}}</b> ({{itm.amount}}) at {{itm.price}}<br>
           </li>
         {% endfor %}
       </script>
 
       <script type="module">
-      htmx.logger = function(elt, event, data) {
-        if(console) {
-            console.debug(event, elt, data);
-        }
-      }
-
-      document.body.addEventListener('configRequest.htmx', function(evt) {
-          // try to remove x-hx-* headers because gist api complains about CORS
-          Object.keys(evt.detail.headers).forEach(function(key) { 
-            delete evt.detail.headers[key]; 
-          });
-      });
+      import JSONFormatter from 'https://cdn.jsdelivr.net/npm/json-formatter-js@2.3.4/dist/json-formatter.esm.min.js'
 
       htmx.defineExtension('client-side-templates', {
-          transformResponse : function(text, xhr, elt) {
-            var nunjucksTemplate = htmx.closest(elt, "[nunjucks-template]");
-              if (nunjucksTemplate) {
-                  var data = {
-                    gists: JSON.parse(text).map((item) => {
-                      // parser : https://codepen.io/localhorst/pen/ZEbqVZd
-                      //item.parsed = new leptonParser().parse(item.description);
-                      return item; 
-                    })
-                  };
+        transformResponse : function(text, xhr, elt) {
+          const jsonformated = htmx.find('#jsonformated');
+          jsonformated.innerHTML = '';
 
-                  var templateName = nunjucksTemplate.getAttribute('nunjucks-template');
-                  var template = htmx.find('#' + templateName);
-                  console.warn(templateName,data);
-                  return nunjucks.renderString(template.innerHTML, data);
-              }
-              return text;
+          const jsonParsed = JSON.parse(text);
+          if (!jsonParsed) {
+            return text;
           }
+
+          jsonformated.appendChild((new JSONFormatter(jsonParsed)).render());
+
+          const nunjucksTemplate = htmx.closest(elt, "[nunjucks-template]");
+          if (nunjucksTemplate) {
+            var templateName = nunjucksTemplate.getAttribute('nunjucks-template');
+            var template = htmx.find('#' + templateName);
+            return nunjucks.renderString(template.innerHTML, { jsonData: jsonParsed });
+          }
+          return text;
+        }
       });
       </script>
     </section>
   </main>
+  <!-- <script src="../js/htmx.min.js"></script> -->
   <script src="https://unpkg.com/htmx.org" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
-  <script src="https://unpkg.com/mustache@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js"></script>  <!-- <script src="../js/htmx.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js"></script>
 </body>
 </html>
