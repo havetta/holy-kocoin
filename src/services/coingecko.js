@@ -1,3 +1,4 @@
+/*
 import axios from "axios";
 
 export async function btcPrice(ticker) {
@@ -14,3 +15,4 @@ export async function btcPrice(ticker) {
   // const json = await response.json();
   return json;
 }
+*/

@@ -9,47 +9,47 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <style type="text/css">
+  <title>Trading Bot</title>
 
-  </style>
 </head>
 <body>
-  <header hx-get="reuse/header.html" hx-trigger="load">
+  <header hx-get="header.html" hx-trigger="load">
     <ins>=</ins>
   </header>
 
   <main class="pt-20">
     <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 p-4 lg:p-8">
 
-      <button hx-get="http://localhost:3333/price" hx-target="#content" class="btn bg-yellow-500">price</button>
-      <button hx-get="http://localhost:3333/buyPrice" hx-target="#content" class="btn bg-amber-400">buyPrice</button>
-      <button hx-get="http://localhost:3333/balance" hx-target="#content" class="btn bg-orange-400">balance</button>
-      <button hx-get="http://localhost:3333/orders" hx-target="#content" class="btn bg-blue-400">orders</button>
-      <button hx-get="http://localhost:3333/ordersClosed" hx-target="#content" class="btn bg-cyan-300">closed</button>
-      <button hx-get="http://localhost:3333/buy" hx-target="#content" class="btn btn-accent">buy</button>
-      <button hx-get="http://localhost:3333/sell" hx-target="#content" class="btn btn-secondary">sell</button>
-      <button hx-get="http://localhost:3333/cancel" hx-target="#content" class="btn btn-primary">cancel</button>
+      <button hx-get="http://localhost:3333/price" hx-target="#rawcontent" class="btn bg-yellow-500">price</button>
+      <button hx-get="http://localhost:3333/balance" hx-target="#rawcontent" class="btn bg-orange-400">balance</button>
+      <button hx-get="http://localhost:3333/sell" hx-target="#rawcontent" class="btn btn-secondary">sell</button>
+      <button hx-get="http://localhost:3333/buy" hx-target="#rawcontent" class="btn btn-accent">buy</button>
+      <button hx-get="http://localhost:3333/cancel?side=sell" hx-target="#rawcontent" class="btn bg-red-500">cancel sell</button>
+      <button hx-get="http://localhost:3333/cancel?side=buy" hx-target="#rawcontent" class="btn bg-green-400">cancel buy</button>
 
       <p id="jsonformated" class="m-8 text-sm"></p>
-      <p id="content" class="m-8 text-xs"></p>
+      <p id="rawcontent" class="m-8 text-xs"></p>
 
       <aside class="flex items-center mb-1">
-        <h1 class="flex-grow text-xl">Open Orders</h1>
-        <button class="py-2 px-4 rounded bg-blue-500 text-white flex-grow-0"
-                type="button"
+        <h1 class="flex-grow text-xl">Orders</h1>
+        <button class="btn btn-primary"
                 hx-trigger="load, click"
                 hx-get="http://localhost:3333/orders" 
-                nunjucks-template="nunjucksTemplate"
-                hx-target="#list"
-                hx-swap="innerHTML">Reload</button>   
+                nunjucks-template="tpl"
+                hx-target="#xy"
+                hx-swap="innerHTML">orders</button>
+        <button hx-get="http://localhost:3333/orders?side=sell" hx-target="#xy" class="btn bg-red-400" nunjucks-template="tpl">sells</button>
+        <button hx-get="http://localhost:3333/orders?side=buy" hx-target="#xy" class="btn bg-green-400" nunjucks-template="tpl">buys</button>
+        <button hx-get="http://localhost:3333/orders?closed=1&side=sell" hx-target="#xy" class="btn bg-pink-200" nunjucks-template="tpl">closed sells</button>
+        <button hx-get="http://localhost:3333/orders?closed=1&side=buy" hx-target="#xy" class="btn bg-green-200" nunjucks-template="tpl">closed buys</button>
       </aside>
 
-      <p id="list" class="m-8"></p>
+      <p id="xy" class="m-8"></p>
 
-      <script id="nunjucksTemplate" type="nunjucks">
-        {% for itm in jsonData %}
+      <script id="tpl" type="nunjucks">
+        {% for itm in dataArray %}
           <li class="relative -mb-px block border p-1 border-grey">
-            <b>{{itm.side}}</b> ({{itm.amount}}) at {{itm.price}}<br>
+            <i>{{itm.datetime.replace("T", " | ")}}</i>  |  <b>{{itm.side.toUpperCase()}}</b> ({{itm.amount}}) at {{itm.price}}<br>
           </li>
         {% endfor %}
       </script>
@@ -73,7 +73,7 @@
           if (nunjucksTemplate) {
             var templateName = nunjucksTemplate.getAttribute('nunjucks-template');
             var template = htmx.find('#' + templateName);
-            return nunjucks.renderString(template.innerHTML, { jsonData: jsonParsed });
+            return nunjucks.renderString(template.innerHTML, { dataArray: jsonParsed.dataArray });
           }
           return text;
         }

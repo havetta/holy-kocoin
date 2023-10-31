@@ -1,43 +1,45 @@
-import dotenv from "dotenv";
 import WebSocket from "ws";
 
-import { twoDecimals, leftPad } from "./utils/formatter.js";
+///////////////////////////////////////////////////////////
+export function twoDecimals(num) {
+  const noDecimal = Math.trunc(num);
+  let res = `${noDecimal}.`;
 
-dotenv.config();
-const wsExchange = process.env.exchange;
+  const twoDecimal = Math.trunc(num*100) - noDecimal*100;
+
+  res += (new String(twoDecimal) + "00").substring(0,2);
+  return res;
+};
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+export function leftPad(str, len) {
+  let res = new String(str);
+  res = res.padEnd(len," ");
+  res = res.substring(0, len);
+  return res;
+}
+///////////////////////////////////////////////////////////
+
+
+
+
 const state = {
-  symbol: process.env.symbol,
-  curPrice: 0,
+  price: 0,
   rangeStart: 0,
 };
-console.log(`\x1b[1m\x1b[33m ${state.symbol} on ${wsExchange}`);
 
 const color = "\x1b[1m\x1b[42m*\x1b[0m";
 let p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
 
 // GET PRICE OVER BINANCE WEBSOCKET
-const quicklyChangingPriceSymbol = state.symbol.toLowerCase().replace("/", ""); // `BTC/USDT`;
-let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol}@trade`;
-if (wsExchange === "bybit")
-  url = `wss://stream.bybit.com/v5/public/spot`;
-
-const ws = new WebSocket(url);
-ws.on('open', function (e) {
-  console.log(`\x1b[1m\x1b[33m onopen`);
-  if (wsExchange === "bybit")
-    ws.send(`{"op":"subscribe","args":["tickers.BTCUSDC"]}`);
-});
+const ws = new WebSocket(`wss://stream.binance.com:9443/ws/btcusdt@trade`);
 ws.on('message', function incoming(data) {
   const btc = JSON.parse(data);
-  state.curPrice = new Number(btc?.p);
-  if (wsExchange === "bybit")
-    state.curPrice = new Number(btc?.data?.lastPrice);
+  state.curPrice = new Number(btc.p);
+  const p = state.curPrice * 10;
 
-  if (!state.curPrice) return;
-
-  const p = state.curPrice// * 10;
-  
-  if (!state.rangeStart === 0) {
+  if (state.rangeStart === 0) {
     state.rangeStart = p;
     p9 = p8 = p7 = p6 = p5 = p4 = p3 = p2 = p1 = p0 = p;
   }

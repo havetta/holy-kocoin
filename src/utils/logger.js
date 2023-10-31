@@ -39,7 +39,7 @@ export function oneLine(first, msg1, msg2, msg3) {
   let msg = first;
   msg += ` \x1b[1m\x1b[44m ${new Date().toLocaleString()}`;
   if (msg1)
-    msg += ` avgPrice: \x1b[46m${msg1}\x1b[44m ....`;
+    msg += ` atPrice: \x1b[46m${msg1}\x1b[44m ....`;
   if (msg2)
     msg += ` curPrice: \x1b[45m${msg2}\x1b[44m ....`;
   if (msg3)

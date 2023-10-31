@@ -15,7 +15,7 @@ export function runWebSocket() {
   //   console.table(btc)
   // });
 
-  const wsExchange = "binance";// process.env.exchange;
+  const wsExchange = process.env.exchange;
 
   const quicklyChangingPriceSymbol = state.symbol.toLowerCase().replace("/", ""); // `BTC/USDT`;
   let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol}@trade`;

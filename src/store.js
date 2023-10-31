@@ -7,6 +7,7 @@ dotenv.config();
 export const state = {
   exchange: null,
   symbol: process.env.symbol,
+  multiply: parseFloat(process.env.multiply),
   spread: parseFloat(process.env.spread),
   tradeSums: process.env.tradeSums.split("|"),
 

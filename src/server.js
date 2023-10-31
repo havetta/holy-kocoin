@@ -12,15 +12,12 @@ await fastify.register((instance, options, done) => {
 ///////////////////////////////////////////////////////////
 // buy
 ///////////////////////////////////////////////////////////
-fastify.get('/buy', async (request, reply) => {
+fastify.get('/buy', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
-  
-  let lower = state.curPrice < state.avgPrice ? state.curPrice : state.avgPrice;
-  state.buyPrice = lower - state.spread;
-
   try {
+    state.buyPrice = state.curPrice - state.spread;
     await getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSums[0], state.buyPrice);
-    return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice }
+    return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice, curPrice: state.curPrice, }
   }
   catch(e) {
     return { error: e?.message }
@@ -30,37 +27,29 @@ fastify.get('/buy', async (request, reply) => {
 ///////////////////////////////////////////////////////////
 // sell
 ///////////////////////////////////////////////////////////
-fastify.get('/sell', async (request, reply) => {
+fastify.get('/sell', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
-
-  let higher = state.curPrice < state.avgPrice ? state.avgPrice : state.curPrice;
-  let sellPrice = higher;
-  await getExchange().createOrder(state.symbol, "limit", "sell", state.tradeSums[0], sellPrice);
-
-  return { status: 'sell', symbol: state.symbol, sellPrice: sellPrice }
+  try {
+    let higher = state.curPrice < state.avgPrice ? state.avgPrice : state.curPrice;
+    let sellPrice = higher;
+    await getExchange().createOrder(state.symbol, "limit", "sell", state.tradeSums[0], sellPrice);
+    return { status: 'sell', symbol: state.symbol, sellPrice: sellPrice, curPrice: state.curPrice, }
+  }
+  catch(e) {
+    return { error: e?.message }
+  }
 });
 
 ///////////////////////////////////////////////////////////
 // price
 ///////////////////////////////////////////////////////////
-fastify.get('/price', async (request, reply) => {
+fastify.get('/price', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
-  
   return {
     curPrice: state.curPrice,
     avgPrice: state.avgPrice,
     lastPrice: state.lastPrice,
     recentPrices: state.recentPrices,
-  }
-});
-
-///////////////////////////////////////////////////////////
-// buyPrice
-///////////////////////////////////////////////////////////
-fastify.get('/buyPrice', async (request, reply) => {
-  reply.header("Access-Control-Allow-Origin", "*");
-  
-  return {
     buyPrice: state.buyPrice,
     buyPrice2: state.buyPrice2,
     buyOrderCreated: state.buyOrderCreated,
@@ -71,59 +60,54 @@ fastify.get('/buyPrice', async (request, reply) => {
 ///////////////////////////////////////////////////////////
 // balance
 ///////////////////////////////////////////////////////////
-fastify.get('/balance', async (request, reply) => {
+fastify.get('/balance', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
 
   const bal = await getExchange().fetchBalance();
   const pairBTC = state.symbol.split('/')[0];
   const pairUSD = state.symbol.split('/')[1];
-  state.freeBtc = bal?.free[pairBTC];
-  state.freeUsd = bal?.free[pairUSD];
-
   return {
-    BTC_free: state.freeBtc,
+    curPrice: state.curPrice,
+    BTC_free: bal?.free[pairBTC],
     BTC_total: bal?.total[pairBTC],
-    USD_free: state.freeUsd,
-    USD_total: bal?.total[pairUSD]
+    USD_free: bal?.free[pairUSD],
+    USD_total: bal?.total[pairUSD],
+    TOTAL_price: bal?.total[pairUSD] + bal?.total[pairBTC] * state.curPrice,
   }
 });
 
 ///////////////////////////////////////////////////////////
 // orders
 ///////////////////////////////////////////////////////////
-fastify.get('/orders', async (request, reply) => {
+fastify.get('/orders', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
-  
-  const orders = await getExchange().fetchOpenOrders(state.symbol);
-
-  return orders
-});
-
-///////////////////////////////////////////////////////////
-// ordersClosed
-///////////////////////////////////////////////////////////
-fastify.get('/ordersClosed', async (request, reply) => {
-  reply.header("Access-Control-Allow-Origin", "*");
-  
-  const orders = await getExchange().fetchClosedOrders(state.symbol);
-
-  return orders
-});
-
-///////////////////////////////////////////////////////////
-// cancel
-///////////////////////////////////////////////////////////
-fastify.get('/cancel', async (request, reply) => {
-  reply.header("Access-Control-Allow-Origin", "*");
-  
-  const orders = await getExchange().fetchOpenOrders(state.symbol);
-  const filtered = orders.filter(i => i.symbol === state.symbol && i.side === "sell");
-  for (let i in filtered) {
-    let i = 0;
-    const id = filtered[i].id;
-    await getExchange().cancelOrder(id, state.symbol);
+  const side = req.query?.side?.toUpperCase();
+  let orders = [];
+  if (req.query?.closed !== '1') {
+    orders = await getExchange().fetchOpenOrders(state.symbol);
+  } else {
+    orders = await getExchange().fetchClosedOrders(state.symbol);
   }
-  return orders
+  orders = orders.filter(i => i.symbol === state.symbol && i.side.toUpperCase() === side)
+  return { curPrice: state.curPrice, dataArray: orders };
+});
+
+///////////////////////////////////////////////////////////
+// cancel sell
+///////////////////////////////////////////////////////////
+fastify.get('/cancel', async (req, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  const side = req.query?.side?.toUpperCase();
+  
+  let orders = [];
+  orders = await getExchange().fetchOpenOrders(state.symbol);
+  orders = orders.filter(i => i.symbol === state.symbol && i.side.toUpperCase() === side);
+  for (let index in orders) {
+    let i = orders[index];
+    await getExchange().cancelOrder(i.id, state.symbol);
+    console.log({ datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status })
+  }
+  return { curPrice: state.curPrice, dataArray: orders };
 });
 
 ///////////////////////////////////////////////////////////
