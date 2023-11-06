@@ -1,5 +1,4 @@
 import WebSocket from "ws";
-import BinanceApi from "node-binance-api";
 
 import { state, getExchange } from "./store.js";
 import { recentPriceAvg } from "./helpers/priceTrends.js";
@@ -53,16 +52,4 @@ export function runWebSocket() {
       warn(e?.stack);
     }
   });
-  
-  // INIT BINANCE LIB
-
-  // const binance = new BinanceApi().options({
-  //   APIKEY: process.env.apiKey,
-  //   APISECRET: process.env.secret
-  // });
-
-  // binance.websockets.trades(['BTCUSDT', 'ETHUSDT'], (trades) => {
-  //   let {e:eventType, E:eventTime, s:symbol, p:price, q:quantity, m:maker, a:tradeId} = trades;
-  //   console.info(symbol+" trade update. price: "+price+", quantity: "+quantity+", maker: "+maker);
-  // });
 }
