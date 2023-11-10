@@ -9,15 +9,15 @@ export function runWebSocket() {
 
   // const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${state.symbol.toLowerCase().replace("/", "")}@kline_1s`);
   // ws.on('message', function incoming(data) {
-  //   const btc = JSON.parse(data);
+  //   const json = JSON.parse(data);
   //   console.log(`\x1b[1m\x1b[33m`);
-  //   console.table(btc)
+  //   console.table(json)
   // });
 
   const wsExchange = process.env.exchange;
 
-  const quicklyChangingPriceSymbol = state.symbol.toLowerCase().replace("/", ""); // `BTC/USDT`;
-  let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol}@trade`;
+  const quicklyChangingPriceSymbol = state.symbol.replace("/", ""); // `ETH/USDT`;
+  let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol.toLowerCase()}@trade`;
   if (wsExchange === "bybit")
     url = `wss://stream.bybit.com/v5/public/spot`;
 
@@ -25,15 +25,15 @@ export function runWebSocket() {
   ws.on('open', function (e) {
     console.log(`\x1b[1m\x1b[33m onopen`);
     if (wsExchange === "bybit")
-      ws.send(`{"op":"subscribe","args":["tickers.BTCUSDC"]}`);
+      ws.send(`{"op":"subscribe","args":["tickers.${quicklyChangingPriceSymbol}"]}`);
   });
   
   ws.on('message', function incoming(data) {
     try {
-      const btc = JSON.parse(data);
-      let p = new Number(btc?.p);
+      const json = JSON.parse(data);
+      let p = new Number(json?.p);
       if (wsExchange === "bybit")
-        p = new Number(btc?.data?.lastPrice);
+        p = new Number(json?.data?.lastPrice);
         
       state.curPrice = p;
       state.avgPrice = recentPriceAvg(-5, 5);
@@ -52,4 +52,3 @@ export function runWebSocket() {
       warn(e?.stack);
     }
   });
-}
