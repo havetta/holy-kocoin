@@ -16,8 +16,8 @@ const color = "\x1b[1m\x1b[42m*\x1b[0m";
 let p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
 
 // GET PRICE OVER BINANCE WEBSOCKET
-const quicklyChangingPriceSymbol = state.symbol.toLowerCase().replace("/", ""); // `BTC/USDT`;
-let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol}@trade`;
+const quicklyChangingPriceSymbol = state.symbol.toUpperCase().replace("/", ""); // `BTC/USDT`;
+let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol.toLowerCase()}@trade`;
 if (wsExchange === "bybit")
   url = `wss://stream.bybit.com/v5/public/spot`;
 
@@ -26,6 +26,7 @@ ws.on('open', function (e) {
   console.log(`\x1b[1m\x1b[33m onopen`);
   if (wsExchange === "bybit")
     ws.send(`{"op":"subscribe","args":["tickers.BTCUSDC"]}`);
+    ws.send(`{"op":"subscribe","args":["tickers.${quicklyChangingPriceSymbol}"]}`);
 });
 ws.on('message', function incoming(data) {
   const btc = JSON.parse(data);
@@ -45,20 +46,20 @@ ws.on('message', function incoming(data) {
   p9 = p8; p8 = p7; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
   
   const diff = p - state.rangeStart;
-  if (diff > 100 || diff < -100) {
+  if (diff > 33 || diff < -33) {
     state.rangeStart = p;
   }
 
   const avg = (p + p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 11;
 
-  const diffP = diff;
-  const diffA = avg - state.rangeStart;
+  const diffPrevious = diff;
+  const diffAvarage = avg - state.rangeStart;
 
-  const priceAt = diffP + 100;
-  const avgAt = diffA + 100;
+  const priceAt = diffPrevious + 33;
+  const avgAt = diffAvarage + 33;
 
   let msg = "";
-  msg = msg.padStart(200);
+  msg = msg.padStart(66);
   msg = msg.slice(0, priceAt) + "." + msg.slice(priceAt);
   msg = msg.slice(0, avgAt) + color + msg.slice(avgAt);
   process.stdout.write(twoDecimals(state.curPrice) + msg + "|\n");

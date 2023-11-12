@@ -47,20 +47,20 @@ ws.on('message', function incoming(data) {
   p9 = p8; p8 = p7; p7 = p6; p6 = p5; p5 = p4; p4 = p3; p3 = p2; p2 = p1; p1 = p0; p0 = p;
   
   const diff = p - state.rangeStart;
-  if (diff > 100 || diff < -100) {
+  if (diff > 33 || diff < -33) {
     state.rangeStart = p;
   }
 
   const avg = (p + p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) / 11;
 
-  const diffP = diff;
-  const diffA = avg - state.rangeStart;
+  const diffPrevious = diff;
+  const diffAvarage = avg - state.rangeStart;
 
-  const priceAt = diffP + 100;
-  const avgAt = diffA + 100;
+  const priceAt = diffPrevious + 33;
+  const avgAt = diffAvarage + 33;
 
   let msg = "";
-  msg = msg.padStart(200);
+  msg = msg.padStart(66);
   msg = msg.slice(0, priceAt) + "." + msg.slice(priceAt);
   msg = msg.slice(0, avgAt) + color + msg.slice(avgAt);
   process.stdout.write(twoDecimals(state.curPrice) + msg + "|\n");
