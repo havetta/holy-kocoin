@@ -25,7 +25,6 @@ const ws = new WebSocket(url);
 ws.on('open', function (e) {
   console.log(`\x1b[1m\x1b[33m onopen`);
   if (wsExchange === "bybit")
-    ws.send(`{"op":"subscribe","args":["tickers.BTCUSDC"]}`);
     ws.send(`{"op":"subscribe","args":["tickers.${quicklyChangingPriceSymbol}"]}`);
 });
 ws.on('message', function incoming(data) {
