@@ -52,3 +52,4 @@ export function runWebSocket() {
       warn(e?.stack);
     }
   });
+}

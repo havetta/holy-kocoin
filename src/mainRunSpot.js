@@ -118,6 +118,8 @@ while (1) {
       const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy");
       state.buyOrderCreated = buys.length > 0;
 
+      const timeAsNumber = 0.00001 * (day + hour * 0.01 + minute * 0.0001 + second * 0.000001);
+      const tradeSum = timeAsNumber + state.amount;
       const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", 1.01822, state.buyPrice);
       const existingOrders = await getExchange().fetchOpenOrders(state.symbol);
 
