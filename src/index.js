@@ -1,20 +1,16 @@
-var mydict = {};
-
-var f = function () {
-  console.warn("running,,,")
-};
 import { runner } from "./runner.js";
 (async () => {
   runner();
 })();
 
 // setup Function as Value
-mydict['method'] = f;
+const mydict = {};
+const func = () => console.warn("running,,,")
+mydict['method'] = func;
 mydict['method']();
 mydict.method();
-
-mydict[f] = 'some value';
-console.warn(mydict[f]);
+mydict[func] = 'some value';
+console.warn(mydict[func]);
 
 import { state, getExchange, initExchange } from "./store.js";
 await initExchange();
