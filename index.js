@@ -1,6 +1,6 @@
 // RUN using cmd:  "npm t"
-import { mainRunSpot } from "./src/mainRunSpot.js";
+import { runner } from "./src/runner.js";
 (async () => {
-  mainRunSpot();
+  runner();
 })();
-export const main = mainRunSpot;
+export const main = runner;

@@ -24,7 +24,7 @@ fastify.get('/', async (request, reply) => { return 'trading bot running'; });
 ///////////////////////////////////////////////////////////
 // TOP LEVEL AWAIT WORKAROUNT
 ///////////////////////////////////////////////////////////
-const mainRunSpot = async () => {
+const runner = async () => {
   let openOrders = [];
   let upTrend = false;
   let downTrend = false;
@@ -236,4 +236,4 @@ while (1) {
 ///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
-export { mainRunSpot };
+export { runner };

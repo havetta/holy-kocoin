@@ -3,9 +3,9 @@ var mydict = {};
 var f = function () {
   console.warn("running,,,")
 };
-import { mainRunSpot } from "./mainRunSpot.js";
+import { runner } from "./runner.js";
 (async () => {
-  mainRunSpot();
+  runner();
 })();
 
 // setup Function as Value
@@ -30,8 +30,8 @@ const dt = new Date();
 const timeAsNumber = (dt.getDay()+3) * 1000000 + dt.getHours() * 10000 + dt.getMinutes() * 100 + dt.getSeconds();
 const setAmount = (timeAsNumber*0.00000000001 + state.myAmount).toFixed(11);
 state.buyPrice = latest - state.spread;
-const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", setAmount, state.buyPrice);
-state.buyOrders.push(newOrder);
+//const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", setAmount, state.buyPrice);
+//state.buyOrders.push(newOrder);
 while (1==0) {
   const openOrders = await getExchange().fetchOpenOrders(state.symbol);
   console.log(Object.keys(state.buyOrders));
