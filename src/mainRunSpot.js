@@ -25,7 +25,7 @@ fastify.get('/', async (request, reply) => { return 'trading bot running'; });
 // TOP LEVEL AWAIT WORKAROUNT
 ///////////////////////////////////////////////////////////
 const mainRunSpot = async () => {
-  let orders = [];
+  let openOrders = [];
   let upTrend = false;
   let downTrend = false;
   let lastDownTrend = false;
@@ -39,13 +39,13 @@ const mainRunSpot = async () => {
   console.log(`USDC: ${bal?.free['USDC']}`);
   console.log(`TUSD: ${bal?.free['TUSD']}`);
   
-  orders = await getExchange().fetchOpenOrders(state.symbol);
+  openOrders = await getExchange().fetchOpenOrders(state.symbol);
   console.log(`\x1b[1m\x1b[42mOPEN \x1b[91m ORDERS\x1b[104m`);  // 1m is bold, 0m is reset
-  console.table(orders.map((i) => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
+  console.table(openOrders.map((i) => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
 
-  orders = await getExchange().fetchClosedOrders(state.symbol);
+  const closedOrders = await getExchange().fetchClosedOrders(state.symbol);
   console.log(`\x1b[45mCLOSED \x1b[93m ORDERS\x1b[101m`);  // 1m is bold, 0m is resets
-  console.table(orders.map(i => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
+  console.table(closedOrders.map(i => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
 
   // WAIT FOR FIRST PRICE
   while (state.curPrice === 0) {
@@ -57,7 +57,7 @@ const mainRunSpot = async () => {
   
   // GET LAST BUY PRICE
   if (state.buyPrice === 0) {
-    const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy" && new Date(i.datetime) > new Date().setDate( new Date().getDate() - 3 ));
+    const buys = openOrders.filter(i => i.symbol === state.symbol && i.side === "buy" && new Date(i.datetime) > new Date().setDate( new Date().getDate() - 3 ));
     state.buyPrice = state.curPrice;
     state.buyPrice2 = state.buyPrice;
     state.recentBuyPrices.push(state.buyPrice);
@@ -77,7 +77,7 @@ while (1) {
 
     try
     {
-      const [bal, orders] = await Promise.all( [
+      const [bal, openOrders] = await Promise.all( [
         getExchange().fetchBalance(),
         getExchange().fetchOpenOrders(state.symbol)
       ] );
@@ -93,21 +93,21 @@ while (1) {
       upTrend = isUpTrend();
       let latest = state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice;
       let hour = new Date().getHours();
-      let amount = state.tradeSums[hour] * state.multiply;
+      let setAmount = state.myAmount * state.multiplyBy[hour];
 
       ///////////////////////////////////////////////////////////
       // CANCEL BUY OR SELL ORDERS (every x minutes) ////////////
       ///////////////////////////////////////////////////////////
-      await cancelOldOrders(orders, 120, "buy", "stop_loss_limit"); // ignore stoploss
+      await cancelOldOrders(openOrders, 120, "buy", "stop_loss_limit"); // ignore stoploss
 
-      // if (await cancelOldOrders(orders, 150, "sell", "stop_loss_limit")) {
+      // if (await cancelOldOrders(openOrders, 150, "sell", "stop_loss_limit")) {
       //   state.buyPrice = latest;
       //   state.buyPrice2 = latest;
       //   oneLine(`\x1b[43mRSET`, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
       //     `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
       // }
 
-      // const sells = orders.filter(i => i.symbol === state.symbol && i.side === "sell");
+      // const sells = openOrders.filter(i => i.symbol === state.symbol && i.side === "sell");
       // if (sells.length > 0) {
       //   await new Promise(resolve => setTimeout(resolve, 1000));
       // }
@@ -115,22 +115,17 @@ while (1) {
       ///////////////////////////////////////////////////////////
       // BUY  ///////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////
-      const buys = orders.filter(i => i.symbol === state.symbol && i.side === "buy");
+      const buys = openOrders.filter(i => i.symbol === state.symbol && i.side === "buy");
       state.buyOrderCreated = buys.length > 0;
 
-      const timeAsNumber = 0.00001 * (day + hour * 0.01 + minute * 0.0001 + second * 0.000001);
-      const tradeSum = timeAsNumber + state.amount;
-      const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", 1.01822, state.buyPrice);
-      const existingOrders = await getExchange().fetchOpenOrders(state.symbol);
-
-      if ( state.freeUsd >= state.curPrice * amount
+      if ( state.freeUsd >= state.curPrice * setAmount
         //&& state.curPrice < state.lastPrice
         //&& state.avgPrice > state.curPrice
         //&& !upTrend
         //&& !state.buyOrderCreated
         )
       {
-        await new Promise(resolve => setTimeout(resolve, 1*60*1000)); // x minutes * 60 seconds * 1000 miliseconds
+        await new Promise(resolve => setTimeout(resolve, 2*60*1000)); // x minutes * 60 seconds * 1000 miliseconds
 
         state.buyPrice2 = state.buyPrice;
         state.buyPrice = latest - state.spread;
@@ -140,13 +135,13 @@ while (1) {
           state.recentBuyPrices.shift();
       
         oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
-          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}      ${state.balanceStr}\n`);
+          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
         try {
-          // await getExchange().ceateMarketBuyOrder(state.symbol, amount);
-          const order = await getExchange().createOrder(state.symbol, "limit", "buy", amount, state.buyPrice);
-          
-          state.buyOrders[hour+minute] = order;
+          // await getExchange().ceateMarketBuyOrder(state.symbol, setAmount);
+          const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", setAmount, state.buyPrice);
+
+          state.buyOrders.push(newOrder);
           state.buyOrderCreated = true;
 
         } catch(e) {
@@ -157,16 +152,22 @@ while (1) {
       ///////////////////////////////////////////////////////////
       // SELL ///////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////
-      if (state.freeBtc >= amount)
+      if (state.freeBtc >= state.myAmount)
       {
         let atPrice = state.buyPrice; // Math.max(...state.recentBuyPrices);
         atPrice = atPrice + state.spread;
-        
-        oneLine(`\x1b[41mSELL`, twoDecimals(atPrice), twoDecimals(state.curPrice),
-          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}      ${state.balanceStr}\n`);
 
-          // await getExchange().createMarketSellOrder(state.symbol, amount);
-        await getExchange().createOrder(state.symbol, "limit", "sell", amount, atPrice);
+        // await getExchange().createMarketSellOrder(state.symbol, state.myAmount);
+        // await getExchange().createOrder(state.symbol, "limit", "sell", state.myAmount, atPrice);
+
+        const realizedBuyOrders = state.buyOrders.filter(buy => !openOrders.some(exi => exi.id === buy.id) );
+        for (realized of realizedBuyOrders) {
+          oneLine(`\x1b[41mSELL`, twoDecimals(atPrice), twoDecimals(state.curPrice),
+          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
+
+          await getExchange().createOrder(state.symbol, "limit", "sell", realized.amount, realized.price + state.spread);
+          state.buyOrders = state.buyOrders.filter(i => i.id !== realized.id);
+        }
 
         await new Promise(resolve => setTimeout(resolve, 2*60*1000)); // 2 minutes
       }
@@ -175,7 +176,7 @@ while (1) {
       ///////////////////////////////////////////////////////////
       // STOP LOSS
       ///////////////////////////////////////////////////////////
-      const stopLoss = orders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
+      const stopLoss = openOrders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
       state.stopLossOrder = stopLoss.length > 0;
       let stopPrice = latest-state.spread*2;
 
@@ -184,7 +185,7 @@ while (1) {
 
         // EDIT STOP LOSS
         oneLine(`\x1b[4mEDIT`, twoDecimals(stopPrice), twoDecimals(state.curPrice),
-          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}\n`);
+          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}\n`);
 
         const id = stopLoss[0].id;
         await getExchange().editOrder(id, state.symbol, "limit", "sell", amount, stopPrice-10, {"stopPrice": stopPrice}); // stopPrice = Trigger Condition
@@ -196,7 +197,7 @@ while (1) {
     
         // CREATE STOP LOSS
         oneLine(`\x1b[4mSTOP`, twoDecimals(stopPrice), twoDecimals(state.curPrice),
-          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}\n`);
+          `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}\n`);
 
         try {
           await getExchange().createOrder(state.symbol, "limit", "sell", amount, stopPrice-10, {"stopPrice": stopPrice}); // stopPrice = Trigger Condition
@@ -213,8 +214,8 @@ while (1) {
       // if (state.stopLossOrder
       //   && state.avgPrice > state.buyPrice + state.spread / 2) // current price avarage ABOVE buy price plus half spread (WINNING TRADE)
       // {
-      //   orders = await getExchange().fetchOpenOrders(state.symbol);
-      //   const stopLoss = orders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
+      //   openOrders = await getExchange().fetchOpenOrders(state.symbol);
+      //   const stopLoss = openOrders.filter(i => i.symbol === state.symbol && i.side === "sell" && i.type === "stop_loss_limit");
       //   for (let i in stopLoss) {
       //     await cancelOrder(stopLoss[i].id);
       //     state.stopLossOrder = false;

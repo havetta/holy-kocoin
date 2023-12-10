@@ -3,7 +3,10 @@ var mydict = {};
 var f = function () {
   console.warn("running,,,")
 };
-
+import { mainRunSpot } from "./mainRunSpot.js";
+(async () => {
+  mainRunSpot();
+})();
 
 // setup Function as Value
 mydict['method'] = f;
@@ -22,14 +25,23 @@ console.log(`USDT: ${bal?.free['USDT']}`);
 console.log(`USDC: ${bal?.free['USDC']}`);
 console.log(`TUSD: ${bal?.free['TUSD']}`);
 
-let latest = 2030.245;
+let latest = 2230.645;
 const dt = new Date();
 const timeAsNumber = (dt.getDay()+3) * 1000000 + dt.getHours() * 10000 + dt.getMinutes() * 100 + dt.getSeconds();
-const amount = (timeAsNumber*0.00000000001 + state.tradeSums[0] * state.multiply).toFixed(11);
+const setAmount = (timeAsNumber*0.00000000001 + state.myAmount).toFixed(11);
 state.buyPrice = latest - state.spread;
-const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", amount, state.buyPrice);
-const existingOrders = await getExchange().fetchOpenOrders(state.symbol);
+const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", setAmount, state.buyPrice);
+state.buyOrders.push(newOrder);
+while (1==0) {
+  const openOrders = await getExchange().fetchOpenOrders(state.symbol);
+  console.log(Object.keys(state.buyOrders));
 
+  const realizedBuyOrders = state.buyOrders.filter(buy => !openOrders.some(exi => exi.id === buy.id) );
+  for (realized of realizedBuyOrders) {
+    await getExchange().createOrder(state.symbol, "limit", "sell", realized.amount, realized.price + state.spread);
+    state.buyOrders = state.buyOrders.filter(i => i.id !== realized.id);
+  }
+}
 
 // Create a dictionary
 let dict = {};
@@ -52,7 +64,7 @@ setInterval(function () {
   //console.log('Added:', key, dict[key],  Date.now()/1000 - (53 * 365 * 24 * 60 * 60));
   const dt = new Date();
   const time = (dt.getDay()+3) * 1000000 + dt.getHours() * 10000 + dt.getMinutes() * 100 + dt.getSeconds();
-  console.log((time*0.0000001).toFixed(7));
+  //onsole.log((time*0.0000001).toFixed(7));
 
 },  1000); // 60 * 1000 milliseconds == 1 minute
 

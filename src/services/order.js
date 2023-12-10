@@ -125,6 +125,8 @@ export async function cancelOldOrders(orders, olderThanMinutes, filterSide, igno
     if (new Date(filtered[i].datetime) < xMinutesAgo && !state.cancelledOrders.includes(id)) {
       oneLine(`\x1b[43mCANCEL ${filterSide} \n`);
       cancelOrder(id);
+      state.buyOrders = state.buyOrders.filter(i => i.id !== id);
+
       res = true;
       state.cancelledOrders.push(id);
     }

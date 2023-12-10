@@ -7,9 +7,9 @@ dotenv.config();
 export const state = {
   exchange: null,
   symbol: process.env.symbol,
-  multiply: parseFloat(process.env.multiply),
   spread: parseFloat(process.env.spread),
-  tradeSums: process.env.tradeSums.split("|"),
+  myAmount: parseFloat(process.env.myAmount),
+  multiplyBy: process.env.multiplyBy.split("|"),
 
   curPrice: 0,
   avgPrice: 0,
@@ -18,7 +18,7 @@ export const state = {
 
   buyPrice: 0,
   buyPrice2: 0,
-  buyOrders: {},
+  buyOrders: [],
   recentBuyPrices: [],
   buyOrderCreated: false,
 

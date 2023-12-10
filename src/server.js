@@ -16,7 +16,7 @@ fastify.get('/buy', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   try {
     state.buyPrice = state.curPrice - state.spread;
-    await getExchange().createOrder(state.symbol, "limit", "buy", state.tradeSums[0], state.buyPrice);
+    await getExchange().createOrder(state.symbol, "limit", "buy", state.myAmount, state.buyPrice);
     return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice, curPrice: state.curPrice, }
   }
   catch(e) {
@@ -32,7 +32,7 @@ fastify.get('/sell', async (req, reply) => {
   try {
     let higher = state.curPrice < state.avgPrice ? state.avgPrice : state.curPrice;
     let sellPrice = higher;
-    await getExchange().createOrder(state.symbol, "limit", "sell", state.tradeSums[0], sellPrice);
+    await getExchange().createOrder(state.symbol, "limit", "sell", state.myAmount, sellPrice);
     return { status: 'sell', symbol: state.symbol, sellPrice: sellPrice, curPrice: state.curPrice, }
   }
   catch(e) {
@@ -54,6 +54,7 @@ fastify.get('/price', async (req, reply) => {
     buyPrice2: state.buyPrice2,
     buyOrderCreated: state.buyOrderCreated,
     recentBuyPrices: state.recentBuyPrices,
+    buyOrders: state.buyOrders,
   }
 });
 
