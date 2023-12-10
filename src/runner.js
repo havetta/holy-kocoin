@@ -6,6 +6,7 @@ import { state, getExchange, initExchange } from "./store.js";
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
 
+await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 2, "buy", "stop_loss_limit");
 
 ///////////////////////////////////////////////////////////
 // GET PRICE OVER BINANCE WEBSOCKET
@@ -74,7 +75,7 @@ while (1) {
     oneLine(`\x1b[1m\x1b[45m${rightPad(Math.random(), 4)}`);
 
     // Wait x miliseconds
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     try
     {

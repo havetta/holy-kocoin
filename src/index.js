@@ -1,3 +1,4 @@
+import { state, getExchange, initExchange } from "./store.js";
 import { runner } from "./runner.js";
 (async () => {
   runner();
@@ -12,7 +13,6 @@ mydict.method();
 mydict[func] = 'some value';
 console.warn(mydict[func]);
 
-import { state, getExchange, initExchange } from "./store.js";
 await initExchange();
 const bal = await getExchange().fetchBalance();
 console.log(`BTC: ${bal?.free['BTC']}`);

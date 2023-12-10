@@ -16,7 +16,7 @@ export function runWebSocket() {
 
   const wsExchange = process.env.exchange;
 
-  const quicklyChangingPriceSymbol = state.symbol.toUpperCase().replace("/", ""); // `ETH/USDT`;
+  const quicklyChangingPriceSymbol = state.symbol.toUpperCase().split("/")[0] + "USDT"; //.replace("/", ""); // `ETH/USDT`;
   let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol.toLowerCase()}@trade`;
   if (wsExchange === "bybit")
     url = `wss://stream.bybit.com/v5/public/spot`;
