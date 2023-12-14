@@ -1,15 +1,18 @@
 import ccxt from "ccxt";
 import dotenv from "dotenv";
+import minimist from "minimist";
 
 dotenv.config();
+const cliArgs = minimist(process.argv.slice(2));
 
 ///////////////////////////////////////////////////////////
 export const state = {
+  envUser: cliArgs.user ?? `auby`,
   exchange: null,
-  symbol: process.env.symbol,
-  spread: parseFloat(process.env.spread),
-  myAmount: parseFloat(process.env.myAmount),
-  multiplyBy: process.env.multiplyBy.split("|"),
+  symbol: cliArgs.symbol ?? process.env.symbol,
+  spread: parseFloat(cliArgs.spread ?? process.env.spread),
+  myAmount: parseFloat(cliArgs.myAmount ?? process.env.myAmount),
+  multiplyBy: (cliArgs.multiplyBy ?? process.env.multiplyBy).split("|"),
 
   curPrice: 0,
   avgPrice: 0,
@@ -38,9 +41,21 @@ export async function initExchange() {
   if (state.exchange)
     return;
 
-  state.exchange = new ccxt[process.env.exchange]({
-    apiKey: process.env.apikey,
-    secret: process.env.secret,
+  let exchange = cliArgs.exchange ?? process.env.exchange;
+  let apikey = cliArgs.apikey ?? process.env.apikey;
+  let secret = cliArgs.secret ?? process.env.secret;
+  
+  if (state.envUser) {
+    exchange = state.envUser.slice(2) === 'bi' ? 'binance' : 'bybit';
+    apikey = process.env[`${state.envUser}-apikey`];
+    secret = process.env[`${state.envUser}-secret`];
+  }
+
+  state.symbol += exchange === 'binance' ? '/TUSD' : '/USDC';
+  
+  state.exchange = new ccxt[exchange]({
+    apiKey: apikey,
+    secret: secret,
     enableRateLimit: true,
     options: {
       defaultType: "spot",//future

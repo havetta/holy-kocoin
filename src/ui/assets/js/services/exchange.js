@@ -6,7 +6,7 @@ export async function initExchange() {
   }
 
   stateCcxt.exchange = new stateCcxt.ccxt["binance"]({
-    apiKey: localStorage.getItem("apiKey"),
+    apikey: localStorage.getItem("apikey"),
     secret: localStorage.getItem("secret"),
     enableRateLimit: true,
     // options: {

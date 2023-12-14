@@ -117,7 +117,7 @@ export async function cancelOldOrders(orders, olderThanMinutes, filterSide, igno
   const sideUpperCase = filterSide.toUpperCase();
 
   const xMinutesAgo = new Date(new Date() - olderThanMinutes * 60000); // minus x minutes
-  const filtered = orders.filter(i => i.symbol === state.symbol && i.side.toUpperCase() === sideUpperCase && i.type != ignoreType);
+  const filtered = orders.filter(i => i.symbol === state.symbol && i.side?.toUpperCase() === sideUpperCase && i.type != ignoreType);
   // for (let i in filtered) {
   if (filtered.length > 0) {
     let i = 0;
@@ -125,7 +125,7 @@ export async function cancelOldOrders(orders, olderThanMinutes, filterSide, igno
     if (new Date(filtered[i].datetime) < xMinutesAgo && !state.cancelledOrders.includes(id)) {
       oneLine(`\x1b[43mCANCEL ${filterSide} \n`);
       cancelOrder(id);
-      state.buyOrders = state.buyOrders.filter(i => i.id !== id);
+      orders = orders.filter(i => i.id !== id);
 
       res = true;
       state.cancelledOrders.push(id);
@@ -139,7 +139,7 @@ export async function cancelOldOrders(orders, olderThanMinutes, filterSide, igno
       state.cancelledOrders = [];
   }
 
-  return res;
+  return orders;
 }
 ///////////////////////////////////////////////////////////
 

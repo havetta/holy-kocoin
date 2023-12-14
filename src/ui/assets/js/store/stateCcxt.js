@@ -4,7 +4,7 @@ export const stateCcxt = reactive({
   exchange: null,
   ccxt: null,
 
-  apiKey: null,
+  apikey: null,
   secret: null,
 
   curPrice: 0,

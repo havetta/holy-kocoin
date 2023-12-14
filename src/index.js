@@ -15,9 +15,7 @@ console.warn(mydict[func]);
 
 await initExchange();
 const bal = await getExchange().fetchBalance();
-console.log(`BTC: ${bal?.free['BTC']}`);
 console.log(`ETH: ${bal?.free['ETH']}`);
-console.log(`USDT: ${bal?.free['USDT']}`);
 console.log(`USDC: ${bal?.free['USDC']}`);
 console.log(`TUSD: ${bal?.free['TUSD']}`);
 
