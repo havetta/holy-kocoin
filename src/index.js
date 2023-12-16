@@ -22,7 +22,7 @@ console.log(`TUSD: ${bal?.free['TUSD']}`);
 let latest = 2230.645;
 const dt = new Date();
 const timeAsNumber = (dt.getDay()+3) * 1000000 + dt.getHours() * 10000 + dt.getMinutes() * 100 + dt.getSeconds();
-const setAmount = (timeAsNumber*0.00000000001 + state.myAmount).toFixed(11);
+const setAmount = (timeAsNumber*0.00000000001 + state.oneAmount).toFixed(11);
 // state.buyPrice = latest - state.spread;
 // const newOrder = await getExchange().createOrder(state.symbol, "limit", "buy", setAmount, state.buyPrice);
 // state.buyOrders.push(newOrder);

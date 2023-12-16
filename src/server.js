@@ -1,6 +1,6 @@
 import Fastify from 'fastify'
 import FastifyCORS from '@fastify/cors'
-import { state, getExchange } from './store.js'
+import { conf, usr, state, getExchange } from './store.js'
 
 export const fastify = Fastify({ logger: false });
 
@@ -16,7 +16,7 @@ fastify.get('/buy', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   try {
     state.buyPrice = state.curPrice - state.spread;
-    await getExchange().createOrder(state.symbol, "limit", "buy", state.myAmount, state.buyPrice);
+    await getExchange().createOrder(state.symbol, "limit", "buy", state.oneAmount, state.buyPrice);
     return { status: 'buy', symbol: state.symbol, buyPrice: state.buyPrice, curPrice: state.curPrice, }
   }
   catch(e) {
@@ -32,7 +32,7 @@ fastify.get('/sell', async (req, reply) => {
   try {
     let higher = state.curPrice < state.avgPrice ? state.avgPrice : state.curPrice;
     let sellPrice = higher;
-    await getExchange().createOrder(state.symbol, "limit", "sell", state.myAmount, sellPrice);
+    await getExchange().createOrder(state.symbol, "limit", "sell", state.oneAmount, sellPrice);
     return { status: 'sell', symbol: state.symbol, sellPrice: sellPrice, curPrice: state.curPrice, }
   }
   catch(e) {
@@ -116,7 +116,7 @@ fastify.get('/cancel', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 const start = async () => {
   try {
-    const myPort = 6000 + new Date().getMilliseconds();
+    const myPort = conf.port[usr] ?? 6000 + new Date().getMilliseconds();
     await fastify.listen({ port: myPort })
     console.log(`Listening on port ${myPort}`)
   } catch (err) {

@@ -2,7 +2,7 @@ import { runWebSocket } from "./webSocket.js";
 import { fastify } from "./server.js";
 import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } from "./helpers/priceTrends.js";
 import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./services/order.js";
-import { state, getExchange, initExchange } from "./store.js";
+import { conf, state, getExchange, initExchange } from "./store.js";
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
 
@@ -96,7 +96,7 @@ const runner = async () => {
       upTrend = isUpTrend();
       let latest = state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice;
       let hour = new Date().getHours();
-      let setAmount = state.myAmount * state.multiplyBy[hour];
+      let setAmount = state.oneAmount * conf.multiplyBy[hour];
 
       //! /////////////////////////////////////////////////////////
       //!  CANCEL BUY OR SELL ORDERS (every x minutes) ////////////
@@ -128,7 +128,7 @@ const runner = async () => {
         //&& !state.buyOrderCreated
         )
       {
-        await new Promise(resolve => setTimeout(resolve, 0.001*60*1000)); // x minutes * 60 seconds * 1000 miliseconds
+        await new Promise(resolve => setTimeout(resolve, 2*60*1000)); // x minutes * 60 seconds * 1000 miliseconds
 
         state.buyPrice2 = state.buyPrice;
         state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice) - state.spread;
@@ -159,19 +159,17 @@ const runner = async () => {
       //! /////////////////////////////////////////////////////////
       //!  SELL ///////////////////////////////////////////////////
       //! /////////////////////////////////////////////////////////
-      if (state.freeBtc >= state.myAmount)
+      if (state.freeBtc >= state.oneAmount + 0.024)
       {
-        // let atPrice = state.buyPrice; // Math.max(...state.recentBuyPrices);
-        // atPrice = atPrice + state.spread;
-        // await getExchange().createMarketSellOrder(state.symbol, state.myAmount);
-        // await getExchange().createOrder(state.symbol, "limit", "sell", state.myAmount, atPrice);
+        // await getExchange().createMarketSellOrder(state.symbol, state.oneAmount);
+        // await getExchange().createOrder(state.symbol, "limit", "sell", state.oneAmount, state.buyPrice + state.spread);
 
         const realizedBuyOrders = state.buyOrders.filter(buy => !openOrders.some(exi => exi.id === buy.id) );
         for (let realized of realizedBuyOrders) {
           oneLine(`\x1b[41mSELL`, twoDecimals(realized.price + state.spread), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
-          await getExchange().createOrder(state.symbol, "limit", "sell", state.myAmount, realized.price + state.spread);
+          await getExchange().createOrder(state.symbol, "limit", "sell", realized.amount, realized.price + state.spread);
           state.buyOrders = state.buyOrders.filter(i => i.id !== realized.id);
         }
 
