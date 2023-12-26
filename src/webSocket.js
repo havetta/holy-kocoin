@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 
-import { state, getExchange } from "./store.js";
+import { conf, state, getExchange } from "./store.js";
 import { recentPriceAvg } from "./helpers/priceTrends.js";
 import { err, oneLine } from "./utils/logger.js";
 import { twoDecimals, rightPad } from "./utils/formatter.js";
@@ -14,17 +14,17 @@ export function runWebSocket() {
   //   console.table(json)
   // });
 
-  const wsExchange = process.env.exchange;
+  const exchangeName = conf.exchangeName[conf.usr] ?? cliArgs.exchangeName ?? process.env.exchangeName;
 
   const quicklyChangingPriceSymbol = state.symbol.toUpperCase().split("/")[0] + "USDT"; //.replace("/", ""); // `ETH/USDT`;
   let url = `wss://stream.binance.com:9443/ws/${quicklyChangingPriceSymbol.toLowerCase()}@trade`;
-  if (wsExchange === "bybit")
+  if (exchangeName === "bybit")
     url = `wss://stream.bybit.com/v5/public/spot`;
 
   const ws = new WebSocket(url);
   ws.on('open', function (e) {
     console.log(`\x1b[1m\x1b[33m onopen`);
-    if (wsExchange === "bybit")
+    if (exchangeName === "bybit")
       ws.send(`{"op":"subscribe","args":["tickers.${quicklyChangingPriceSymbol}"]}`);
   });
   
@@ -32,7 +32,7 @@ export function runWebSocket() {
     try {
       const json = JSON.parse(data);
       let p = new Number(json?.p);
-      if (wsExchange === "bybit")
+      if (exchangeName === "bybit")
         p = new Number(json?.data?.lastPrice);
         
       state.curPrice = p;
@@ -42,7 +42,7 @@ export function runWebSocket() {
       if(state.recentPrices.length > 30)  // keep last x prices
         state.recentPrices.shift();
 
-      const tick = rightPad(Math.random(), 4);
+      const tick = rightPad(Math.random(), 5);
       oneLine(tick, twoDecimals(state.avgPrice), twoDecimals(state.curPrice),
         `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}      ${state.balanceStr}`);
       

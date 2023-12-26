@@ -1,18 +1,18 @@
 # holy-kocoin
  
  ## Run this BTC trading bot
- > in the terminal type `npm t`
+ > in the terminal type `node index.js --usr=xy`
  
  ## Configuration
 > create a `.env` file with the following content:
 
 ``` js
-exchange=binanceusdm (FOR SPOT USE binance)
+exchangeName=binanceusdm (FOR SPOT USE binance)
 symbol=BTC/USDT
 spread=YOUR PRICE (IN USDT) FLUCTUATION DIFFERECE FOR BUY SIGNAL AND STOP LOSS SELL PRICE
 amount=AMOUNT TO TRADE PER ONE ORDER
-apikey=ADD YOUR API KEY
-secret=ADD YOUR API SECRET
+usr-apikey=ADD YOUR API KEY
+usr-secret=ADD YOUR API SECRET
 ```
  ## Project files:
 

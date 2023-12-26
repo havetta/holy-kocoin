@@ -30,9 +30,8 @@ runWebSocket();
 // /////////////////////////////////////////////////////////
 const runner = async () => {
   let openOrders = [];
-  let upTrend = false;
-  let downTrend = false;
-  let lastDownTrend = false;
+  let countLoopsForBuy = 0;
+  let upTrend = false, downTrend = false, lastDownTrend = false;
 
   // LOAD LIST OF ORDERS
   const bal = await getExchange().fetchBalance();
@@ -63,7 +62,6 @@ const runner = async () => {
   if (state.buyPrice === 0) {
     const buys = openOrders.filter(i => i.symbol === state.symbol && i.side === "buy" && new Date(i.datetime) > new Date().setDate( new Date().getDate() - 3 ));
     state.buyPrice = state.curPrice;
-    state.buyPrice2 = state.buyPrice;
     state.recentBuyPrices.push(state.buyPrice);
     console.log(`\x1b[1m\x1b[31mRESET\x1b[32m buy\x1b[33m price\x1b[34m to\x1b[35m last\x1b[36m ${state.buyPrice}\x1b[0m`);
   }
@@ -73,7 +71,7 @@ const runner = async () => {
   //TODO  LOOP
   //TODO /////////////////////////////////////////////////////////
   while (1) {
-    oneLine(`\x1b[1m\x1b[45m${rightPad(Math.random(), 4)}`);
+    oneLine(`\x1b[1m\x1b[45m${rightPad(countLoopsForBuy, 5)}`);
 
     // Wait x miliseconds
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -96,15 +94,15 @@ const runner = async () => {
       upTrend = isUpTrend();
       let latest = state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice;
       let hour = new Date().getHours();
-      let setAmount = state.oneAmount * conf.multiplyBy[hour];
+      let setAmount = state.smallestAmount * conf.multiplyBy[hour];
 
       //? /////////////////////////////////////////////////////////
-      //?  CANCEL BUY OR SELL ORDERS (every x minutes) ////////////
+      //!  CANCEL BUY OR SELL ORDERS (every x minutes) ////////////
       //? /////////////////////////////////////////////////////////
       state.buyOrders = await cancelOldOrders(state.buyOrders, 120, "buy", "stop_loss_limit"); // ignore stoploss
 
       // if (await cancelOldOrders(openOrders, 150, "sell", "stop_loss_limit")) {
-      //   oneLine(`\x1b[43mRSET`, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
+      //   oneLine(`\x1b[43mRESET`, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
       //     `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
       // }
 
@@ -113,6 +111,8 @@ const runner = async () => {
       //   await new Promise(resolve => setTimeout(resolve, 1000));
       // }
 
+      oneLine(`\x1b[42mBUY  `, twoDecimals(Math.min(...state.recentPrices) ), twoDecimals(state.curPrice),
+      `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
 
       //* /////////////////////////////////////////////////////////
@@ -122,23 +122,23 @@ const runner = async () => {
       state.buyOrderCreated = buys.length > 0;
 
       if ( state.freeUsd >= state.curPrice * setAmount
-        //&& state.curPrice < state.lastPrice
-        //&& state.avgPrice > state.curPrice
-        //&& !upTrend
-        //&& !state.buyOrderCreated
+        && countLoopsForBuy > 1000
+        // && state.curPrice < state.lastPrice
+        // && state.avgPrice > state.curPrice
+        // && !upTrend
+        // && !state.buyOrderCreated
         )
       {
-        await new Promise(resolve => setTimeout(resolve, 2*60*1000)); // x minutes * 60 seconds * 1000 miliseconds
-
-        state.buyPrice2 = state.buyPrice;
-        state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
-        state.buyPrice = state.buyPrice + 1; // websocket price difference
+        countLoopsForBuy = 0;
 
         state.recentBuyPrices.push(state.buyPrice);
-        if (state.recentBuyPrices.length > 3)  // keep last x prices
+        if (state.recentBuyPrices.length > 5)  // keep last x prices
           state.recentBuyPrices.shift();
-      
-        oneLine(`\x1b[42mBUY `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
+
+        state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
+        state.buyPrice = Math.min(...state.recentPrices) - state.spread; // websocket price difference should be corrected
+
+        oneLine(`\x1b[42mBUY  `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
         try {
@@ -149,7 +149,6 @@ const runner = async () => {
 
           state.buyOrders.push(newOrder);
           state.buyOrderCreated = true;
-
         } catch(e) {
           err(e?.message);
         }
@@ -160,21 +159,19 @@ const runner = async () => {
       //! /////////////////////////////////////////////////////////
       //!  SELL ///////////////////////////////////////////////////
       //! /////////////////////////////////////////////////////////
-      if (state.freeBtc >= state.oneAmount + 0.024)
+      if (state.freeBtc >= state.smallestAmount + 0.024)
       {
-        // await getExchange().createMarketSellOrder(state.symbol, state.oneAmount);
-        // await getExchange().createOrder(state.symbol, "limit", "sell", state.oneAmount, state.buyPrice + state.spread);
+        // await getExchange().createMarketSellOrder(state.symbol, state.smallestAmount);
+        // await getExchange().createOrder(state.symbol, "limit", "sell", state.smallestAmount, state.buyPrice + state.spread);
 
         const realizedBuyOrders = state.buyOrders.filter(buy => !openOrders.some(exi => exi.id === buy.id) );
         for (let realized of realizedBuyOrders) {
-          oneLine(`\x1b[41mSELL`, twoDecimals(realized.price + state.spread), twoDecimals(state.curPrice),
+          oneLine(`\x1b[41mSELL `, twoDecimals(realized.price + state.spread), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
           await getExchange().createOrder(state.symbol, "limit", "sell", realized.amount, realized.price + state.spread);
           state.buyOrders = state.buyOrders.filter(i => i.id !== realized.id);
         }
-
-        await new Promise(resolve => setTimeout(resolve, 0.001*60*1000)); // 2 minutes
       }
 
 /*
@@ -189,7 +186,7 @@ const runner = async () => {
         state.stopPrice = stopPrice;
 
         // EDIT STOP LOSS
-        oneLine(`\x1b[4mEDIT`, twoDecimals(stopPrice), twoDecimals(state.curPrice),
+        oneLine(`\x1b[4mEDIT `, twoDecimals(stopPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}\n`);
 
         const id = stopLoss[0].id;
@@ -201,7 +198,7 @@ const runner = async () => {
         state.stopPrice = stopPrice;
     
         // CREATE STOP LOSS
-        oneLine(`\x1b[4mSTOP`, twoDecimals(stopPrice), twoDecimals(state.curPrice),
+        oneLine(`\x1b[4mSTOP `, twoDecimals(stopPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}\n`);
 
         try {
@@ -231,6 +228,7 @@ const runner = async () => {
       //*  Memorize last price
       //* /////////////////////////////////////////////////////////
       state.lastPrice = state.curPrice;
+      countLoopsForBuy++;
     }
     catch(e) {
       if (e?.message != `binance Stop price would trigger immediately.`)

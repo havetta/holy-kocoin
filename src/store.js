@@ -4,19 +4,19 @@ import minimist from "minimist";
 
 dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
-export const usr = cliArgs.usr ?? `au`;
 
 export const conf = {
+  usr: cliArgs.usr ?? `au`,
   multiplyBy: [1.024,1.001,1.002,1.003,1.004,1.005,1.006,1.007,1.008,1.009,1.010,1.011,1.012,1.013,1.014,1.015,1.016,1.017,1.018,1.019,1.020,1.021,1.022,1.023],
   port: {
     au: 3333,
-    mi: 4444,
+    mi: 3334,
   },
   amount: {
-    au: 0.1,
-    mi: 0.01,
+    au: 0.01,
+    mi: 0.001,
   },
-  exchange: {
+  exchangeName: {
     au: `bybit`,
     mi: `binance`,
   },
@@ -25,9 +25,10 @@ export const conf = {
 ///////////////////////////////////////////////////////////
 export const state = {
   exchange: null,
+
   symbol: cliArgs.symbol ?? process.env.symbol,
   spread: parseFloat(cliArgs.spread ?? process.env.spread),
-  oneAmount: parseFloat(conf.amount[usr] ?? cliArgs.amount ?? process.env.amount),
+  smallestAmount: parseFloat(conf.amount[conf.usr] ?? cliArgs.amount ?? process.env.amount),
 
   curPrice: 0,
   avgPrice: 0,
@@ -35,7 +36,6 @@ export const state = {
   recentPrices: [],
 
   buyPrice: 0,
-  buyPrice2: 0,
   buyOrders: [],
   recentBuyPrices: [],
   buyOrderCreated: false,
@@ -56,13 +56,13 @@ export async function initExchange() {
   if (state.exchange)
     return;
   
-  const exchange = conf.exchange[usr] ?? cliArgs.exchange ?? process.env.exchange;
+  const exchangeName = conf.exchangeName[conf.usr] ?? cliArgs.exchangeName ?? process.env.exchangeName;
 
-  state.symbol += (exchange === 'binance' ? '/TUSD' : '/USDC');
+  state.symbol += (exchangeName === 'binance' ? '/TUSD' : '/USDC');
   
-  state.exchange = new ccxt[exchange]({
-    apiKey: process.env[`${usr}-apikey`],
-    secret: process.env[`${usr}-secret`],
+  state.exchange = new ccxt[exchangeName]({
+    apiKey: process.env[`${conf.usr}-apikey`],
+    secret: process.env[`${conf.usr}-secret`],
     enableRateLimit: true,
     options: {
       defaultType: "spot",//future
