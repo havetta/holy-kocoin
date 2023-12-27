@@ -14,7 +14,7 @@ export const conf = {
   },
   amount: {
     au: 0.01,
-    mi: 0.001,
+    mi: 0.0004,
   },
   exchangeName: {
     au: `bybit`,
@@ -37,6 +37,7 @@ export const state = {
 
   buyPrice: 0,
   buyOrders: [],
+  realizedBuyOrders: [],
   recentBuyPrices: [],
   buyOrderCreated: false,
 
