@@ -1,5 +1,5 @@
 import { runWebSocket } from "./webSocket.js";
-import { fastify } from "./server.js";
+import { express } from "./server.js";
 import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } from "./helpers/priceTrends.js";
 import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./services/order.js";
 import { conf, state, getExchange, initExchange } from "./store.js";
@@ -8,6 +8,7 @@ import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
 
 
 // await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 2, "buy", "stop_loss_limit");
+// await getExchange().createOrder(`BTC/TUSD`, "limit", "sell", 0.0043976, 43288);
 
 
 // /////////////////////////////////////////////////////////
@@ -21,7 +22,18 @@ runWebSocket();
 // /////////////////////////////////////////////////////////
 //!  START WEB SERVER
 // /////////////////////////////////////////////////////////
-// fastify.get('/', async (request, reply) => { return 'trading bot running'; });
+// express.get('/', async (req, reply) => { return `eval(req.query?.eval)`; });
+// /////////////////////////////////////////////////////////
+
+
+// /////////////////////////////////////////////////////////
+//!  READ STDIN
+// /////////////////////////////////////////////////////////
+process.stdin.setEncoding('utf8')
+process.stdin.on('data', (d) => {
+  console.error(d + '\n\n');
+  console.log(eval(`state.${d}`));
+});
 // /////////////////////////////////////////////////////////
 
 
@@ -100,6 +112,7 @@ const runner = async () => {
       //!  CANCEL BUY OR SELL ORDERS (every x minutes) ////////////
       //? /////////////////////////////////////////////////////////
       state.buyOrders = await cancelOldOrders(state.buyOrders, 120, "buy", "stop_loss_limit"); // ignore stoploss
+      state.realizedBuyOrders = state.buyOrders.filter(buy => !openOrders.some(exi => exi.id === buy.id) );
 
       // if (await cancelOldOrders(openOrders, 150, "sell", "stop_loss_limit")) {
       //   oneLine(`\x1b[43mRESET`, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
@@ -111,8 +124,6 @@ const runner = async () => {
       //   await new Promise(resolve => setTimeout(resolve, 1000));
       // }
 
-      oneLine(`\x1b[42mBUY  `, twoDecimals(Math.min(...state.recentPrices) ), twoDecimals(state.curPrice),
-      `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
 
       //* /////////////////////////////////////////////////////////
@@ -122,7 +133,7 @@ const runner = async () => {
       state.buyOrderCreated = buys.length > 0;
 
       if ( state.freeUsd >= state.curPrice * setAmount
-        && countLoopsForBuy > 1000
+        && countLoopsForBuy > 1200
         // && state.curPrice < state.lastPrice
         // && state.avgPrice > state.curPrice
         // && !upTrend
@@ -135,7 +146,7 @@ const runner = async () => {
         if (state.recentBuyPrices.length > 5)  // keep last x prices
           state.recentBuyPrices.shift();
 
-        state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
+        // state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
         state.buyPrice = Math.min(...state.recentPrices) - state.spread; // websocket price difference should be corrected
 
         oneLine(`\x1b[42mBUY  `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
@@ -159,13 +170,12 @@ const runner = async () => {
       //! /////////////////////////////////////////////////////////
       //!  SELL ///////////////////////////////////////////////////
       //! /////////////////////////////////////////////////////////
-      if (state.freeBtc >= state.smallestAmount + 0.024)
+      if (state.freeBtc >= state.smallestAmount * 1.024)
       {
         // await getExchange().createMarketSellOrder(state.symbol, state.smallestAmount);
         // await getExchange().createOrder(state.symbol, "limit", "sell", state.smallestAmount, state.buyPrice + state.spread);
 
-        const realizedBuyOrders = state.buyOrders.filter(buy => !openOrders.some(exi => exi.id === buy.id) );
-        for (let realized of realizedBuyOrders) {
+        for (let realized of state.realizedBuyOrders) {
           oneLine(`\x1b[41mSELL `, twoDecimals(realized.price + state.spread), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
