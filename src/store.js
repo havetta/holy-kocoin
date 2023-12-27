@@ -34,21 +34,21 @@ export const state = {
   avgPrice: 0,
   lastPrice: 0,
   recentPrices: [],
-
+  recentBuyPrices: [],
   buyPrice: 0,
+  buyOrderCreated: false,
   buyOrders: [],
   realizedBuyOrders: [],
-  recentBuyPrices: [],
-  buyOrderCreated: false,
+
+  cancelledOrders: [],
+  openOrders: [],
 
   stopPrice: 0,
   stopLossOrder: false,
-
-  cancelledOrders: [],
-
+  
   freeBtc: 0,
   freeUsd: 0,
-  balanceStr: ""
+  balanceStr: ``,
 };
 ///////////////////////////////////////////////////////////
 
