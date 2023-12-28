@@ -1,5 +1,5 @@
 import { runWebSocket } from "./webSocket.js";
-import { express } from "./server.js";
+// import { express } from "./server.js";
 import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } from "./helpers/priceTrends.js";
 import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./services/order.js";
 import { conf, state, getExchange, initExchange } from "./store.js";
@@ -124,7 +124,7 @@ const runner = async () => {
       //*  BUY  ///////////////////////////////////////////////////
       //* /////////////////////////////////////////////////////////
       if ( state.freeUsd >= state.curPrice * setAmount
-        && countLoopsForBuy > 1200
+        && countLoopsForBuy > state.buyEveryXSeconds
         // && state.curPrice < state.lastPrice
         // && state.avgPrice > state.curPrice
         // && !isUpTrend()
@@ -148,6 +148,7 @@ const runner = async () => {
           state.buyOrders.push(newOrder);
 
           state.buyOrderCreated = true;
+
           state.recentBuyPrices.push(state.buyPrice);
           if (state.recentBuyPrices.length > 5)  // keep last x prices
             state.recentBuyPrices.shift();
