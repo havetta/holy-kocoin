@@ -13,11 +13,11 @@ export const conf = {
     mi: 3334,
   },
   buyEveryXSeconds: {
-    au: 120,
+    au: 300,
     mi: 1200,
   },
-  amount: {
-    au: 0.01,
+  smallestAmount: {
+    au: 0.04,
     mi: 0.0004,
   },
   exchangeName: {
@@ -32,7 +32,7 @@ export const state = {
 
   symbol: cliArgs.symbol ?? process.env.symbol,
   spread: parseFloat(cliArgs.spread ?? process.env.spread),
-  smallestAmount: parseFloat(conf?.amount?.[conf.usr] ?? cliArgs.amount ?? process.env.amount),
+  smallestAmount: parseFloat(conf?.smallestAmount?.[conf.usr] ?? cliArgs.amount ?? process.env.amount),
   buyEveryXSeconds: conf?.buyEveryXSeconds?.[conf.usr] ?? 1200,
 
   curPrice: 0,
