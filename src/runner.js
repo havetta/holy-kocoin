@@ -32,7 +32,20 @@ runWebSocket();
 process.stdin.setEncoding('utf8')
 process.stdin.on('data', (d) => {
   console.log(`\n${d}`);
-  console.log(eval(`state.${d}\n`));
+  switch (d[0]) {
+    case `0`:
+      console.log(eval(`state.freeUsd\n`));
+      getExchange().createOrder(`BTC/USDC`, "limit", "buy", 15000, state.curPrice);
+      break;
+    case `1`:
+      console.log(eval(`state.freeBtc\n`));
+      getExchange().createOrder(`BTC/USDC`, "limit", "sell", state.freeBtc, state.curPrice);
+      break;
+    case `.`:
+      break;
+    default:
+      console.log(eval(`state.${d}\n`));
+  }
 });
 // /////////////////////////////////////////////////////////
 
@@ -134,7 +147,7 @@ const runner = async () => {
         countLoopsForBuy = 0;
 
         // state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
-        state.buyPrice = Math.min(...state.recentPrices) - state.spread; // websocket price difference should be corrected
+        state.buyPrice = Math.min(...state.recentPrices) + 20; // + X => websocket price difference should be corrected
 
         oneLine(`\x1b[42mBUY  `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
