@@ -31,21 +31,25 @@ runWebSocket();
 // /////////////////////////////////////////////////////////
 process.stdin.setEncoding('utf8')
 process.stdin.on('data', (d) => {
-  console.log(`\n${d}`);
-  switch (d[0]) {
-    case `0`:
-      console.log(eval(`state.freeUsd\n`));
-      getExchange().createOrder(`BTC/USDC`, "limit", "buy", 15000, state.curPrice);
-      break;
-    case `1`:
-      console.log(eval(`state.freeBtc\n`));
-      getExchange().createOrder(`BTC/USDC`, "limit", "sell", state.freeBtc, state.curPrice);
-      break;
-    case `.`:
-      break;
-    default:
-      console.log(eval(`state.${d}\n`));
-  }
+  try {
+    console.log(`\n${d}`);
+    switch (d[0]) {
+      case `0`:
+        console.log(eval(`state.freeUsd\n`));
+        getExchange().createOrder(`BTC/USDC`, "limit", "buy", state.freeUsd, state.curPrice);
+        break;
+      case `1`:
+        console.log(eval(`state.freeBtc\n`));
+        getExchange().createOrder(`BTC/USDC`, "limit", "sell", state.freeBtc, state.curPrice);
+        break;
+      case `.`:
+        break;
+      default:
+        console.log(eval(`state.${d}\n`));
+      }
+    } catch(e) {
+      err(e?.message);
+    }
 });
 // /////////////////////////////////////////////////////////
 
@@ -98,8 +102,7 @@ const runner = async () => {
     // Wait x miliseconds
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    try
-    {
+    try {
       const [bal, openOrders] = await Promise.all( [
         getExchange().fetchBalance(),
         getExchange().fetchOpenOrders(state.symbol)
@@ -147,7 +150,8 @@ const runner = async () => {
         countLoopsForBuy = 0;
 
         // state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
-        state.buyPrice = Math.min(...state.recentPrices) + 20; // + X => websocket price difference should be corrected
+        const exName = conf.exchangeName[conf.usr];
+        state.buyPrice = Math.min(...state.recentPrices) + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
 
         oneLine(`\x1b[42mBUY  `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
