@@ -17,19 +17,19 @@ export const conf = {
     mi: `BTC`,
   },
   spread: {
-    au: 30,
-    mi: 50,
+    au: 10,
+    mi: 10,
   },
   port: {
     au: 3333,
     mi: 3334,
   },
   buyEveryXSeconds: {
-    au: 600,
-    mi: 1200,
+    au: 3000,
+    mi: 1500,
   },
   smallestAmount: {
-    au: 0.04,
+    au: 0.1,
     mi: 0.0004,
   },
 }
@@ -40,7 +40,6 @@ export const state = {
 
   symbol: conf?.symbol?.[conf.usr] ?? cliArgs.symbol ?? process.env.symbol,
   spread: conf?.spread?.[conf.usr] ?? cliArgs.spread ?? process.env.spread,
-  spread: parseFloat(cliArgs.spread ?? process.env.spread),
   smallestAmount: parseFloat(conf?.smallestAmount?.[conf.usr] ?? cliArgs.amount ?? process.env.amount),
   buyEveryXSeconds: conf?.buyEveryXSeconds?.[conf.usr] ?? 1200,
 

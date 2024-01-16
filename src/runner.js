@@ -150,8 +150,8 @@ const runner = async () => {
         countLoopsForBuy = 0;
 
         // state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
-        const exName = conf.exchangeName[conf.usr];
-        state.buyPrice = Math.min(...state.recentPrices) + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
+        // const exName = conf.exchangeName[conf.usr];
+        state.buyPrice = Math.min(...state.recentPrices)// + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
 
         oneLine(`\x1b[42mBUY  `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
