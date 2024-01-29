@@ -1,0 +1,8 @@
+[
+    {
+      componenttemplate: '<h1>Hello</h1>\n<gbutton></gbutton>',
+      componentname: 'root',
+      uuid: '102cc830-9043-4e0d-a1f8-61438b41f67a',
+      version: 1
+    }
+]
