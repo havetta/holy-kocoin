@@ -60,8 +60,8 @@
               <tbody></tbody>
             </table>
 
-            <button type="button" class="bg-gray-400 duration-300 rounded-lg sm:px-4 sm:py-2 focus:outline-none hover:bg-gray-100"
-              onclick="doDemo()">Generate PowerPoint</button>
+            <button type="button" class="bg-gray-400 rounded-lg" onclick="doDemo()">Generate On Demand</button>
+            <button type="button" class="bg-blue-400 rounded-lg" onclick="doDemo()">Generate From HTML</button>
 
           </section>
         </main>
@@ -71,20 +71,45 @@
   <script type="application/javascript">
     
     // Lets make sure were setup correctly
-    var pptx = new PptxGenJS();
+    const pptx = new PptxGenJS();
     document.getElementById('ver').innerHTML = pptx.version;
     
-    // Simple Slide
-    function doDemo() {
-      // foto and sizes (while streaming sizes are unknown)
+    const slide = pptx.addSlide();
+
+    function addText(txt, x, y) {
+      slide.addText(txt, {
+        x: x,
+        y: y,
+        w: "100%",
+        h: 1,
+        align: "center",
+        color: "0088CC",
+        // fill: "F1F1F1",
+        fontSize: 24,
+      });
+    }
+
+    function doImage()) {
       //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
-      const img = '/dist/product.jpg';
+      const img = '/dist/image.jpeg';
+      var width = 1024;
+      var height = 1080;
+      
+      slide.addImage({
+        path: img,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 10 * height / width
+      })
+      pptx.writeFile({ fileName: '1-image.pptx' });
+    }
+
+    function doText() {
+      //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
+      const img = 'https://sklab.bts.global.corp.sap/src/mxp/assets/nightroad.jpg';
       var width = 1920;
       var height = 1080;
-    
-      var pptx = new PptxGenJS();
-      let slide = pptx.addSlide();
-      // pptx.tableToSlides('tabAutoPaging', { x: 1.0, y: 1.0, w:10 });
       
       slide.addImage({
         path: img,
@@ -94,18 +119,15 @@
         h: 10 * height / width
       })
 
-      slide.addText("TMS (template management system) generated - 你好", {
-        x: 0,
-        y: 3,
-        w: "100%",
-        h: 1,
-        align: "center",
-        color: "0088CC",
-        fill: "F1F1F1",
-        fontSize: 24,
-      });
-      pptx.writeFile({ fileName: '1-image.pptx' });
-return;
+      addText("TMS (template management system) generated - 你好", 0, 1)
+      addText("Entities - APILIST, TEMPLATES", 0, 2)
+      addText("Generate html at night", 0, 3)
+      addText("PPTX can be generated on demand", 0, 4)
+
+      // pptx.tableToSlides('tabAutoPaging', { x: 1.0, y: 1.0, w:10 });
+
+      pptx.writeFile({ fileName: '1-text.pptx' });
+      return;
 /*
       var slide = pptx.addNewSlide();
       var opts = {
