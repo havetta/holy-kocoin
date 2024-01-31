@@ -1,0 +1,209 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courses Dashboard | Meraki UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+  </head>
+  <body>
+    <div id="app" data-v-app="">
+      <div class="relative min-h-screen lg:flex">
+        <header class="text-gray-100 bg-gray-800 lg:hidden">
+          <div class="container flex items-center justify-between p-4 mx-auto">
+            <a href="#" class="text-white"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-8 h-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                ></path></svg></a
+            ><button
+              class="p-2 text-white rounded-lg focus:outline-none hover:bg-gray-700"
+            >
+            Generate
+            </button>
+          </div>
+        </header>
+        <main>
+          <section>
+            <h1><a href="https://github.com/gitbrent/PptxGenJS/">PptxGenJS</a> - Demo</h1>
+
+            <div class="container my-4 bg-light">
+              <div class="row">
+                <div class="col p-3">
+                  <h2>PptxGenJS version</h2>
+                </div>
+                <div id="ver" class="col p-3">
+                  <h5>?</h5>
+                </div>
+              </div>
+            </div>
+
+            <table id="tabAutoPaging" class="tabCool">
+              <thead>
+                <tr>
+                  <th data-pptx-min-width="0.6" style="width: 5%">Row</th>
+                  <th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+                  <th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+                  <th data-pptx-width="8.5"     style="width:75%">Description</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+            <button type="button" class="bg-gray-400 duration-300 rounded-lg sm:px-4 sm:py-2 focus:outline-none hover:bg-gray-100"
+              onclick="doDemo()">Generate PowerPoint</button>
+
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+  <script type="application/javascript">
+    
+    // Lets make sure were setup correctly
+    var pptx = new PptxGenJS();
+    document.getElementById('ver').innerHTML = pptx.version;
+    
+    // Simple Slide
+    function doDemo() {
+      // foto and sizes (while streaming sizes are unknown)
+      //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
+      const img = '/dist/product.jpg';
+      var width = 1920;
+      var height = 1080;
+    
+      var pptx = new PptxGenJS();
+      let slide = pptx.addSlide();
+      // pptx.tableToSlides('tabAutoPaging', { x: 1.0, y: 1.0, w:10 });
+      
+      slide.addImage({
+        path: img,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 10 * height / width
+      })
+
+      slide.addText("TMS (template management system) generated - 你好", {
+        x: 0,
+        y: 3,
+        w: "100%",
+        h: 1,
+        align: "center",
+        color: "0088CC",
+        fill: "F1F1F1",
+        fontSize: 24,
+      });
+      pptx.writeFile({ fileName: '1-image.pptx' });
+return;
+/*
+      var slide = pptx.addNewSlide();
+      var opts = {
+        x: 0.2,
+        y: 0.2,
+        fontSize: 20,
+        color: '00FF00'
+      };
+    
+      slide.addText('This is how the image should look like (works only *IFF* you now the size)', opts);
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        w: 6,
+        h: 6 * height / width
+      })
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2
+      })
+      slide.addText('Neither width or height set (shouldn\'t be square)', opts);
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        w: 6
+      })
+      slide.addText('No height set (height set apparently to 1)', opts)
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        h: 4
+      })
+      slide.addText('No width set (width set apparently to 1)', opts);
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        sizing: {
+          type: 'contain',
+          w: 4
+        }
+      })
+      slide.addText('large width (no w & h set, defaults to 1, moved right to "fit" in a 4x4" square)', opts);
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        sizing: {
+          type: 'contain',
+          h: 4
+        }
+      })
+      slide.addText('large height (similar as before, moved down)', opts);
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        sizing: {
+          type: 'contain',
+          h: 4,
+          w: 4
+        }
+      })
+      slide.addText('large width and height (now it extends to the square)', opts);
+    
+    
+      slide = pptx.addNewSlide();
+      slide.addImage({
+        path: img,
+        x: 1,
+        y: 2,
+        h: 2,
+        sizing: {
+          type: 'contain',
+          h: 4
+        }
+      })
+      slide.addText('defining only height', opts);
+      pptx.save();
+    */
+    
+    }
+    
+  </script>
+</html>

@@ -1,8 +1,14 @@
+import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 import { state, getExchange, initExchange } from "./store.js";
-import { runner } from "./runner.js";
-(async () => {
-  runner();
-})();
+// import { runner } from "./runner.js";
+// (async () => {
+//   runner();
+// })();
+
+import {readFileSync} from "fs"
+
+const string_output = readFileSync("jsconfig.json", 'utf8');
+console.log(string_output);
 
 // setup Function as Value
 const mydict = {};
