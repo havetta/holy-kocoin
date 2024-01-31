@@ -1,11 +1,15 @@
 // app.js (shared between server and client)
 import { createSSRApp } from "vue";
 import gbutton from "./gbutton.js"
+import list from "./list.js"
 
 export function createApp() {
   const app = createSSRApp({
     data: () => ({ count: 1 }),
     template: `
+    <list></list>
+
+
     <button @click="count++" class="bg-cyan-200 py-2 px-4 rounded mt-4">{{ count }}</button>
 
     <button onclick="openDialog()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

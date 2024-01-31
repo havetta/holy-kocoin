@@ -4,6 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Courses Dashboard | Meraki UI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+
   </head>
   <body>
     <div id="app" data-v-app="">
@@ -245,12 +248,12 @@
                       class="hidden md:mx-2 md:flex md:flex-col md:items-end md:leading-tight"
                     >
                       <span class="font-semibold text-sm text-gray-800"
-                        >Dhaiflaah</span
-                      ><span class="text-sm text-gray-600">Lecturer</span>
+                        >Aurel</span
+                      ><span class="text-sm text-gray-600">Havetta</span>
                     </div>
                     <img
                       class="flex-shrink-0 w-10 h-10 overflow-hidden bg-gray-100 rounded-full md:mx-2"
-                      src="https://randomuser.me/api/portraits/men/68.jpg"
+                      src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=880&amp;q=80"
                       alt="user profile photo"
                     />
                   </div>
@@ -326,9 +329,9 @@
             class="flex flex-col w-full px-6 md:justify-between md:items-center md:flex-row"
           >
             <div>
-              <h2 class="text-3xl font-medium text-gray-800">Dashboard</h2>
+              <h2 class="text-3xl font-medium text-gray-800">MXP Template Generator Dashboard</h2>
               <p class="mt-2 text-sm text-gray-500">
-                Mobile UX/UI Design Course
+                Use templates to generate static html microsites
               </p>
             </div>
             <div class="flex flex-col mt-6 md:flex-row md:-mx-1 md:mt-0">
@@ -349,7 +352,7 @@
                       stroke-linejoin="round"
                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                     ></path></svg
-                  ><span class="mx-1 text-sm capitalize">Manage dashboard</span>
+                  ><span class="mx-1 text-sm capitalize">Run html generator</span>
                 </div></button
               ><button
                 class="px-6 py-3 focus:outline-none mt-4 text-white bg-blue-600 rounded-lg md:mt-0 md:mx-1 hover:bg-blue-500"
@@ -369,7 +372,7 @@
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     ></path></svg
                   ><span class="mx-1 text-sm capitalize"
-                    >Create new course</span
+                    >Generate PPTX</span
                   >
                 </div>
               </button>
@@ -406,7 +409,7 @@
                 </svg>
                 <div class="mx-2">
                   <h3 class="text-2xl font-medium text-gray-800">62</h3>
-                  <p class="mt-1 text-sm text-gray-500">Students</p>
+                  <p class="mt-1 text-sm text-gray-500">Generated</p>
                 </div>
               </div>
             </div>
@@ -460,7 +463,7 @@
                 </svg>
                 <div class="mx-2">
                   <h3 class="text-2xl font-medium text-gray-800">6.8</h3>
-                  <p class="mt-1 text-sm text-gray-500">Average mark</p>
+                  <p class="mt-1 text-sm text-gray-500">Successful</p>
                 </div>
               </div>
             </div>
@@ -507,7 +510,7 @@
                     9 <span class="text-xl text-gray-600">(14%)</span>
                   </h3>
                   <p class="mt-1 text-sm text-gray-500">
-                    Underperforming students
+                    Failed
                   </p>
                 </div>
               </div>
@@ -546,7 +549,7 @@
                 </svg>
                 <div class="mx-2">
                   <h3 class="text-2xl font-medium text-gray-800">92%</h3>
-                  <p class="mt-1 text-sm text-gray-500">Finished homeworks</p>
+                  <p class="mt-1 text-sm text-gray-500">Finished</p>
                 </div>
               </div>
             </div>
@@ -555,7 +558,7 @@
             >
               <div class="sm:flex sm:items-center sm:justify-between">
                 <h2 class="font-medium text-gray-700">
-                  The number of applied and left students per month
+                  Template Preview
                 </h2>
                 <div class="flex items-center mt-4 -mx-2 sm:mt-0">
                   <span class="flex items-center text-gray-600"
@@ -569,7 +572,7 @@
                   ></span>
                 </div>
               </div>
-              <canvas
+              <textarea
                 class="max-w-3xl max-h-96"
                 id="secondChart"
                 width="716"
@@ -580,7 +583,16 @@
                   height: 358px;
                   width: 716px;
                 "
-              ></canvas>
+              >
+
+
+              <ul>
+                <li
+                  v-for="item in ho2..data"
+                  :id="item"
+                  >{{ item.id }}</li>
+              </ul>
+            </textarea>
             </div>
             <div
               class="row-span-3 bg-white rounded-lg shadow-md shadow-gray-200"
@@ -589,7 +601,7 @@
                 class="px-6 py-5 border-b border-gray-100 sm:flex sm:items-center sm:justify-between"
               >
                 <h2 class="font-medium text-gray-700">
-                  Students by average mark
+                  Roles
                 </h2>
                 <button
                   type="button"
@@ -690,7 +702,7 @@
             >
               <div class="px-6 py-5 border-b border-gray-100">
                 <h2 class="font-medium text-gray-700">
-                  Students by type of studying
+                  Todo
                 </h2>
               </div>
               <div class="flex items-center p-8">
@@ -800,4 +812,67 @@
       </div>
     </div>
   </body>
+
+
+  <script type="application/javascript">
+    
+    // Lets make sure were setup correctly
+    const pptx = new PptxGenJS();
+    document.getElementById('ver').innerHTML = pptx.version;
+    
+    const slide = pptx.addSlide();
+
+    function addText(txt, x, y) {
+      slide.addText(txt, {
+        x: x,
+        y: y,
+        w: "100%",
+        h: 1,
+        align: "center",
+        color: "0088CC",
+        // fill: "F1F1F1",
+        fontSize: 24,
+      });
+    }
+
+    function doImage() {
+      //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
+      const img = '/dist/image.jpeg';
+      var width = 1024;
+      var height = 1080;
+      
+      slide.addImage({
+        path: img,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 10 * height / width
+      })
+      pptx.writeFile({ fileName: '1-image.pptx' });
+    }
+
+    function doText() {
+      //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
+      const img = 'https://sklab.bts.global.corp.sap/src/mxp/assets/nightroad.jpg';
+      var width = 1920;
+      var height = 1080;
+      
+      slide.addImage({
+        path: img,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 10 * height / width
+      })
+
+      addText("TMS (template management system) generated - 你好", 0, 1)
+      addText("Entities - APILIST, TEMPLATES", 0, 2)
+      addText("Generate html at night", 0, 3)
+      addText("PPTX can be generated on demand", 0, 4)
+
+      // pptx.tableToSlides('tabAutoPaging', { x: 1.0, y: 1.0, w:10 });
+
+      pptx.writeFile({ fileName: '1-text.pptx' });
+    }
+  </script>
 </html>

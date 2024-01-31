@@ -60,14 +60,15 @@
               <tbody></tbody>
             </table>
 
-            <button type="button" class="bg-gray-400 rounded-lg" onclick="doDemo()">Generate On Demand</button>
-            <button type="button" class="bg-blue-400 rounded-lg" onclick="doDemo()">Generate From HTML</button>
+            <button type="button" class="bg-gray-400 rounded-lg" onclick="doImage()">Generate On Demand</button>
+            <button type="button" class="bg-blue-400 rounded-lg" onclick="doText()">Generate From HTML</button>
 
           </section>
         </main>
       </div>
     </div>
   </body>
+
   <script type="application/javascript">
     
     // Lets make sure were setup correctly
@@ -89,7 +90,7 @@
       });
     }
 
-    function doImage()) {
+    function doImage() {
       //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
       const img = '/dist/image.jpeg';
       var width = 1024;
@@ -107,7 +108,7 @@
 
     function doText() {
       //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
-      const img = 'https://sklab.bts.global.corp.sap/src/mxp/assets/nightroad.jpg';
+      const img = '/src/mxp/assets/nightroad.jpg';
       var width = 1920;
       var height = 1080;
       
@@ -127,105 +128,6 @@
       // pptx.tableToSlides('tabAutoPaging', { x: 1.0, y: 1.0, w:10 });
 
       pptx.writeFile({ fileName: '1-text.pptx' });
-      return;
-/*
-      var slide = pptx.addNewSlide();
-      var opts = {
-        x: 0.2,
-        y: 0.2,
-        fontSize: 20,
-        color: '00FF00'
-      };
-    
-      slide.addText('This is how the image should look like (works only *IFF* you now the size)', opts);
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        w: 6,
-        h: 6 * height / width
-      })
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2
-      })
-      slide.addText('Neither width or height set (shouldn\'t be square)', opts);
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        w: 6
-      })
-      slide.addText('No height set (height set apparently to 1)', opts)
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        h: 4
-      })
-      slide.addText('No width set (width set apparently to 1)', opts);
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        sizing: {
-          type: 'contain',
-          w: 4
-        }
-      })
-      slide.addText('large width (no w & h set, defaults to 1, moved right to "fit" in a 4x4" square)', opts);
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        sizing: {
-          type: 'contain',
-          h: 4
-        }
-      })
-      slide.addText('large height (similar as before, moved down)', opts);
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        sizing: {
-          type: 'contain',
-          h: 4,
-          w: 4
-        }
-      })
-      slide.addText('large width and height (now it extends to the square)', opts);
-    
-    
-      slide = pptx.addNewSlide();
-      slide.addImage({
-        path: img,
-        x: 1,
-        y: 2,
-        h: 2,
-        sizing: {
-          type: 'contain',
-          h: 4
-        }
-      })
-      slide.addText('defining only height', opts);
-      pptx.save();
-    */
-    
     }
-    
   </script>
 </html>

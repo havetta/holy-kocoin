@@ -6,6 +6,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+
   <title>MXP Generator</title>
 </head>
 
@@ -19,7 +23,7 @@
 
 
   <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 mt-10 p-4 lg:p-8">
-    <button hx-get="https://dummyjson.com/todos"
+    <button hx-get="/src/mxp/gen/hot_topic_v2.json"
             hx-swap="innerHTML"
             hx-target="#content"
             mustache-template="sometemplate"
@@ -39,7 +43,7 @@
       <button class="py-2 px-4 rounded bg-blue-500 text-white flex-grow-0"
               type="button"
               hx-trigger="load, click"
-              hx-get="https://node-hnapi.herokuapp.com/news?page=0" 
+              hx-get="/src/mxp/gen/hot_topic_v2.json" 
               nunjucks-template="gistlist"
               hx-target="#list"
               hx-swap="innerHTML">
@@ -52,7 +56,7 @@
     <script id="gistlist" type="nunjucks">
       {% for gist in gists %}
         <li class="relative -mb-px block border p-1 border-grey">
-          <a href="{{gist.url}}" class="font-bold">{{gist.title}}</a> ({{gist.time_ago}})<br>
+          <a href="{{gist.url}}" class="font-bold">{{gist.title}}</a> ({{gist.description}})<br>
         </li>
       {% endfor %}
     </script>
@@ -104,6 +108,69 @@
   <script src="https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js"></script>  <!-- <script src="../js/htmx.min.js"></script> -->
 
   <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
+
+  <script type="application/javascript">
+    
+    // Lets make sure were setup correctly
+    const pptx = new PptxGenJS();
+    document.getElementById('ver').innerHTML = pptx.version;
+    
+    const slide = pptx.addSlide();
+
+    function addText(txt, x, y) {
+      slide.addText(txt, {
+        x: x,
+        y: y,
+        w: "100%",
+        h: 1,
+        align: "center",
+        color: "0088CC",
+        // fill: "F1F1F1",
+        fontSize: 24,
+      });
+    }
+
+    function doImage() {
+      //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
+      const img = '/dist/image.jpeg';
+      var width = 1024;
+      var height = 1080;
+      
+      slide.addImage({
+        path: img,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 10 * height / width
+      })
+      pptx.writeFile({ fileName: '1-image.pptx' });
+    }
+
+    function doText() {
+      //var img = 'https://upload.wikimedia.org/wikipedia/commons/b/b3/P%C3%A1ll-Gergely%2C_Hunyadi%2C_Jochum_%26_Asami_2015_Figs.12_Angustopila_dominikae.png';
+      const img = 'https://sklab.bts.global.corp.sap/src/mxp/assets/nightroad.jpg';
+      var width = 1920;
+      var height = 1080;
+      
+      slide.addImage({
+        path: img,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 10 * height / width
+      })
+
+      addText("TMS (template management system) generated - 你好", 0, 1)
+      addText("Entities - APILIST, TEMPLATES", 0, 2)
+      addText("Generate html at night", 0, 3)
+      addText("PPTX can be generated on demand", 0, 4)
+
+      // pptx.tableToSlides('tabAutoPaging', { x: 1.0, y: 1.0, w:10 });
+
+      pptx.writeFile({ fileName: '1-text.pptx' });
+    }
+  </script>
+</html>
 
 
 </body>
