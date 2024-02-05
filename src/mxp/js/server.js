@@ -11,7 +11,7 @@ server.use(function(req, res, next) {
 });
 
 server.get('/', (req, res) => {
-  const app = createApp();
+  const app = createApp(req);
 
   renderToString(app).then((html) => {
     res.send(`

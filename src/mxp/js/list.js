@@ -5,21 +5,20 @@ export default {
 
 
     const list = ref([
-      { id: 0, text: 'Vegetables' },
-      { id: 1, text: 'Cheese' },
-      { id: 2, text: 'Whatever else humans are supposed to eat' }
+      { id: 0, text: '123' },
+      { id: 1, text: '435' },
+      { id: 2, text: 'W5454' }
     ])
     
     return {
-      groceryList,
+      list,
     }
   },
   template: `
   <ul>
     <li
       v-for="item in list"
-      :id="item"
-      >{{ item.id }}</li>
+      >{{ item.text }}</li>
   </ul>
   `
 }
