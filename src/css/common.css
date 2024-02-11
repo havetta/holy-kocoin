@@ -3,23 +3,31 @@
 @tailwind utilities;
 
 @layer components {
-  .btx {
+  label {
+    @apply block text-sm text-gray-500 dark:text-gray-300;
+  }
+
+  input[type=text] {
+    @apply block mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300;
+  }
+
+  .buton {
     @apply py-2 px-5 bg-cyan-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
   }
 }
 
-.bbb {
+.btn-yellow {
   @apply py-2 px-5 bg-yellow-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
 }
 
-.btn {
-  @apply block bg-green-500;
+.btn-green {
+  @apply rounded-full shadow-md p-2 text-white bg-green-500 hover:bg-cyan-500 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
 }
-.btn:hover {
-  @apply bg-pink-300;
+.btn-green:hover {
+  @apply bg-green-200;
 }
 @screen md {
-  .btn {
+  .btn-green {
     @apply inline-block;
   }
 }

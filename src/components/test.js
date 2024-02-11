@@ -6,5 +6,5 @@ export default {
   mounted() {
     console.log(`test component mounted`)
   },
-  template: `for TESTING<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>`
+  template: `test component<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>`
 }

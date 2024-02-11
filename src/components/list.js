@@ -1,14 +1,15 @@
 import state from "../datatypes/state.js";
+import components from "../datatypes/components.js"
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
+
     return {
       state,
       addnew: () => {
         state.value.list.push({
           id: crypto.randomUUID(),
-          name: "xxx",
-          description: "des dff <h1>fdsf</h1>",
+          name: "Change.This.Name",
         });
       },
     };
@@ -19,7 +20,7 @@ export default {
   </select>
 
   <button @click="addnew" class="btn btn-primary">Add</button>
-  <button @click="addnew" class="btx">Add New</button>
+  <button @click="addnew" class="buton">Add New</button>
   <ul>
     <li v-for="item in state.list">{{ item.name }}</li>
   </ul>

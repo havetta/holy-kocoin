@@ -1,26 +1,26 @@
 import { createApp, ref } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 import './css/common.css'
 import App from './App.vue'
-import root from './components/root.js'
-
+import test from './components/test.vue'
 import components from "./datatypes/components.js"
-// import test from "./components/test"
-// import state from "./datatypes/state"
+import state from "./datatypes/state"
 
-const app = createApp(App)
-components.forEach(c => app.component(c.name, c.component) );
-app.component("test1", {
-  setup() {
-    const count = ref(0)
-    return { count }
-  },
-  template: `
-    <button class="btn" @click="count++">
-      Clicked {{ count }} times
-    </button>`,
-  mounted() {
-    console.log(`test1 component mounted`)
-  },
-  // template: `for TESTING<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>`
+const home = { template: '<div>home</div>' }
+const conf = { template: '<div>conf</div>' }
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: App },
+    { path: '/home', component: home },
+    { path: '/conf', component: conf },
+    // { path: '/test', component: () => import('/src/component/test.vue')
+  ],
 })
-app.mount('#app')
+
+const app = createApp(App);
+components.forEach(c => app.component(c.name, c.instance) );
+// app.config.globalProperties.$router = router
+app.use(router);
+app.mount('#app');

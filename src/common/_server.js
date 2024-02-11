@@ -26,8 +26,7 @@ server.get('/', (req, res) => {
           }}
         </script>
         <script type="module" src="common/_client.js"></script>
-        <script src="data/all.js"></script>
-        <link href="css/common.css" rel="stylesheet">
+        <script src="js/all.js"></script>
         <link href="css/output.css" rel="stylesheet">
       </head>
       <body>

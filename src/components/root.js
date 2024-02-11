@@ -19,7 +19,7 @@ export default {
     </button>
   </dialog>
 
-  <gbutton></gbutton>
+  <gbutton/>
 
   <section class="container px-4 mx-auto">
     <h2 class="text-lg font-medium text-gray-800 dark:text-white">Customers</h2>

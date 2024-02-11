@@ -9,6 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "serve": "npx tailwindcss -i ./src/css/common.css -o ./src/css/output.css && node --no-warnings ./src/common/_server.js",
+    "static": "node --no-warnings ./src/common/static.js",
     "test": "node --no-warnings ./src/index.js"
   },
   "keywords": [],
@@ -28,6 +29,7 @@
     "node-html-to-image": "^4.0.0",
     "pptxgenjs": "^3.12.0",
     "vue": "^3.4.15",
+    "vue-router": "^4.2.5",
     "ws": "^8.14.0"
   },
   "devDependencies": {

@@ -27,7 +27,7 @@ export default {
     }
   },
   mounted() {
-    console.log(`mounted`)
+    console.log(`gbutton mounted`)
   },
   template: `
   <ul>

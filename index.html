@@ -6,21 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link href="css/common.css" rel="stylesheet">
-  <link href="css/output.css" rel="stylesheet">
-
   <script type="importmap">
     { "imports": {
       "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
     }}
   </script>
   <!-- <script type="module" src="common/_client.js"></script> -->
-  <script type="module" src="src/main.js"></script>
-  <script src="src/data/all.js"></script>
-  
-  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+  <script src="js/all.js"></script>
 
+  <script type="module" src="src/main.js"></script>
+  
   <title>MXP Generator</title>
 </head>
 
@@ -30,15 +25,15 @@
     <ins>=</ins>
   </header>
 
-  <textarea id="ver" style="height: 100px; margin-top: 5rem;"></textarea>
+  <textarea id="ver" style="height: 50px; margin-top: 5rem;"></textarea>
 
   <div id="app" class="mt-10"></div>
 
-  <button class="bbb">My Button</button>
-  <a href="#" class="bbb">My Button</a>
+  <button class="btn-yellow">My Button</button>
+  <a href="#" class="btn-yellow">My Button</a>
 
   <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 mt-10 p-4 lg:p-8">
-    <button hx-get="/src/data/hot_topic_v2.json"
+    <button hx-get="data/hot_topic_v2.json"
             hx-swap="innerHTML"
             hx-target="#content"
             mustache-template="sometemplate"
@@ -58,7 +53,7 @@
       <button class="py-2 px-4 rounded bg-blue-500 text-white flex-grow-0"
               type="button"
               hx-trigger="load, click"
-              hx-get="/src/data/hot_topic_v2.json" 
+              hx-get="data/hot_topic_v2.json" 
               nunjucks-template="gistlist"
               hx-target="#list"
               hx-swap="innerHTML">
@@ -117,12 +112,16 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.10/htmx.min.js" crossorigin="anonymous"></script>
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
   <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
   <script src="https://unpkg.com/mustache@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js"></script>  <!-- <script src="../js/htmx.min.js"></script> -->
+  
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
 
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
+
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" /> -->
 
   <script type="application/javascript">
     
