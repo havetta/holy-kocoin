@@ -19,15 +19,15 @@ server.get('/', (req, res) => {
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script src="//cdn.tailwindcss.com"></script>
         <script type="importmap">
           { "imports": {
-            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.js"
+            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
           }}
         </script>
         <script type="module" src="common/_client.js"></script>
         <script src="data/all.js"></script>
-        <link type="text/css" href="data/output.css">
+        <link href="css/common.css" rel="stylesheet">
+        <link href="css/output.css" rel="stylesheet">
       </head> <body>
         <div id="vueapp">${html}</div>
       </body>

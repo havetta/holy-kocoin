@@ -3,5 +3,5 @@ export default {
     return {
     }
   },
-  template: `AHoJ`
+  template: `for TESTING`
 }

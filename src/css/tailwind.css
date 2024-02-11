@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+.bbb {
+	@apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}
+@tailwind utilities;
+
+.btn {
+  @apply block bg-red-500;
+}
+.btn:hover {
+  @apply bg-blue-500;
+}
+@screen md {
+  .btn {
+    @apply inline-block;
+  }
+}

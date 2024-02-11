@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --no-warnings ./src/common/_server.js",
+    "dev": "npx tailwindcss -o ./src/css/output.css && node --no-warnings ./src/common/_server.js",
     "test": "node --no-warnings ./src/index.js"
   },
   "keywords": [],
@@ -28,6 +28,9 @@
     "ws": "^8.14.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.17",
+    "daisyui": "^4.6.2",
+    "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1"
   }
 }

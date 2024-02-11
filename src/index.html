@@ -1,12 +1,23 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+  <link href="css/common.css" rel="stylesheet">
+  <link href="css/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tailwind.css">
+
+  <script type="importmap">
+    { "imports": {
+      "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
+    }}
+  </script>
+  <script type="module" src="common/_client.js"></script>
+  <script src="data/all.js"></script>
+  
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
 
@@ -15,12 +26,14 @@
 
 <body>
   
-
-
   <header hx-get="header.html" hx-trigger="load">
     <ins>=</ins>
   </header>
 
+  <div id="vueapp" class="mt-10"></div>
+
+  <button class="bbb">My Button</button>
+  <a href="#" class="bbb">My Button</button>
 
   <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 mt-10 p-4 lg:p-8">
     <button hx-get="/src/data/hot_topic_v2.json"

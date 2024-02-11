@@ -3,7 +3,15 @@
 @tailwind utilities;
 
 @layer components {
-  button {
+  .btx {
     @apply py-2 px-5 bg-violet-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
   }
+}
+
+.btx {
+  @apply py-2 px-5 bg-green-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+}
+
+.btn {
+  @apply rounded-full bg-red-500;
 }
