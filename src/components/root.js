@@ -6,10 +6,8 @@ export default {
     }
   },
   template: `
-  <list></list>
-
-  <button @click="count++" class="bg-cyan-200 py-2 px-4 rounded mt-4">{{ count }}</button>
-
+  <list/>
+  <detail/>
   <button onclick="openDialog()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
     Open Modal
   </button>

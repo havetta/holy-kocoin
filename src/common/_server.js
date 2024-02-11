@@ -25,18 +25,18 @@ server.get('/', (req, res) => {
             "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.js"
           }}
         </script>
-        <script type="module" src="js/client.js"></script>
-        <script src="gen/all.js"></script>
-        <link type="text/css" href="css/output.css">
+        <script type="module" src="common/_client.js"></script>
+        <script src="data/all.js"></script>
+        <link type="text/css" href="data/output.css">
       </head> <body>
-        <div id="app">${html}</div>
+        <div id="vueapp">${html}</div>
       </body>
     </html>
     `);
   });
 });
 
-server.use(express.static('./src/mxp'));
+server.use(express.static('./src'));
 
 server.listen(3000, () => {
   console.log('listening on 3000');

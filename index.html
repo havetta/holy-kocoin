@@ -23,7 +23,7 @@
 
 
   <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 mt-10 p-4 lg:p-8">
-    <button hx-get="/src/mxp/gen/hot_topic_v2.json"
+    <button hx-get="/src/data/hot_topic_v2.json"
             hx-swap="innerHTML"
             hx-target="#content"
             mustache-template="sometemplate"
@@ -43,7 +43,7 @@
       <button class="py-2 px-4 rounded bg-blue-500 text-white flex-grow-0"
               type="button"
               hx-trigger="load, click"
-              hx-get="/src/mxp/gen/hot_topic_v2.json" 
+              hx-get="/src/data/hot_topic_v2.json" 
               nunjucks-template="gistlist"
               hx-target="#list"
               hx-swap="innerHTML">

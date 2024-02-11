@@ -1,7 +1,7 @@
 import nodeHtmlToImage from 'node-html-to-image'
 
 nodeHtmlToImage({
-  output: './dist/image.jpeg',
+  output: './src/data/image.jpeg',
   type: 'jpeg',
   html: `<html><head><meta name="viewport" content="width=1024px, initial-scale=1.0" /></head><body><iframe src="http://localhost:5500/src/mxp/" width=1024 height=768 /></body></html>`
 }).then(() => console.log('The image was created successfully!'))

@@ -1,5 +1,5 @@
 import { getExchange, state } from "../store.js";
-import { err, oneLine } from "../utils/logger.js";
+import { err, oneLine } from "./logger.js";
 
 ///////////////////////////////////////////////////////////
 export async function createOrder(side, amount, price) {
@@ -8,7 +8,6 @@ export async function createOrder(side, amount, price) {
   return res;
 }
 ///////////////////////////////////////////////////////////
-
 ///////////////////////////////////////////////////////////
 export async function createOrderStopPrice(side, amount, price, stopPrice) {
   const type = "limit"; // or market

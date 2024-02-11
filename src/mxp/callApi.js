@@ -53,5 +53,4 @@ console.log(res.data);
 
 // const string_output = readFileSync("path-to-file", 'utf8')
 
-writeFileSync ("dist/hot_topic_v2.json", JSON.stringify(res.data))
-writeFileSync ("src/mxp/gen/hot_topic_v2.json", JSON.stringify(res.data))
+writeFileSync ("src/data/hot_topic_v2.json", JSON.stringify(res.data))

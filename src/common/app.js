@@ -1,20 +1,24 @@
 // app.js (shared between server and client)
 import { createSSRApp } from "vue";
-import components from "./components.js"
+import components from "../datatypes/components.js"
+import state from "../datatypes/state.js"
 
 export function createApp(req) {
-  let component = req?.query?.goto;
+  let component = req?.query?.page;
   if (typeof window === 'object')
   {
     const urlParams = new URLSearchParams(window?.location?.search);
-    component = urlParams.get('goto');
+    component = urlParams.get('page');
   }
 
+  if (!component)
+    component = 'root';
+
   const app = createSSRApp({
-    data: () => ({ count: 1 }),
+    data: () => ({ state }),
     template: `
-      <${component} />
-    `,
+    <button @click="state.selectedId++">Add {{ state.selectedId }}</button>
+    <${component} />`,
   });
   
   components.forEach(c => app.component(c.name, c.component) );

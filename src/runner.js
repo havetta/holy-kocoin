@@ -1,7 +1,7 @@
 import { runWebSocket } from "./webSocket.js";
 // import { express } from "./server.js";
-import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } from "./helpers/priceTrends.js";
-import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./services/order.js";
+import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } from "./utils/priceTrends.js";
+import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./utils/order.js";
 import { conf, state, getExchange, initExchange } from "./store.js";
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
