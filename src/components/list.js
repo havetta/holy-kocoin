@@ -1,5 +1,4 @@
 import state from "../datatypes/state.js";
-import components from "../datatypes/components.js"
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {

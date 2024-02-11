@@ -1,3 +1,5 @@
+const template = `test component<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>`;
+
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     return {
@@ -6,5 +8,5 @@ export default {
   mounted() {
     console.log(`test component mounted`)
   },
-  template: `test component<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>x<br/>`
+  template: template,
 }
