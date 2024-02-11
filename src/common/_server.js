@@ -15,7 +15,8 @@ server.get('/', (req, res) => {
 
   renderToString(app).then((html) => {
     res.send(`
-    <!DOCTYPE html> <html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,8 +29,9 @@ server.get('/', (req, res) => {
         <script src="data/all.js"></script>
         <link href="css/common.css" rel="stylesheet">
         <link href="css/output.css" rel="stylesheet">
-      </head> <body>
-        <div id="vueapp">${html}</div>
+      </head>
+      <body>
+        <div id="app">${html}</div>
       </body>
     </html>
     `);

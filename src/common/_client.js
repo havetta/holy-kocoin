@@ -1,4 +1,4 @@
 // client.js
 import { createApp } from './app.js'
 
-createApp().mount('#vueapp')
+createApp().mount('#app')

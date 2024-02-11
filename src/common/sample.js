@@ -17,7 +17,7 @@ server.get('/', (req, res) => {
   renderToString(app).then((html) => {
     res.send(`
     <!DOCTYPE html><html><body>
-        <div id="vueapp">${html}</div>
+        <div id="app">${html}</div>
     </body></html>
     `)
   })
