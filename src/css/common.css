@@ -4,14 +4,22 @@
 
 @layer components {
   .btx {
-    @apply py-2 px-5 bg-violet-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+    @apply py-2 px-5 bg-cyan-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
   }
 }
 
-.btx {
-  @apply py-2 px-5 bg-green-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+.bbb {
+  @apply py-2 px-5 bg-yellow-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
 }
 
 .btn {
-  @apply rounded-full bg-red-500;
+  @apply block bg-green-500;
+}
+.btn:hover {
+  @apply bg-pink-300;
+}
+@screen md {
+  .btn {
+    @apply inline-block;
+  }
 }

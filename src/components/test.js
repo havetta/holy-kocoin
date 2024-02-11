@@ -3,5 +3,8 @@ export default {
     return {
     }
   },
-  template: `for TESTING`
+  mounted() {
+    console.log(`test component mounted`)
+  },
+  template: `for TESTING<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>`
 }

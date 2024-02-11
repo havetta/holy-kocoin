@@ -17,7 +17,7 @@ export function createApp(req) {
   const app = createSSRApp({
     data: () => ({ state }),
     template: `
-    <button @click="state.selectedId++">Add {{ state.selectedId }}</button>
+    <button class="btn" @click="state.selectedId++">Add {{ state.selectedId }}</button>
     <${component} />`,
   });
   

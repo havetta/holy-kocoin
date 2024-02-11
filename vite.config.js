@@ -7,4 +7,9 @@ export default defineConfig({
     port: 5555,
   },
   plugins: [vue()],
+  resolve: {
+    alias: {
+      vue: 'vue/dist/vue.esm-bundler.js',
+    },
+  },
 })

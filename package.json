@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "npx tailwindcss -o ./src/css/output.css && node --no-warnings ./src/common/_server.js",
+    "serve": "npx tailwindcss -i ./src/css/common.css -o ./src/css/output.css && node --no-warnings ./src/common/_server.js",
     "test": "node --no-warnings ./src/index.js"
   },
   "keywords": [],
