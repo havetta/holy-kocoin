@@ -2,7 +2,7 @@
 import { createSSRApp } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 
-import components from "../datatypes/components.js"
+import components from "../../datatypes/components.js"
 
 const server = express()
 

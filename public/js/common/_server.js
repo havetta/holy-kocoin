@@ -27,14 +27,15 @@ server.get('/', (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script type="importmap">
           { "imports": {
-            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
+            "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js",
+            "chart.js": "//cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm",
             "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
-            "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js"
+            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
           }}
         </script>
-        <script type="module" src="js/common/_client.js"></script>
-        <script src="js/all.js"></script>
-        <link href="css/output.css" rel="stylesheet">
+        <script type="module" crossorigin src="js/common/_client.js"></script>
+        <script defer crossorigin src="js/allglobal.js"></script>
+        <link rel="stylesheet" crossorigin href="css/output.css">
       </head>
       <body>
         <div id="app">${html}</div>

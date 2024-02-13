@@ -6,7 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <script src="js/all.js"></script>
+  <script type="importmap">
+    { "imports": {
+      "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
+      "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
+      "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js"
+    }}
+  </script>
+  
+  <script defer crossorigin src="js/allglobal.js"></script>
 
   <script type="module" src="src/main.js"></script>
   

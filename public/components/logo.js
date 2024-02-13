@@ -19,7 +19,7 @@ export default {
 
   template: `
   <mycomponent/>
-  <div class="logo" @click="router.push('/home')">
+  <div class="logo" @click="router?.push('/test')">
     <img src="/vite.svg" class="logo" alt="logo" />
   </div>
   `

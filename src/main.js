@@ -3,19 +3,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import './css/common.css'
 import App from './App.vue'
 import AppRoot from './AppRoot.vue'
-import components from "../public/js/datatypes/components.js"
+import components from "../public/datatypes/components.js"
 
-const home = { template: '<div>home</div>' }
-const conf = { template: '<div>conf</div>' }
-
+const routes = [{ path: '/', component: AppRoot }];
+components.forEach(c => routes.push({path: `/${c.name}`, component: c.instance}) );
 const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    { path: '/', component: AppRoot },
-    { path: '/home', component: home },
-    { path: '/conf', component: conf },
-    // { path: '/test', component: () => import('/src/component/test.vue')
-  ],
+  routes,
 })
 
 const app = createApp(App);

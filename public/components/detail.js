@@ -6,25 +6,13 @@ export default {
   setup(props, { attrs, emit, expose, slots }) {
     const instance = shallowRef({template:'<span></span>'});
 
-    const loadModule = async (modulePath) => {
-      try {
-        return await import(modulePath)
-      } catch (e) {
-        console.log(modulePath.split('?')?.[0])
-        console.warn(e)
-        await import(modulePath.split('?')?.[0])
-      }
-    }
-
     watch(() => state, async (old, cur) => {
       const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.name;
       try {
-        const module = await loadModule(`./${componentName}.js?t=${Date.now()}`);
-        instance.value = module.default;
+        instance.value = (await import(`../components/${componentName}.js?t=${Date.now()}`)).default;
       } catch(e) {
-        console.warn(e)
+        instance.value = (await import(`../components/${componentName}.js`)).default;
       }
-      // const componentImport = await import(`./${componentName}.js?t=${Date.now()}`);
     }, { deep: true });
 
     return {
