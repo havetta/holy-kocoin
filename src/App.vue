@@ -1,9 +1,14 @@
 <script setup>
-import test from './components/test.vue'
+  import { useRouter, useRoute } from 'vue-router'
+
+  const router = useRouter();
+  const route = useRoute();
+
+  function clickme() {
+    router.push('/conf');
+  };
 </script>
 
 <template>
-  <test />
   <router-view></router-view>
-  <root />
 </template>

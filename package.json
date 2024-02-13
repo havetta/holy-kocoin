@@ -8,9 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "npx tailwindcss -i ./src/css/common.css -o ./src/css/output.css && node --no-warnings ./src/common/_server.js",
-    "static": "node --no-warnings ./src/common/static.js",
-    "test": "node --no-warnings ./src/index.js"
+    "serve": "npx tailwindcss -i ./src/css/common.css -o ./public/css/output.css && node --no-warnings ./public/js/common/_server.js",
+    "static": "node --no-warnings ./public/js/common/static.js",
+    "compile": "node --no-warnings ./public/js/common/compile.js",
+    "test": "node --no-warnings ./src/test.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "axios": "^1.6.0",
     "axios-oauth-client": "^2.0.4",
     "ccxt": "^4.1.40",
+    "domino": "^2.1.6",
     "dotenv": "^16.3.0",
     "express": "^4.18.2",
     "fastify": "^4.24.3",
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
+    "@vue/compiler-sfc": "^3.4.19",
     "autoprefixer": "^10.4.17",
     "daisyui": "^4.6.2",
     "postcss": "^8.4.35",

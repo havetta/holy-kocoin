@@ -17,7 +17,7 @@
     <ins>=</ins>
   </header>
 
-  <main class="pt-20">
+  <main class="mt-12">
     <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 p-4 lg:p-8">
 
       <button hx-get="http://localhost:3333/price" hx-target="#rawcontent" class="btn bg-yellow-500">price</button>
@@ -27,8 +27,8 @@
       <button hx-get="http://localhost:3333/cancel?side=sell" hx-target="#rawcontent" class="btn bg-red-500">cancel sell</button>
       <button hx-get="http://localhost:3333/cancel?side=buy" hx-target="#rawcontent" class="btn bg-green-400">cancel buy</button>
 
-      <p id="jsonformated" class="m-8 text-sm"></p>
-      <p id="rawcontent" class="m-8 text-xs"></p>
+      <p id="jsonformated" class="m-10 text-sm"></p>
+      <p id="rawcontent" class="m-12 text-xs"></p>
 
       <aside class="flex items-center mb-1">
         <h1 class="flex-grow text-xl">Orders</h1>

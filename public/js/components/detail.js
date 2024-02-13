@@ -10,8 +10,9 @@ export default {
       try {
         return await import(modulePath)
       } catch (e) {
+        console.log(modulePath.split('?')?.[0])
         console.warn(e)
-        await import(modulePath.split('?')[0])
+        await import(modulePath.split('?')?.[0])
       }
     }
 

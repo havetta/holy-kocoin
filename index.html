@@ -6,12 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <script type="importmap">
-    { "imports": {
-      "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
-    }}
-  </script>
-  <!-- <script type="module" src="common/_client.js"></script> -->
   <script src="js/all.js"></script>
 
   <script type="module" src="src/main.js"></script>
@@ -25,14 +19,16 @@
     <ins>=</ins>
   </header>
 
-  <textarea id="ver" style="height: 50px; margin-top: 5rem;"></textarea>
+  <textarea id="ver" class="mt-12" style="height: 50px; margin-top: 5rem;"></textarea>
 
-  <div id="app" class="mt-10"></div>
+  <div id="app" class="mt-12"></div>
+
+  <hr class="m-10" />
 
   <button class="btn-yellow">My Button</button>
   <a href="#" class="btn-yellow">My Button</a>
 
-  <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 mt-10 p-4 lg:p-8">
+  <section hx-ext='client-side-templates' class="h-full bg-gray-200 text-gray-800 mt-12 p-4 lg:p-8">
     <button hx-get="data/hot_topic_v2.json"
             hx-swap="innerHTML"
             hx-target="#content"

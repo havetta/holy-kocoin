@@ -2,6 +2,12 @@
 import express from 'express';
 import { renderToString } from 'vue/server-renderer';
 import { createApp } from './app.js';
+import domino from 'domino';
+
+const winObj = domino.createWindow();
+global['window'] = winObj;
+global['document'] = winObj.document;
+global['location'] = winObj.location;
 
 const server = express();
 server.use(function(req, res, next) {
@@ -22,10 +28,11 @@ server.get('/', (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script type="importmap">
           { "imports": {
-            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
+            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
+            "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.global.prod.js"
           }}
         </script>
-        <script type="module" src="common/_client.js"></script>
+        <script type="module" src="js/common/_client.js"></script>
         <script src="js/all.js"></script>
         <link href="css/output.css" rel="stylesheet">
       </head>
@@ -37,7 +44,7 @@ server.get('/', (req, res) => {
   });
 });
 
-server.use(express.static('./src'));
+server.use(express.static('./public'));
 
 server.listen(3000, () => {
   console.log('listening on 3000');
