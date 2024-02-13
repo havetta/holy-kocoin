@@ -1,5 +1,5 @@
 import { h, ref } from 'vue'
-// import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 // import { useScriptTag, useStyleTag } from '@vueuse/core'  //  npm i @vueuse/core
 
 export default {
@@ -9,7 +9,7 @@ export default {
     const mycomponent = h('div', { class: 'bg-red-200', innerHTML: 'hello' })//, slots.default({ text: name.value }))
     return {
       mycomponent: mycomponent,
-      // router: $router,
+      router: useRouter(),
     };
   },
 

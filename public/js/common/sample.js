@@ -9,7 +9,7 @@ const server = express()
 server.get('/', (req, res) => {
   const app = createSSRApp({
     data: () => ({ count: 1 }),
-    template: `<list /><button @click="count++">{{ count }}</button>`
+    template: `<root/><button @click="count++">{{ count }}</button>`
   })
 
   components.forEach(c => app.component(c.name, c.component) );

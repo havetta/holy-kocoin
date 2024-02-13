@@ -3,7 +3,6 @@ import express from 'express';
 import { renderToString } from 'vue/server-renderer';
 import { createApp } from './app.js';
 import domino from 'domino';
-
 const winObj = domino.createWindow();
 global['window'] = winObj;
 global['document'] = winObj.document;
@@ -29,7 +28,8 @@ server.get('/', (req, res) => {
         <script type="importmap">
           { "imports": {
             "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
-            "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.global.prod.js"
+            "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
+            "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js"
           }}
         </script>
         <script type="module" src="js/common/_client.js"></script>

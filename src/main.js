@@ -3,8 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import './css/common.css'
 import App from './App.vue'
 import AppRoot from './AppRoot.vue'
-import components from "./datatypes/components.js"
-import state from "./datatypes/state"
+import components from "../public/js/datatypes/components.js"
 
 const home = { template: '<div>home</div>' }
 const conf = { template: '<div>conf</div>' }
