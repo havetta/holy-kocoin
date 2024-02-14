@@ -4,12 +4,12 @@ import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-rou
 import components from "../../datatypes/components.js"
 
 export function createApp(req) {
-  //let component = req?.query?.page;
   let component = req?.query?.page;
   if (typeof window === 'object')
   {
-    // component = (new URLSearchParams(window?.location?.search)).get('page');
-    component = window?.location?.hash?.replace('#/','');
+    component = (new URLSearchParams(window?.location?.search)).get('page');
+    if (!component)
+      component = window?.location?.hash?.replace('#/','');
   }
   else {
     console.log(req)
