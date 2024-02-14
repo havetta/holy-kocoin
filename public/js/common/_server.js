@@ -25,6 +25,7 @@ server.get('/', (req, res) => {
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <script type="importmap">
           { "imports": {
             "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js",
@@ -33,7 +34,7 @@ server.get('/', (req, res) => {
             "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
           }}
         </script>
-        <script type="module" crossorigin src="js/common/appshared.js"></script>
+        <script type="module" crossorigin src="js/common/appclient.js"></script>
         <script defer crossorigin src="js/allglobal.js"></script>
         <link rel="stylesheet" crossorigin href="css/output.css">
       </head>
