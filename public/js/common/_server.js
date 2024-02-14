@@ -1,7 +1,7 @@
 // https://vuejs.org/guide/scaling-up/ssr.html
 import express from 'express';
 import { renderToString } from 'vue/server-renderer';
-import { createApp } from './app.js';
+import { createApp } from './appshared.js';
 import domino from 'domino';
 const winObj = domino.createWindow();
 global['window'] = winObj;
@@ -33,7 +33,7 @@ server.get('/', (req, res) => {
             "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
           }}
         </script>
-        <script type="module" crossorigin src="js/common/_client.js"></script>
+        <script type="module" crossorigin src="js/common/appshared.js"></script>
         <script defer crossorigin src="js/allglobal.js"></script>
         <link rel="stylesheet" crossorigin href="css/output.css">
       </head>

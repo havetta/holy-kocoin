@@ -9,8 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "serve": "npx tailwindcss -i ./src/css/common.css -o ./public/css/output.css && node --no-warnings ./public/js/common/_server.js",
-    "static": "node --no-warnings ./public/js/common/static.js",
-    "compile": "node --no-warnings ./public/js/common/compile.js",
+    "static": "node --no-warnings ./public/js/common/_static.js",
+    "compile": "node --no-warnings ./public/js/common/_compile.js",
     "test": "node --no-warnings ./src/test.js"
   },
   "keywords": [],

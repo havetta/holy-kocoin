@@ -1,4 +1,4 @@
-// app.js (shared between server and client)
+// appshared.js (shared between server and client)
 import { createSSRApp } from "vue";
 import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
 import components from "../../datatypes/components.js"
