@@ -31,7 +31,7 @@ server.get('/', (req, res) => {
             "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js",
             "chart.js": "//cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm",
             "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
-            "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
+            "vue": "/js/vue.esm-browser.prod.js"
           }}
         </script>
         <script type="module" crossorigin src="js/common/appclient.js"></script>

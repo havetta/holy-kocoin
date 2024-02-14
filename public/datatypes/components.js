@@ -10,6 +10,7 @@ import logo from "../components/logo.js";
 import preview from "../components/preview.js";
 import sidebar from "../components/sidebar.js";
 import test from "../components/test.js";
+import test2 from "../components/test2.js";
 
 export default [
   { name: "root", instance: root },
@@ -22,4 +23,5 @@ export default [
   { name: "preview", instance: preview },
   { name: "sidebar", instance: sidebar },
   { name: "test", instance: test },
+  { name: "test2", instance: test2 },
 ];
