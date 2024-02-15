@@ -42,10 +42,10 @@ server.get('/', (req, res) => {
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <script type="importmap">
           { "imports": {
-            "@vue/devtools-api": "/js/devtools-api",
-            "chart.js": "js/chart.js",
-            "vue-router": "/js/vue-router.esm-browser.js",
-            "vue": "/js/vue.esm-browser.prod.js"
+            "@vue/devtools-api": "/npm/devtools-api/index.js",
+            "chart.js": "/npm/chart.js",
+            "vue-router": "/npm/vue-router.esm-browser.js",
+            "vue": "/npm/vue.esm-browser.prod.js"
           }}
         </script>
         <script type="module" crossorigin src="js/common/appclient.js"></script>

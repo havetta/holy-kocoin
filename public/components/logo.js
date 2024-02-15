@@ -22,9 +22,9 @@ export default {
 <div class="logo" @click="router?.push('/test')">
   <img src="/vite.svg" class="logo" alt="logo" />
 </div>
-<a href="/?page=test" class="btn-blue m-6">
-  <h1>Open component TEST</h1>
-</a>
+<button href="/?page=test" class="btn-blue m-6">
+  <h1>button</h1>
+</button>
 <a href="/?page=test2" class="btn-green m-6">
   <h1>Open component TEST2</h1>
 </a>

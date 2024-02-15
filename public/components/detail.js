@@ -18,6 +18,7 @@ export default {
     return {
       state,
       instance,
+      del: () => {},
       save: () => {
         console.log(state?.value?.list?.find(i => i?.id === state?.value?.selectedId));
         post({
@@ -33,18 +34,16 @@ export default {
     <form>
       <label for="name">Name</label>
       <input :value="state.list.find(i => i?.id === state.selectedId)?.name" placeholder="Name" type="text" />
-      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.html" placeholder="Html"></textarea>
-      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.script" placeholder="Script"></textarea>
+      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.texthtml" placeholder="Html"></textarea>
+      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.textscript" placeholder="Script"></textarea>
     </form>
 
-    <component :is="instance"></component>
-
-    <button class="btn-blue">
-      Blue
+    <button class="btn-blue" @click="save()">
+      Save
     </button>
 
-    <button class="btn-green" @click="save()">
-      Save
+    <button class="btn-green" @click="del()">
+      Delete
     </button>
   </div>
   `

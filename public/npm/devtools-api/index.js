@@ -1,8 +1,6 @@
 import { getTarget, getDevtoolsGlobalHook, isProxyAvailable } from './env.js';
 import { HOOK_SETUP } from './const.js';
 import { ApiProxy } from './proxy.js';
-export * from './api/index.js';
-export * from './plugin.js';
 export * from './time.js';
 export function setupDevtoolsPlugin(pluginDescriptor, setupFn) {
     const descriptor = pluginDescriptor;
