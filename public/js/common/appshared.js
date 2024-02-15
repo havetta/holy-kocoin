@@ -1,22 +1,22 @@
 // appshared.js (shared between server and client)
 import { createSSRApp } from "vue";
 import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
-import components from "../../datatypes/components.js"
 
-export function createApp(req) {
-  let component = req?.query?.page;
+export async function createApp(req) {
+  let microsite = req?.query?.page ?? 'mxp';
+  if (typeof window === 'object')
+    microsite = (new URLSearchParams(window?.location?.search))?.get('microsite') ?? 'mxp';
+  const components = (await import(`../../datatypes/${microsite}/__generated!__.js?t=${Date.now()}`)).default;
+
+  let component = req?.query?.page ?? 'root';
   if (typeof window === 'object')
   {
     component = (new URLSearchParams(window?.location?.search)).get('page');
     if (!component)
       component = window?.location?.hash?.replace('#/','');
+    if (!component)
+      component = 'root';
   }
-  else {
-    console.log(req)
-  }
-
-  if (!component)
-    component = 'root';
 
   const app = createSSRApp({ template: `<${component} />` });
 

@@ -1,2 +1,2 @@
 import { createApp } from './appshared.js'
-createApp().mount('#app')
+(await createApp()).mount('#app')

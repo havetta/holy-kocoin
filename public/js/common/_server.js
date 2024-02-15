@@ -29,8 +29,8 @@ server.post('/post', (req, res) => {
 
 server.post('/componentput', componentput );
 
-server.get('/', (req, res) => {
-  const app = createApp(req);
+server.get('/', async (req, res) => {
+  const app = await createApp(req);
 
   renderToString(app).then((html) => {
     res.send(`

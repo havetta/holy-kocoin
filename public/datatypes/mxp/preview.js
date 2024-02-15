@@ -1,5 +1,5 @@
 import { ref, shallowRef, watch} from "vue";
-import state from "../datatypes/state.js"
+import state from "../state.js"
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
@@ -8,9 +8,9 @@ export default {
     watch(() => state, async (old, cur) => {
       const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.name;
       try {
-        instance.value = (await import(`../components/${componentName}.js?t=${Date.now()}`)).default;
+        instance.value = (await import(`./${componentName}.js?t=${Date.now()}`)).default;
       } catch(e) {
-        instance.value = (await import(`../components/${componentName}.js`)).default;
+        instance.value = (await import(`./${componentName}.js`)).default;
       }
     }, { deep: true });
 
