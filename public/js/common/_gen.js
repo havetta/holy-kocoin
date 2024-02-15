@@ -1,12 +1,14 @@
-const sfcCompiler = require("@vue/compiler-sfc");
-const fs = require("fs");
-const glob = require("glob");
+import { readFileSync, writeFileSync} from 'fs';
+import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
+// const sfcCompiler = require("@vue/compiler-sfc");
 
 const COMPONENT_START = "export default defineComponent({";
 
-function convertSFC(filePath) {
+function generateSFC(filePath) {
   try {
-    fs.readFile(filePath, "utf8", (err, data) => {
+    console.log(`Convert ${filePath}`);
+    return;
+    readFileSync(filePath, "utf8", (err, data) => {
       if (err) {
         console.log(err);
       } else {
@@ -28,8 +30,8 @@ function convertSFC(filePath) {
               justScript.substring(0, startPos + COMPONENT_START.length) +
               templateLine +
               justScript.substring(startPos + COMPONENT_START.length);
-          fs.writeFile(
-            filePath.replace("vue", "ts"),
+          writeFileSync(
+            filePath.replace("vue", "js"),
             scriptAndTemplate,
             (err) => {
               if (err) throw err;
@@ -46,9 +48,12 @@ function convertSFC(filePath) {
   }
 }
 
-glob("**/*.vue", {}, (err, files) => {
+const jsfiles = await glob('./public/components/**/*.js', { ignore: 'node_modules/**' })
+jsfiles.forEach(f => generateSFC(f) );
+
+glob("**/*.js", {}, (err, files) => {
   console.log(`Convert ${files.length} SFCs...`);
   files.forEach((filePath) => {
-    convertSFC(filePath);
+    generateSFC(filePath);
   });
 });

@@ -1,19 +1,33 @@
 // https://vuejs.org/guide/scaling-up/ssr.html
 import express from 'express';
+import bodyParser from "body-parser";
+import domino from 'domino';
 import { renderToString } from 'vue/server-renderer';
 import { createApp } from './appshared.js';
-import domino from 'domino';
+import { componentput } from './serverapi/componentput.js';
+
 const winObj = domino.createWindow();
 global['window'] = winObj;
 global['document'] = winObj.document;
 global['location'] = winObj.location;
 
 const server = express();
+
+server.use(express.static('./public'));
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: true}));
+
 server.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "localhost"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+server.post('/post', (req, res) => {
+  res.send({ status: 'ok', message: 'post works' });
+});
+
+server.post('/componentput', componentput );
 
 server.get('/', (req, res) => {
   const app = createApp(req);
@@ -28,9 +42,9 @@ server.get('/', (req, res) => {
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <script type="importmap">
           { "imports": {
-            "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js",
-            "chart.js": "//cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm",
-            "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
+            "@vue/devtools-api": "/js/devtools-api",
+            "chart.js": "js/chart.js",
+            "vue-router": "/js/vue-router.esm-browser.js",
             "vue": "/js/vue.esm-browser.prod.js"
           }}
         </script>
@@ -45,8 +59,6 @@ server.get('/', (req, res) => {
     `);
   });
 });
-
-server.use(express.static('./public'));
 
 server.listen(3000, () => {
   console.log('listening on 3000');

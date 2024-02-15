@@ -19,7 +19,7 @@ export default {
   </select>
 
   <button @click="addnew" class="btn btn-primary">Add</button>
-  <button @click="addnew" class="buton">Add New</button>
+  <button @click="addnew" class="btn-cyan">Add New</button>
   <ul>
     <li v-for="item in state.list">{{ item.name }}</li>
   </ul>

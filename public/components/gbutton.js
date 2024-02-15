@@ -30,15 +30,15 @@ export default {
     console.log(`gbutton mounted`)
   },
   template: `
+  <button @click="additup()" class="bg-blue-400 rounded-full p-2 text-xl">
+    Buy Amount {{ state.count }}
+  </button>
+  
   <ul>
     <li
       v-for="item in groceryList"
       :id="item"
       >{{ item.id }}</li>
   </ul>
-
-  <button @click="additup()" class="bg-yellow-400 rounded-full p-2 text-xl">
-    Buy Amount {{ state.count }}
-  </button>
   `
 }

@@ -1,6 +1,6 @@
-import { ref, shallowRef, watch} from "vue";
+import { shallowRef, watch} from "vue";
 import state from "../datatypes/state.js"
-import components from "../datatypes/components.js"
+import { post } from "../js/common/shared.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
@@ -16,8 +16,16 @@ export default {
     }, { deep: true });
 
     return {
-      instance,
       state,
+      instance,
+      save: () => {
+        console.log(state?.value?.list?.find(i => i?.id === state?.value?.selectedId));
+        post({
+          id: crypto.randomUUID(),
+          name: "Change.This.Name",
+          html: state?.value?.list?.find(i => i?.id === state?.value?.selectedId)?.html
+        });
+      },
     }
   },
   template: `
@@ -25,17 +33,18 @@ export default {
     <form>
       <label for="name">Name</label>
       <input :value="state.list.find(i => i?.id === state.selectedId)?.name" placeholder="Name" type="text" />
-      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.template" placeholder="Template"></textarea>
+      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.html" placeholder="Html"></textarea>
+      <textarea :value="state.list.find(i => i?.id === state.selectedId)?.script" placeholder="Script"></textarea>
     </form>
 
     <component :is="instance"></component>
 
-    <button class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded">
+    <button class="btn-blue">
       Blue
     </button>
 
-    <button class="btn-green">
-      Green
+    <button class="btn-green" @click="save()">
+      Save
     </button>
   </div>
   `
