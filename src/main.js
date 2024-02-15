@@ -7,7 +7,9 @@ import AppRoot from './AppRoot.vue'
 let microsite = (new URLSearchParams(window.location.search)).get('microsite');
 if (!microsite)
   microsite = 'mxp';
-const components = (await import(`/datatypes/${microsite}/__generated!__.js?t=${Date.now()}`)).default;
+const importname = `/datatypes/${microsite}/__generated!__.js?t=${Date.now()}`;
+const imp = await import(/* @vite-ignore */importname);
+const components = imp.default;
 
 const routes = [{ path: '/', component: AppRoot }];
 components.forEach(c => routes.push({path: `/${c.name}`, component: c.instance}) );

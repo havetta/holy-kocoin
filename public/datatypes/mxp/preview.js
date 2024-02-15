@@ -1,16 +1,19 @@
-import { ref, shallowRef, watch} from "vue";
+import { reactive, ref, shallowRef, watch} from "vue";
 import state from "../state.js"
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
-    const instance = shallowRef({template:'<span></span>'});
+    let instance = reactive({template:'<span></span>'});
 
     watch(() => state, async (old, cur) => {
       const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.name;
       try {
-        instance.value = (await import(`./${componentName}.js?t=${Date.now()}`)).default;
+        const component = (await import(/* @vite-ignore */`./${componentName}.js?t=${Date.now()}`)).default;
+        console.log(component);
+        instance = component;
       } catch(e) {
-        instance.value = (await import(`./${componentName}.js`)).default;
+        console.log(e);
+        instance = (await import(/* @vite-ignore */`./${componentName}.js`)).default;
       }
     }, { deep: true });
 

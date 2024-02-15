@@ -13,6 +13,7 @@ export default defineConfig({
   },
   server: {
     port: 5555,
+    hmr: { overlay: false },
   },
   plugins: [vue()],
   resolve: {
