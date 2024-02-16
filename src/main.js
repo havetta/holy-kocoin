@@ -3,13 +3,11 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import './css/common.css'
 import App from './App.vue'
 import AppRoot from './AppRoot.vue'
+import components from '../public/datatypes/__mxp/__generated.js'
 
-let microsite = (new URLSearchParams(window.location.search)).get('microsite');
-if (!microsite)
-  microsite = 'mxp';
-const importname = `/datatypes/${microsite}/__generated!__.js?t=${Date.now()}`;
-const imp = await import(/* @vite-ignore */importname);
-const components = imp.default;
+// let microsite = (new URLSearchParams(window.location.search)).get('microsite') ?? '__mxp';
+// const imp = await import(/* @vite-ignore */`/datatypes/${microsite}/__generated.js?t=${Date.now()}`);
+// const components = imp.default;
 
 const routes = [{ path: '/', component: AppRoot }];
 components.forEach(c => routes.push({path: `/${c.name}`, component: c.instance}) );

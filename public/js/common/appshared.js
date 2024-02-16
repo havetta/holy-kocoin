@@ -3,10 +3,10 @@ import { createSSRApp } from "vue";
 import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
 
 export async function createApp(req) {
-  let microsite = req?.query?.page ?? 'mxp';
+  let microsite = req?.query?.page ?? '__mxp';
   if (typeof window === 'object')
-    microsite = (new URLSearchParams(window?.location?.search))?.get('microsite') ?? 'mxp';
-  const components = (await import(`../../datatypes/${microsite}/__generated!__.js?t=${Date.now()}`)).default;
+    microsite = (new URLSearchParams(window?.location?.search))?.get('microsite') ?? '__mxp';
+  const components = (await import(`../../datatypes/${microsite}/__generated.js?t=${Date.now()}`)).default;
 
   let component = req?.query?.page ?? 'root';
   if (typeof window === 'object')
