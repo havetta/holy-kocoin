@@ -31,7 +31,7 @@ export default {
           </thead>
           <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
             <tr v-for="item in state.list">
-              <td @click="pick(item)" class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+              <td @click="pick(item)" class="w-full px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                 <div class="inline-flex items-center gap-x-3">
                   <input type="checkbox" class="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700">
 
