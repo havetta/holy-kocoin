@@ -8,9 +8,9 @@ export default {
     watch(() => state, async (old, cur) => {
       const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.name;
       try {
-        instance.value = (await import(/* @vite-ignore */`/datatypes/__mxp/${componentName}.js?t=${Date.now()}`)).default;
+        instance.value = (await import(/* @vite-ignore */`../__mxp/${componentName}.js?t=${Date.now()}`)).default;
       } catch(e) {
-        instance.value = (await import(/* @vite-ignore */`/datatypes/__mxp/${componentName}.js`)).default;
+        instance.value = (await import(/* @vite-ignore */`../__mxp/${componentName}.js`)).default;
       }
     }, { deep: true });
 
