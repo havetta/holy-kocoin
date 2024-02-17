@@ -4,7 +4,8 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    target: 'esnext'
+    target: 'esnext',
+    outDir: 'mxp'
   },
   esbuild: {
     supported: {
