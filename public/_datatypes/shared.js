@@ -1,6 +1,6 @@
 
-export async function post(data) {
-  const rawResponse = await fetch('/post', {
+export async function post(url, data) {
+  const rawResponse = await fetch(url, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -8,7 +8,8 @@ export async function post(data) {
     },
     body: JSON.stringify(data)
   });
+  
   const content = await rawResponse.json();
   
-  console.log(content);
+  console.warn(content);
 }

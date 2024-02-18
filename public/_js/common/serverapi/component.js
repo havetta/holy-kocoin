@@ -1,45 +1,46 @@
 import express from 'express';
+import { readFileSync, writeFileSync} from "fs";
+
 const router = express.Router();
 router.use(express.json());
 
-const articles = [{
-    id: 1,
-    title: "node is awesome",
-    time_posted: new Date().toISOString()
+const components = [{
+  id: 1,
+  acronym: "root",
+  texthtml: new Date().toISOString()
 },
 {
-    id: 2,
-    title: "i love cats",
-    time_posted: new Date().toISOString()
+  id: 2,
+  acronym: "list",
+  texthtml: new Date().toISOString()
 },
 {
-    id: 3,
-    name: "learning to program",
-    time_posted: new Date().toISOString()
+  id: 3,
+  acronym: "detail",
+  texthtml: new Date().toISOString()
 }];
 
 router.get("/", (req, res) => {
-    res.json(articles);
+  res.json(components);
 });
 router.get("/:id", (req, res) => {
-    const results = articles.filter(article => article.id == req.params.id);
-    res.json(results);
+  const results = components.filter(article => article.id == req.params.id);
+  res.json(results);
 });
 router.post("/", (req, res) => {
-    const {id, name, age} = req.body;
-    articles.push({id, name, age});
-    res.json({success: true, message: "added"});
+  const {id, acronym, texthtml} = req.body;
+  components.push({id, acronym, texthtml});
+  res.json({success: true, message: "added"});
 });
 router.put("/", (req, res) => {
-    const { id, new_name } = req.body;
-    articles[id-1].name = new_name;
-    res.json({success: true, message: "updated"});
+  const { id, acronym } = req.body;
+  components[id-1].acronym = acronym;
+  res.json({success: true, message: "updated"});
 });
 router.delete("/", (req, res) => {
-    const { id } = req.body;
-    articles.splice(id-1, id);
-    res.json({success: true, message: "deleted"});
-    
+  const { id } = req.body;
+  components.splice(id-1, id);
+  res.json({success: true, message: "deleted"});
 });
 
 export default router;

@@ -9,10 +9,10 @@ export default {
       del: () => {},
       save: () => {
         console.log(state?.value?.list?.find(i => i?.id === state?.value?.selectedId));
-        post({
+        post("/components/", {
           id: crypto.randomUUID(),
-          name: "Change.This.Name",
-          html: state?.value?.list?.find(i => i?.id === state?.value?.selectedId)?.html
+          acronym: "Change.This.Name",
+          texthtml: state?.value?.list?.find(i => i?.id === state?.value?.selectedId)?.html
         });
       },
     }
