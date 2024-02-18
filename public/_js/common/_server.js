@@ -1,10 +1,10 @@
 // https://vuejs.org/guide/scaling-up/ssr.html
 import express from 'express';
-import bodyParser from "body-parser";
 import domino from 'domino';
 import { renderToString } from 'vue/server-renderer';
 import { createApp } from './appshared.js';
-import { componentput } from './serverapi/componentput.js';
+import microsite from "./serverapi/microsite.js";
+import component from "./serverapi/component.js";
 
 const winObj = domino.createWindow();
 global['window'] = winObj;
@@ -13,9 +13,12 @@ global['location'] = winObj.location;
 
 const server = express();
 
+server.use("/microsite", microsite);
+server.use("/component", component);
+
 server.use(express.static('./public'));
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({extended: true}));
+server.use(express.json());
+server.use(express.urlencoded({extended: true}));
 
 server.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "localhost"); // update to match the domain you will make the request from
@@ -26,8 +29,6 @@ server.use(function(req, res, next) {
 server.post('/post', (req, res) => {
   res.send({ status: 'ok', message: 'post works' });
 });
-
-server.post('/componentput', componentput );
 
 server.get('/', async (req, res) => {
   const app = await createApp(req);
@@ -42,15 +43,16 @@ server.get('/', async (req, res) => {
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <script type="importmap">
           { "imports": {
-            "@vue/devtools-api": "/npm/devtools-api/index.js",
-            "chart.js": "/npm/chart.js",
-            "vue-router": "/npm/vue-router.esm-browser.js",
-            "vue": "/npm/vue.esm-browser.prod.js"
+            "@vue/devtools-api": "./_npm/devtools-api/index.js",
+            "chart.js": "./_npm/chart.js",
+            "vue-router": "./_npm/vue-router.esm-browser.js",
+            "vue": "./_npm/vue.esm-browser.prod.js"
           }}
         </script>
-        <script type="module" crossorigin src="js/common/appclient.js"></script>
-        <script defer crossorigin src="js/allglobal.js"></script>
-        <link rel="stylesheet" crossorigin href="css/output.css">
+        <script type="module" crossorigin src="_js/common/appclient.js"></script>
+        <script defer crossorigin src="_js/__allgenerated.js"></script>
+        <link rel="stylesheet" crossorigin href="_css/__allgenerated.css">
+        <link rel="stylesheet" crossorigin href="_css/output.css">
       </head>
       <body>
         <div id="app">${html}</div>
