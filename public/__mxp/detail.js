@@ -1,6 +1,6 @@
 import { shallowRef, watch} from "vue";
-import state from "../state.js"
-import { post } from "../shared.js";
+import state from "../datatypes/state.js"
+import { post } from "../datatypes/shared.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {

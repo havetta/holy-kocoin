@@ -18,7 +18,8 @@ export function componentput(request, respond) {
 
 
 // express js router two api post methods save json array of objects on disk remove specific entry by id from file on disk json data array of objects properties id name description
-Certainly! Let’s break down your requirements step by step:
+
+/*Certainly! Let’s break down your requirements step by step:
 
 Express.js Router with Two API POST Methods:
 To create an Express.js router with two API POST methods, you can define your routes using the Express Router. Here’s a basic example:
@@ -85,3 +86,4 @@ fs.readFile('organizations.json', 'utf8', (err, data) => {
         });
     }
 });
+*/
