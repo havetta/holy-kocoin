@@ -30,6 +30,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const {id, acronym, texthtml} = req.body;
   components.push({id, acronym, texthtml});
+  writeFileSync(`public/${state.microsite}`, JSON.stringify(res.data));
   res.json({success: true, message: "added"});
 });
 router.put("/", (req, res) => {
