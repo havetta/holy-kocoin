@@ -17,6 +17,7 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
   const microsite = req.query?.microsite?.toLowerCase();
+  console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000)
   console.log(JSON.stringify(req.body));
   writeFileSync(`public/${microsite}/__${req.body?.acronym}.js`, JSON.stringify(req.body, null, "\t"));
   res.status(201).json({ status: 'ok' })

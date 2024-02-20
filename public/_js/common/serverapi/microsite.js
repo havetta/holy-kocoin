@@ -4,21 +4,10 @@ import { readFileSync, writeFileSync} from "fs";
 const router = express.Router();
 router.use(express.json());
 
-const microsite = [{
-  id: 1,
-  acronym: "__mxp",
-  description: 23
-},
-{
-  id: 2,
-  acronym: "microtest",
-  description: 26
-},
-{
-  id: 3,
-  acronym: "powerpoint",
-  description: 24
-}];
+const microsite = [
+  { id: 1, acronym: "__mxp", description: 23 },
+  { id: 2, acronym: "microtest", description: 26 },
+  { id: 3, acronym: "powerpoint", description: 24 }];
 
 router.get("/", (req, res) => {
   res.json(microsite);
