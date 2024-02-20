@@ -6,9 +6,9 @@ export default {
     return {
       state,
       create: () => {
-        state.value.list.push({
+        state.value.list.unshift({
           id: crypto.randomUUID(),
-          name: "Change.This.Name",
+          acronym: "Change_This_Acronym",
         });
       },
       publish: () => {

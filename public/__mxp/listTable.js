@@ -38,7 +38,7 @@ export default {
                   <div class="flex items-center gap-x-2">
                     <div>
                       <h2 class="font-normal text-gray-800 dark:text-white ">
-                        {{ item?.name }}
+                        {{ item?.acronym }}
                       </h2>
                       <p class="text-xs font-normal text-gray-500 dark:text-gray-400">{{ item?.id }}</p>
                     </div>
