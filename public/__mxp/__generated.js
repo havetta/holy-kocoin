@@ -11,7 +11,7 @@ import preview from "./preview.js";
 import sidebar from "./sidebar.js";
 import test from "./test.js";
 import test2 from "./test2.js";
-
+//||
 export default [
   { name: "root", instance: root },
   { name: "detail", instance: detail },

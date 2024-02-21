@@ -18,7 +18,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const {id, acronym, description} = req.body;
   microsite.push({id, acronym, description});
-  writeFileSync ("public/templates/", JSON.stringify(res.data))
+  writeFileSync ("public/templates/", JSON.stringify(req.body, null, "\t"))
   res.json({success: true, message: "added"});
 });
 router.put("/", (req, res) => {
