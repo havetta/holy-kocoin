@@ -18,10 +18,10 @@ export default {
   // },
 
   template: `
-  <div class="flex flex-col min-h-screen bg-gray-100">
+  <div class="flex flex-col min-h-screen">
     <div class="hero flex flex-col items-center justify-center bg-cover bg-no-repeat py-20">
-      <h1 class="text-5xl font-bold text-white text-center">Innovating AI Needs Focus</h1>
-      <p class="text-xl text-white text-center mt-4">
+      <h1 class="text-5xl font-bold text-center">Innovating AI Needs Focus</h1>
+      <p class="text-xl text-center mt-4">
         "SAP's Business AI in Industries & CX uses computational and generative AI technologies 
         to solve customer specific business problems, leveraging data from across enterprise."
       </p>

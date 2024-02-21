@@ -77,13 +77,18 @@ export default {
   </div>
 </aside>
 
-<dialog id="createMicrosite" class="bg-white rounded-md p-4">
-  <section class="block max-w-sm p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+<dialog id="createMicrosite" class="bg-white rounded-md p-4 w-[600px]">
+  <section class="block max-w p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
     <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Create Microsite</h5>
     <article class="font-normal text-gray-700 dark:text-gray-400">
       <form class="max-w-sm mx-auto">
-        <input type="text" id="disabled-input" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="One work abbreviation" disabled>
-        <input type="text" id="disabled-input-2" aria-label="disabled input 2" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="Description" disabled readonly>
+        <input type="text" id="disabled-input" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="One word abbreviation" disabled>
+        <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="texthtml">
+          Description
+        </label>
+        <textarea rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+      </div>
       </form>
     </article>
   </section>
@@ -92,8 +97,8 @@ export default {
   </button>
 </dialog>
 
-<dialog id="openMicrosite" class="bg-white rounded-md p-4">
-  <section class="block max-w-sm p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+<dialog id="openMicrosite" class="bg-white rounded-md p-4 w-[600px]">
+  <section class="block max-w p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
     <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Open Microsite</h5>
     <p class="font-normal text-gray-700 dark:text-gray-400">Select Microsite to open from the list bellow:</p>
     <ul class="mt-6 w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
