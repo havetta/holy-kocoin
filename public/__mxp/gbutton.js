@@ -30,8 +30,8 @@ export default {
     console.log(`gbutton mounted`)
   },
   template: `
-  <button @click="additup()" class="bg-blue-400 rounded-full p-2 text-xl">
-    Buy Amount {{ state.count }}
+  <button @click="additup()" class="bg-blue-400 text-white rounded-full m-8 p-2 text-xl">
+    Add item {{ state.count }}
   </button>
   
   <ul>

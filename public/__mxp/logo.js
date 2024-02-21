@@ -22,15 +22,15 @@ export default {
     <div class="hero flex flex-col items-center justify-center bg-cover bg-no-repeat py-20">
       <h1 class="text-5xl font-bold text-center">Innovating AI Needs Focus</h1>
       <p class="text-xl text-center mt-4">
-        "SAP's Business AI in Industries & CX uses computational and generative AI technologies 
+        "Business AI in Industries & CX uses computational and generative AI technologies 
         to solve customer specific business problems, leveraging data from across enterprise."
       </p>
       <a href="/?page=test2" class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-8 inline-block">Get Started</a>
     </div>
     <div class="business-ai px-4 py-16 bg-gray-200">
-      <h2 class="text-3xl font-bold text-center">SAP's Business AI in Industries & CX</h2>
+      <h2 class="text-3xl font-bold text-center">Business AI in Industries & CX</h2>
       <p class="text-lg text-center my-4">
-        It is offered as an embedded cloud native capability OR combined with SAP and Partner 
+        It is offered as an embedded cloud native capability OR combined with partner 
         business themes, we support our customers embrace AI in a sustainable and value-focused way 
         to keep their edge as an intelligent enterprise.
       </p>
@@ -43,7 +43,7 @@ export default {
       </div>
       <div class="ai-capability bg-white border rounded-md p-4 text-center">
         <h3 class="text-xl font-bold mb-2">Product Marketing</h3>
-        <p class="text-base">Why SAP/Differentiator</p>
+        <p class="text-base">Why Differentiator</p>
       </div>
       <div class="ai-capability bg-white border rounded-md p-4 text-center">
         <h3 class="text-xl font-bold mb-2">Industry Solution Marketing</h3>

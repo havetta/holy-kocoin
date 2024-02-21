@@ -1,27 +1,49 @@
 // appshared.js (shared between server and client)
-import { createSSRApp } from "vue";
+import { createSSRApp, ref } from "vue";
 import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
 
-export async function createApp(req) {
-  let microsite = req?.query?.page ?? '__mxp';
-  if (typeof window === 'object')
-    microsite = (new URLSearchParams(window?.location?.search))?.get('microsite') ?? '__mxp';
-  const components = (await import(`../../${microsite}/__generated.js?t=${Date.now()}`)).default;
+const _microsite = ref('');
+const _component = ref('');
 
-  let component = req?.query?.page ?? 'root';
+
+
+const processUrl = (req) => {
+  let query = Object.keys(req?.query ?? {})?.[0] ?? '__mxp';
+  let hash = new String(query).replace('#/','').split('/');
+  let microsite = hash?.[0];
+  let component = hash?.[1];
+
   if (typeof window === 'object')
   {
-    component = (new URLSearchParams(window?.location?.search)).get('page');
-    if (!component)
-      component = window?.location?.hash?.replace('#/','');
-    if (!component)
-      component = 'root';
+    hash = new String(window?.location?.search).replace('?','').replace('#/','').split('/');
+    if (!hash)
+      hash = window?.location?.hash?.replace('#/','').split('/');
+
+    if (hash?.[0])
+      microsite = hash?.[0];
+    if (hash?.[1])
+      component = hash?.[1];
   }
 
-  const app = createSSRApp({ template: `<${component} />` });
+  if (!component)
+    component = 'root';
 
+  _microsite.value = microsite;
+  _component.value = component;
+};
+
+
+
+export async function createApp(req) {
+  processUrl(req);
+
+  const app = createSSRApp({ template: `<${_component.value} />` });
+  console.log(`microsite: ${_microsite.value}`)
+  console.log(`component: ${_component.value}`)
+
+  const components = (await import(`../../${_microsite.value}/__generated.js?t=${Date.now()}`)).default;
   const routes = [{ path: '/', component: components.find(c => c.name === 'root').instance }];
-  components.forEach(c => routes.push({path: `/${c.name}`, component: c.instance}) );
+  components.forEach(c => routes.push({path: `/${_microsite.value}/${c.name}`, component: c.instance}) );
 
   const router = createRouter({
     history: createWebHashHistory(),

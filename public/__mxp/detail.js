@@ -27,7 +27,7 @@ export default {
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="acronym">
           Acronym
-          <sup class="text-cyan-500 text-xs italic"> *** Don't use special chars.</sup>
+          <sup class="text-cyan-500 text-xs italic animate-pulse"> *** Don't use special chars.</sup>
         </label>
         <input :value="state.list.find(i => i?.id === state.selectedId)?.acronym" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="acronym" type="text" placeholder="Acronym">
       </div>
@@ -54,8 +54,17 @@ export default {
           </svg>
           Save
         </button>
-        <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
-          Delete
+
+        <button @click="del()" class="btn-nofill">
+          <svg class="w-5 h-5 group-hover:stroke-blue-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="group-hover:stroke-blue-700" d="M13 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V9L13 2Z" fill="#969CBA" fill-opacity="0.2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path class="group-hover:stroke-blue-700" d="M13 2V9H20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span>Delete</span>
+        </button>
+
+        <a href="?__mxp/test2" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+          Preview
         </a>
       </div>
 
