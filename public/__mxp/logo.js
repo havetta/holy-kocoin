@@ -19,14 +19,13 @@ export default {
 
   template: `
   <div class="flex flex-col min-h-screen bg-gray-100">
-    <div class="hero flex flex-col items-center justify-center bg-cover bg-no-repeat py-20" 
-         style="background-image: url('path/to/hero-image.jpg');">
+    <div class="hero flex flex-col items-center justify-center bg-cover bg-no-repeat py-20">
       <h1 class="text-5xl font-bold text-white text-center">Innovating AI Needs Focus</h1>
       <p class="text-xl text-white text-center mt-4">
         "SAP's Business AI in Industries & CX uses computational and generative AI technologies 
         to solve customer specific business problems, leveraging data from across enterprise."
       </p>
-      <a href="#" class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-8 inline-block">Get Started</a>
+      <a href="/?page=test2" class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-8 inline-block">Get Started</a>
     </div>
     <div class="business-ai px-4 py-16 bg-gray-200">
       <h2 class="text-3xl font-bold text-center">SAP's Business AI in Industries & CX</h2>
