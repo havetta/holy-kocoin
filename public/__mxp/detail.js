@@ -12,7 +12,7 @@ export default {
         console.log(selectedItem?.texthtml)
         console.log(selectedItem?.textscript)
         const microsite = `__mxp`;
-        fetchJson(`/component/?microsite=${microsite}`, 'post', {
+        fetchJson(`/component/?microsite=${microsite}`, 'put', {
           id: crypto.randomUUID(),
           acronym: "Change.This.Name",
           texthtml: selectedItem?.texthtml,
@@ -49,9 +49,8 @@ export default {
       <div class="flex items-center justify-between">
         <button @click="save()" class="flex items-center justify-center w-1/2 px-5 py-2 text-sm gap-x-2 tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg sm:w-auto hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600">
           <svg width="20" height="20" class="" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> 
             <path class="group-hover:stroke-blue-700" fill="#fff" stroke="#f00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M439.965,0H1.108v512h509.784V72.407L439.965,0z M74.251,73.143H293.68v110.823H74.251V73.143z M437.749,441.074H72.035 V257.108h365.714V441.074z M437.749,183.965h-70.926V73.143h42.625l28.302,29.339V183.965z">
-            </path> </g> </g> </g>
+            </path>
           </svg>
           Save
         </button>

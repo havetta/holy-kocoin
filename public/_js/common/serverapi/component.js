@@ -18,6 +18,40 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const microsite = req.query?.microsite?.toLowerCase();
   console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000)
+  console.log(JSON.stringify(req.body, null, "\t"));
+
+  // read state from disk
+  const dataFromStorage = readFileSync(`public/${microsite}/__componentList.js`, `utf8`);
+  
+  const fsjson = dataFromStorage.toString().split(`//||`);
+  const list = JSON.parse(fsjson[1]);
+  list.unshift(req.body);
+  console.log(list);
+
+  let out = 'import { ref } from "vue"; export default ref(//||\n';
+  out += JSON.stringify(list, null, "\t");
+  out += '\n//||\n)';
+
+  writeFileSync(`public/${microsite}/__componentList.js`, out);
+  
+  
+  const imports = list.map(c => `import ${c?.acronym} from "./${c?.acronym}.js"`);
+  const exports = list.map(c => `\n{ name: "${c?.acronym}", instance: ${c?.acronym} }`);
+  out = imports.join('\n');
+  out += `\nexport default [\n`
+  out += exports.join(', ');  
+  out += `]`;
+  writeFileSync(`public/${microsite}/__222.js`, out);
+  // recreate file __generated.js from state
+  // create file of component on disk
+
+  
+  res.status(201).json({ status: 'ok' })
+});
+
+router.put("/", (req, res) => {
+  const microsite = req.query?.microsite?.toLowerCase();
+  console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000)
   console.log(JSON.stringify(req.body));
 
   let out = '';
@@ -32,12 +66,6 @@ router.post("/", (req, res) => {
   
   writeFileSync(`public/${microsite}/__${req.body?.acronym}.js`, out);
   res.status(201).json({ status: 'ok' })
-});
-
-router.put("/", (req, res) => {
-  const { id, acronym } = req.body;
-  components[id-1].acronym = acronym;
-  res.json({success: true, message: "updated"});
 });
 
 router.delete("/", (req, res) => {

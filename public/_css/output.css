@@ -5113,6 +5113,10 @@ input[type=text]:focus {
   width: 4.5rem;
 }
 
+.w-\[600px\] {
+  width: 600px;
+}
+
 .w-auto {
   width: auto;
 }
