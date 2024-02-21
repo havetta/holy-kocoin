@@ -1,7 +1,7 @@
 
-export async function post(url, data) {
+export async function fetchJson(url, method, data) {
   const rawResponse = await fetch(url, {
-    method: 'POST',
+    method,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -9,7 +9,6 @@ export async function post(url, data) {
     body: JSON.stringify(data)
   });
   
-  const content = await rawResponse.json();
-  
-  console.warn(content);
+  const responce = await rawResponse.json();
+  console.log(responce);
 }

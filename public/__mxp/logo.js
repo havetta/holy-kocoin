@@ -18,31 +18,47 @@ export default {
   // },
 
   template: `
-<mycomponent/>
-<div class="logo" @click="router?.push('/test')">
-  <img src="/vite.svg" class="logo" alt="logo" />
-</div>
-<button href="/?page=test" class="btn-blue m-6">
-  <h1>button</h1>
-</button>
-<a href="/?page=test2" class="btn-green m-6">
-  <h1>Open component TEST2</h1>
-</a>
-
-<div class="p-6 flex flex-col items-center">
-  <button onclick="openDialog()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-    Open Modal
-  </button>
-
-  <gbutton/>
-</div>
-
-
-<dialog id="myDialog" class="bg-white rounded-md p-4">
-<p class="text-gray-700">Some text in the modal.</p>
-<button onclick="closeDialog()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4">
-  Close
-</button>
-</dialog>
+  <div class="flex flex-col min-h-screen bg-gray-100">
+    <div class="hero flex flex-col items-center justify-center bg-cover bg-no-repeat py-20" 
+         style="background-image: url('path/to/hero-image.jpg');">
+      <h1 class="text-5xl font-bold text-white text-center">Innovating AI Needs Focus</h1>
+      <p class="text-xl text-white text-center mt-4">
+        "SAP's Business AI in Industries & CX uses computational and generative AI technologies 
+        to solve customer specific business problems, leveraging data from across enterprise."
+      </p>
+      <a href="#" class="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-8 inline-block">Get Started</a>
+    </div>
+    <div class="business-ai px-4 py-16 bg-gray-200">
+      <h2 class="text-3xl font-bold text-center">SAP's Business AI in Industries & CX</h2>
+      <p class="text-lg text-center my-4">
+        It is offered as an embedded cloud native capability OR combined with SAP and Partner 
+        business themes, we support our customers embrace AI in a sustainable and value-focused way 
+        to keep their edge as an intelligent enterprise.
+      </p>
+      <p class="text-center font-bold underline">Find the Current Industry-Powered AI Capabilities here</p>
+    </div>
+    <div class="ai-capabilities grid grid-cols-3 gap-4 px-4 py-8">
+      <div class="ai-capability bg-white border rounded-md p-4 text-center">
+        <h3 class="text-xl font-bold mb-2">Industry</h3>
+        <p class="text-base">Messaging (short, medium)</p>
+      </div>
+      <div class="ai-capability bg-white border rounded-md p-4 text-center">
+        <h3 class="text-xl font-bold mb-2">Product Marketing</h3>
+        <p class="text-base">Why SAP/Differentiator</p>
+      </div>
+      <div class="ai-capability bg-white border rounded-md p-4 text-center">
+        <h3 class="text-xl font-bold mb-2">Industry Solution Marketing</h3>
+        <p class="text-base"></p>
+      </div>
+      <div class="ai-capability bg-white border rounded-md p-4 text-center">
+        <h3 class="text-xl font-bold mb-2">LO Message</h3>
+        <p class="text-base">Open: Description long</p>
+      </div>
+      <div class="ai-capability bg-white border rounded-md p-4 text-center">
+        <h3 class="text-xl font-bold mb-2">L1 Message by Persona</h3>
+        <p class="text-base">Open: Description (short, medium, long) (related to customer persona see next slide)</p>
+      </div>
+    </div>
+  </div>
   `
 }

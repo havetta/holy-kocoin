@@ -1,5 +1,5 @@
 import state from "../_datatypes/state.js"
-import { post } from "../_datatypes/shared.js";
+import { fetchJson } from "../_datatypes/shared.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
@@ -12,7 +12,7 @@ export default {
         console.log(selectedItem?.texthtml)
         console.log(selectedItem?.textscript)
         const microsite = `__mxp`;
-        post(`/component/?microsite=${microsite}`, {
+        fetchJson(`/component/?microsite=${microsite}`, 'post', {
           id: crypto.randomUUID(),
           acronym: "Change.This.Name",
           texthtml: selectedItem?.texthtml,
