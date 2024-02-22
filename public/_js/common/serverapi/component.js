@@ -16,9 +16,16 @@ const startRequest = (req) => {
   return req.query?.microsite?.toLowerCase();
 };
 
-const getComponentList = (microsite) => {
-  const rawData = readFileSync(`public/${microsite}/__componentList.js`, `utf8`);
+const readComponentList = (microsite) => {
+  const rawData = readFileSync(`public/${microsite}/_componentList.js`, `utf8`);
   return JSON.parse(rawData.toString().split(`//||`)?.[1]);
+};
+
+const writeComponentList = (microsite, list) => {
+  let out = `import { reactive } from "vue"; export default reactive(//||\n`;
+  out += JSON.stringify(list, null, `\t`);
+  out += `\n//||\n)`;
+  writeFileSync(`public/${microsite}/_componentList.js`, out);
 };
 
 const componentImports = (list) => {
@@ -38,12 +45,12 @@ const componentImports = (list) => {
 //?   GETS  /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 router.get(`/`, (req, res) => {
-  const list = getComponentList(microsite);
+  const list = readComponentList(microsite);
   res.json(list);
 });
 
 router.get(`/:id`, (req, res) => {
-  const list = getComponentList(microsite);
+  const list = readComponentList(microsite);
   const results = list.filter(article => article.id == req.params.id);
   res.json(results);
 });
@@ -55,17 +62,16 @@ router.post(`/`, (req, res) => {
   const microsite = startRequest(req);
 
   // read state from disk
-  const list = getComponentList(microsite);
-  list.unshift(req.body); // add passed in data as first array item
+  const list = readComponentList(microsite);
+
+  // add passed in data as first array item
+  list.unshift(req.body);
 
   // write data back to state file
-  let out = `import { reactive } from "vue"; export default reactive(//||\n`;
-  out += JSON.stringify(list, null, `\t`);
-  out += `\n//||\n)`;
-  writeFileSync(`public/${microsite}/__componentList.js`, out);
+  writeComponentList(microsite, list);
   
-  // recreate components imports 
-  writeFileSync(`public/${microsite}/__222.js`, componentImports(list));
+  // recreate components imports file
+  writeFileSync(`public/${microsite}/_componentImports.js`, componentImports(list));
 
   res.status(201).json({ status: `ok` })
 });

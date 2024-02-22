@@ -41,7 +41,7 @@ export async function createApp(req) {
   console.log(`microsite: ${_microsite.value}`)
   console.log(`component: ${_component.value}`)
 
-  const components = (await import(`../../${_microsite.value}/__generated.js?t=${Date.now()}`)).default;
+  const components = (await import(`../../${_microsite.value}/_componentImports.js?t=${Date.now()}`)).default;
   const routes = [{ path: '/', component: components.find(c => c.name === 'root').instance }];
   components.forEach(c => routes.push({path: `/${_microsite.value}/${c.name}`, component: c.instance}) );
 
