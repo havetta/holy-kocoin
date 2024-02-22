@@ -1,13 +1,13 @@
-import state from "../_datatypes/state.js"
+import sx from "../_datatypes/state.js"
 import { fetchJson } from "../_datatypes/shared.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     return {
-      state,
+      sx,
       del: () => {},
       save: () => {
-        const selectedItem = state?.value?.list?.find(i => i?.id === state?.value?.selectedId);
+        const selectedItem = sx?.value?.list?.find(i => i?.id === sx?.value?.selectedId);
         console.log(selectedItem?.acronym);
         console.log(selectedItem?.texthtml)
         console.log(selectedItem?.textscript)
@@ -29,21 +29,21 @@ export default {
           Acronym
           <sup class="text-cyan-500 text-xs italic animate-pulse"> *** Don't use special chars.</sup>
         </label>
-        <input :value="state.list.find(i => i?.id === state.selectedId)?.acronym" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="acronym" type="text" placeholder="Acronym">
+        <input :value="sx.list.find(i => i?.id === sx.selectedId)?.acronym" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="acronym" type="text" placeholder="Acronym">
       </div>
 
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="texthtml">
           HTML Template
         </label>
-        <textarea :value="state.list.find(i => i?.id === state.selectedId)?.texthtml" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+        <textarea :value="sx.list.find(i => i?.id === sx.selectedId)?.texthtml" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
       </div>
 
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="textscript">
           Javascript
         </label>
-        <textarea :value="state.list.find(i => i?.id === state.selectedId)?.textscript" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+        <textarea :value="sx.list.find(i => i?.id === sx.selectedId)?.textscript" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
       </div>
 
       <div class="flex items-center justify-between">
