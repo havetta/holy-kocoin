@@ -44,6 +44,7 @@ document = {};
 
 // https://vuejs.org/guide/scaling-up/ssr.html
 import express from 'express';
+import https from 'https';
 import { renderToString } from 'vue/server-renderer';
 import { readFileSync } from "fs";
 
@@ -112,8 +113,8 @@ const options = {
   key: readFileSync('./certkey.pem', 'utf8'),
   cert: readFileSync('./cert.pem', 'utf8')
 };
-// const httpsServer = https.createServer(options, server).listen(443, () => {
-const httpsServer = server.listen(80, () => {
+const httpsServer = https.createServer(options, server).listen(443, () => {
+// const httpsServer = server.listen(80, () => {
   console.log(`listening on port`);
 });
 
