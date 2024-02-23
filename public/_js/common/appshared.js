@@ -87,8 +87,8 @@ export async function createApp(req) {
 
   componentImports.forEach(c => app.component(c.name, c.instance) );
 
-  app.component('GButton', GButton);
-  app.component('GText', GText);
+  //app.component('GButton', GButton);
+  //app.component('GText', GText);
 
   return app;
 }
