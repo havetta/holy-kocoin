@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import topLevelAwait from 'vite-plugin-top-level-await';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,7 +17,13 @@ export default defineConfig({
     port: 5555,
     hmr: { overlay: false },
   },
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    topLevelAwait({
+      promiseExportName: '__tla',
+      promiseImportName: (i) => `__tla_${i}`,
+    }),
+  ],
   resolve: {
     alias: {
       vue: 'vue/dist/vue.esm-bundler.js',

@@ -1,7 +1,49 @@
+// import * as vue from "vue";
+
+/*// Storage Mock
+function storageMock() {
+  let storage = {};
+
+  return {
+    setItem: function(key, value) {
+      storage[key] = value || '';
+    },
+    getItem: function(key) {
+      return key in storage ? storage[key] : null;
+    },
+    removeItem: function(key) {
+      delete storage[key];
+    },
+    get length() {
+      return Object.keys(storage).length;
+    },
+    key: function(i) {
+      const keys = Object.keys(storage);
+      return keys[i] || null;
+    }
+  };
+}*/
+
+global['window'] = {};
+global['location'] = {};
+global['sessionStorage'] = { getItem: (item) => item, setItem: (item, value) => value };
+// global['vue'] = vue;
+
+// mock the sessionStorage and localStorage
+window.localStorage = { getItem: (item) => item, setItem: (item, value) => value };;
+window.sessionStorage = { getItem: (item) => item, setItem: (item, value) => value };;
+window.history = { state: '' };
+window.addEventListener = (event, handler) => {};
+window.location = {};
+window.location.search = '';
+window.location.hash = '';
+window.location.replace = (url) => url;
+location.host = '';
+
 // https://vuejs.org/guide/scaling-up/ssr.html
 import express from 'express';
-import domino from 'domino';
-import https from 'https';
+//import domino from 'domino';
+// import  from '';
 import { renderToString } from 'vue/server-renderer';
 import { readFileSync } from "fs";
 
@@ -9,10 +51,10 @@ import { createApp } from './appshared.js';
 import microsite from "./serverapi/microsite.js";
 import component from "./serverapi/component.js";
 
-const winObj = domino.createWindow();
+/*const winObj = domino.createWindow();
 global['window'] = winObj;
 global['document'] = winObj.document;
-global['location'] = winObj.location;
+global['location'] = winObj.location;*/
 
 const server = express();
 
@@ -69,11 +111,11 @@ const options = {
   key: readFileSync('./certkey.pem', 'utf8'),
   cert: readFileSync('./cert.pem', 'utf8')
 };
-const port = 443;
-const httpsServer = https.createServer(options, server).listen(port, () => {
-  console.log(`listening on port ${port}`);
+//const httpsServer = https.createServer(options, server).listen(443, () => {
+const httpsServer = server.listen(80, () => {
+  console.log(`listening on port`);
 });
 
-// server.listen(3000, () => {
-//   console.log('listening on 3000');
+// server.listen(80, () => {
+//   console.log(`listening on ${80}`);
 // });

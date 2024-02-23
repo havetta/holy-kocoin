@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import * as chartJs from "../_npm/chart.js"; // 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm'
+// import * as chartJs from "../_npm/chart.js"; // 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm'
 // import Chart from 'chart.js/auto';
 
 const template = `

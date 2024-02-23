@@ -18,12 +18,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@george/core": "1.1.10",
     "axios": "^1.6.0",
     "axios-oauth-client": "^2.0.4",
     "ccxt": "^4.1.40",
     "pptxgenjs": "^3.12.0",
+    "vite-plugin-top-level-await": "^1.4.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
+    "vuetify": "^3.5.5",
     "ws": "^8.14.0"
   },
   "devDependencies": {
@@ -38,8 +41,8 @@
     "fastify": "^4.24.3",
     "glob": "^10.3.10",
     "http-proxy-middleware": "^2.0.6",
-    "morgan": "^1.10.0",
     "minimist": "^1.2.8",
+    "morgan": "^1.10.0",
     "node-html-to-image": "^4.0.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",

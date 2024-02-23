@@ -1,3 +1,4 @@
+/*
 // root = await import(`root.js?t=${Date.now()}`).default;
 
 import detail from "./detail.js";
@@ -7,6 +8,11 @@ import list from "./list.js";
 import preview from "./preview.js";
 import root from "./root.js"
 import sidebar from "./sidebar.js";
+
+import gbutton from "./g≈button.js";
+import logo from "./logo.js";
+import test from "./test.js";
+import test2 from "./test2.js";
 //||
 export default [
   { name: "detail", instance: detail },
@@ -16,4 +22,9 @@ export default [
   { name: "preview", instance: preview },
   { name: "root", instance: root },
   { name: "sidebar", instance: sidebar },
+  { name: "gbutton", instance: gbutton },
+  { name: "logo", instance: logo },
+  { name: "test", instance: test },
+  { name: "test2", instance: test2 },
 ];
+*/
