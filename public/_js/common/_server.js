@@ -1,5 +1,3 @@
-// import * as vue from "vue";
-
 /*// Storage Mock
 function storageMock() {
   let storage = {};
@@ -25,25 +23,27 @@ function storageMock() {
 }*/
 
 global['window'] = {};
+global['document'] = {};
 global['location'] = {};
 global['sessionStorage'] = { getItem: (item) => item, setItem: (item, value) => value };
-// global['vue'] = vue;
 
 // mock the sessionStorage and localStorage
 window.localStorage = { getItem: (item) => item, setItem: (item, value) => value };;
 window.sessionStorage = { getItem: (item) => item, setItem: (item, value) => value };;
 window.history = { state: '' };
 window.addEventListener = (event, handler) => {};
+window.navigator = {};
+window.navigator.maxTouchPoints = 0;
+window.navigator.userAgent = 'ssr';
 window.location = {};
 window.location.search = '';
 window.location.hash = '';
 window.location.replace = (url) => url;
 location.host = '';
+document = {};
 
 // https://vuejs.org/guide/scaling-up/ssr.html
 import express from 'express';
-//import domino from 'domino';
-// import  from '';
 import { renderToString } from 'vue/server-renderer';
 import { readFileSync } from "fs";
 
@@ -51,6 +51,7 @@ import { createApp } from './appshared.js';
 import microsite from "./serverapi/microsite.js";
 import component from "./serverapi/component.js";
 
+//import domino from 'domino';
 /*const winObj = domino.createWindow();
 global['window'] = winObj;
 global['document'] = winObj.document;
@@ -111,11 +112,9 @@ const options = {
   key: readFileSync('./certkey.pem', 'utf8'),
   cert: readFileSync('./cert.pem', 'utf8')
 };
-//const httpsServer = https.createServer(options, server).listen(443, () => {
+// const httpsServer = https.createServer(options, server).listen(443, () => {
 const httpsServer = server.listen(80, () => {
   console.log(`listening on port`);
 });
 
-// server.listen(80, () => {
-//   console.log(`listening on ${80}`);
-// });
+// server.listen(80, () => { console.log(`listening on ${80}`); });
