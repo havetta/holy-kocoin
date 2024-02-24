@@ -20,7 +20,9 @@ export default {
             <tr>
               <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <div class="flex items-center gap-x-3">
+                  <!--
                   <input type="checkbox" class="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700">
+                  -->
                   <span>File name</span>
                 </div>
               </th>
@@ -33,7 +35,9 @@ export default {
             <tr v-for="item in state.list">
               <td @click="pick(item)" class="w-full px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                 <div class="inline-flex items-center gap-x-3">
+                  <!--
                   <input type="checkbox" class="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700">
+                  -->
 
                   <div class="flex items-center gap-x-2">
                     <div>
