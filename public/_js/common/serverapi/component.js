@@ -30,8 +30,8 @@ const writeComponentList = (microsite, list) => {
 
 const componentImports = (list) => {
   let out = ``;
-  const imports = list.map(c => `import ${c?.acronym} from "./${c?.acronym}.js";`);
-  const exports = list.map(c => `\n{ name: "${c?.acronym}", instance: ${c?.acronym} }`);
+  const imports = list.map(c => `import ${c?.shortname} from "./${c?.shortname}.js";`);
+  const exports = list.map(c => `\n{ name: "${c?.shortname}", instance: ${c?.shortname} }`);
   out = imports.join(`\n`);
   out += `\n\nexport default [`
   out += exports.join(`, `);  
@@ -95,7 +95,7 @@ router.put(`/`, (req, res) => {
   out += req.body?.textscript ?? ``;
   out += `\n  },\n}`;
   
-  writeFileSync(`public/${microsite}/__${req.body?.acronym}.js`, out);
+  writeFileSync(`public/${microsite}/__${req.body?.shortname}.js`, out);
   res.status(201).json({ status: `ok` })
 });
 

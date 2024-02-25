@@ -9,7 +9,7 @@ export default {
       create: () => {
         const newItem = {
           id: crypto.randomUUID(),
-          acronym: "Change_This_Acronym",
+          shortname: "Change_This_shortname",
         };
 
         state.value.list.unshift(newItem);

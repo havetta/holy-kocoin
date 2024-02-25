@@ -8,13 +8,13 @@ export default {
       del: () => {},
       save: () => {
         const selectedItem = sx?.value?.list?.find(i => i?.id === sx?.value?.selectedId);
-        console.log(selectedItem?.acronym);
+        console.log(selectedItem?.shortname);
         console.log(selectedItem?.texthtml)
         console.log(selectedItem?.textscript)
         const microsite = `__mxp`;
         fetchJson(`/component/?microsite=${microsite}`, 'put', {
           id: crypto.randomUUID(),
-          acronym: "Change.This.Name",
+          shortname: "Change.This.Name",
           texthtml: selectedItem?.texthtml,
           textscript: selectedItem?.textscript,
         });
@@ -25,11 +25,11 @@ export default {
   <div class="m-4">
     <form class="shadow-md rounded p-6">
       <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="acronym">
-          Acronym
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="shortname">
+          shortname
           <sup class="text-cyan-500 text-xs italic animate-pulse"> *** Don't use special chars.</sup>
         </label>
-        <input :value="sx.list.find(i => i?.id === sx.selectedId)?.acronym" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="acronym" type="text" placeholder="Acronym">
+        <input :value="sx.list.find(i => i?.id === sx.selectedId)?.shortname" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="shortname" type="text" placeholder="shortname">
       </div>
 
       <div class="mb-4">

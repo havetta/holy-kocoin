@@ -7,7 +7,7 @@ export default {
 
     watch(() => state, async (old, cur) => {
       const microsite = "__mxp"
-      const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.acronym;
+      const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.shortname;
       try {
         instance.value = (await import(/* @vite-ignore */`../${microsite}/${componentName}.js?t=${Date.now()}`)).default;
       } catch(e) {
