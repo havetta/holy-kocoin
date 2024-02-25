@@ -49,7 +49,7 @@ import { renderToString } from 'vue/server-renderer';
 import { readFileSync } from "fs";
 
 import { createApp } from './appshared.js';
-import microsite from "./serverapi/microsite.js";
+import micropage from "./serverapi/micropage.js";
 import component from "./serverapi/component.js";
 
 //import domino from 'domino';
@@ -60,7 +60,7 @@ global['location'] = winObj.location;*/
 
 const server = express();
 
-server.use("/microsite", microsite);
+server.use("/micropage", micropage);
 server.use("/component", component);
 
 server.use(express.static('./public'));

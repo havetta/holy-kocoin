@@ -10,7 +10,7 @@ export default {
 
       <list class="col-span-1"/>
 
-      <detail class="col-span-2 border border-gray-200 dark:border-gray-700 md:rounded-lg shadow-lg shadow-r-5"/>
+      <editform class="col-span-2 border border-gray-200 dark:border-gray-700 md:rounded-lg shadow-lg shadow-r-5"/>
 
       <preview class="xl:col-span-2 lg:col-span-3 md:col-span-3 md:row-span-2 gap-x-8"/>
 

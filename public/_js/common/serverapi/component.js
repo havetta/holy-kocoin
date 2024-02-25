@@ -13,19 +13,19 @@ export default router;
 const startRequest = (req) => {
   console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000);
   console.log(JSON.stringify(req.body, null, `\t`));
-  return req.query?.microsite?.toLowerCase();
+  return req.query?.micropage?.toLowerCase();
 };
 
-const readComponentList = (microsite) => {
-  const rawData = readFileSync(`public/${microsite}/_componentList.js`, `utf8`);
+const readComponentList = (micropage) => {
+  const rawData = readFileSync(`public/${micropage}/_componentList.js`, `utf8`);
   return JSON.parse(rawData.toString().split(`//||`)?.[1]);
 };
 
-const writeComponentList = (microsite, list) => {
-  let out = `import { reactive } from "vue"; export default reactive(//||\n`;
+const writeComponentList = (micropage, list) => {
+  let out = `import { ref } from "vue"; export default ref(//||\n`;
   out += JSON.stringify(list, null, `\t`);
   out += `\n//||\n)`;
-  writeFileSync(`public/${microsite}/_componentList.js`, out);
+  writeFileSync(`public/${micropage}/!_componentList.js`, out);
 };
 
 const componentImports = (list) => {
@@ -34,7 +34,7 @@ const componentImports = (list) => {
   const exports = list.map(c => `\n{ name: "${c?.shortname}", instance: ${c?.shortname} }`);
   out = imports.join(`\n`);
   out += `\n\nexport default [`
-  out += exports.join(`, `);  
+  out += exports.join(`, `);
   out += `\n];`;
   return out;
 };
@@ -45,12 +45,12 @@ const componentImports = (list) => {
 //?   GETS  /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 router.get(`/`, (req, res) => {
-  const list = readComponentList(microsite);
+  const list = readComponentList(micropage);
   res.json(list);
 });
 
 router.get(`/:id`, (req, res) => {
-  const list = readComponentList(microsite);
+  const list = readComponentList(micropage);
   const results = list.filter(article => article.id == req.params.id);
   res.json(results);
 });
@@ -59,19 +59,19 @@ router.get(`/:id`, (req, res) => {
 //*   POST  /////////////////////////////////////////////////
 //* /////////////////////////////////////////////////////////
 router.post(`/`, (req, res) => {
-  const microsite = startRequest(req);
+  const micropage = startRequest(req);
 
   // read state from disk
-  const list = readComponentList(microsite);
+  const list = readComponentList(micropage);
 
   // add passed in data as first array item
   list.unshift(req.body);
 
   // write data back to state file
-  writeComponentList(microsite, list);
-  
+  writeComponentList(micropage, list);
+
   // recreate components imports file
-  writeFileSync(`public/${microsite}/_componentImports.js`, componentImports(list));
+  writeFileSync(`public/${micropage}/!_componentImports.js`, componentImports(list));
 
   res.status(201).json({ status: `ok` })
 });
@@ -82,7 +82,7 @@ router.post(`/`, (req, res) => {
 //*   PUT   /////////////////////////////////////////////////
 //* /////////////////////////////////////////////////////////
 router.put(`/`, (req, res) => {
-  const microsite = startRequest(req);
+  const micropage = startRequest(req);
 
   let out = ``;
   out += req.body?.imports ?? ``;
@@ -91,11 +91,13 @@ router.put(`/`, (req, res) => {
   out += `\n${req.body?.texthtml ?? ``}\n`;
   out += '  `,\n\n';
   out += `//! /////////////////////////////////////////////////////////`;
-  out += `\n\n  setup(props, { attrs, emit, expose, slots }) {\n`;
+  out += `\n\n  setup(props, { attrs, emit, expose, slots }) { return {\n`;
   out += req.body?.textscript ?? ``;
+  out += `\n    };`;
   out += `\n  },\n}`;
-  
-  writeFileSync(`public/${microsite}/__${req.body?.shortname}.js`, out);
+  out += `\n  mounted() { if (this.mounted) this.mounted(); },`
+
+  writeFileSync(`public/${micropage}/!__${req.body?.shortname}.js`, out);
   res.status(201).json({ status: `ok` })
 });
 

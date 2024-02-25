@@ -1,21 +1,22 @@
-import state from "../_datatypes/state.js";
-import { fetchJson } from "../_datatypes/shared.js";
+import pageStore from "./_pageStore.js";
+import globalStore from "../_globalStore.js";
+import { fetchJson } from "../_functions.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
 
     return {
-      state,
       create: () => {
         const newItem = {
           id: crypto.randomUUID(),
           shortname: "Change_This_shortname",
         };
 
-        state.value.list.unshift(newItem);
-        const microsite = `__mxp`;
-        fetchJson(`/component/?microsite=${microsite}`, 'post', newItem);
-      }
+        globalStore?.currentList?.value?.unshift(newItem); // add new item as first in list
+        const micropage = globalStore?.selectedPgName?.value;
+        fetchJson(`/component/?micropage=${micropage}`, 'post', newItem);
+      },
+      ...pageStore,
     };
   },
   template: `

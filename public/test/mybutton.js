@@ -11,7 +11,7 @@ export default {
       { id: 1, text: 'Cheese' },
       { id: 2, text: 'Whatever else humans are supposed to eat' }
     ])
-    
+
     const additup = () => {
       state.value.count++
       groceryList.value.push({
@@ -27,13 +27,13 @@ export default {
     }
   },
   mounted() {
-    console.log(`gbutton mounted`)
+    console.log(`mybutton mounted`)
   },
   template: `
   <button @click="additup()" class="bg-blue-400 text-white rounded-full m-8 p-2 text-xl">
     Add item {{ state.count }}
   </button>
-  
+
   <ul>
     <li
       v-for="item in groceryList"

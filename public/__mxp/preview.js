@@ -1,23 +1,23 @@
-import { ref, shallowRef, watch} from "vue";
-import state from "../_datatypes/state.js"
+import { shallowRef, watch} from "vue";
+import pageStore from "./_pageStore.js";
+import globalStore from "../_globalStore.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     const instance = shallowRef({template:'<span></span>'});
 
-    watch(() => state, async (old, cur) => {
-      const microsite = "__mxp"
-      const componentName = state.value.list.find(i => i?.id === state.value?.selectedId)?.shortname;
+    watch(() => pageStore?.selectedId, async (old, cur) => {
+      const micropage = globalStore?.selectedPgName?.value;
+      const componentName = globalStore?.currentList?.value?.find(i => i?.id === pageStore?.selectedId?.value)?.shortname;
       try {
-        instance.value = (await import(/* @vite-ignore */`../${microsite}/${componentName}.js?t=${Date.now()}`)).default;
+        instance.value = (await import(/* @vite-ignore */`../${micropage}/${componentName}.js?t=${Date.now()}`)).default;
       } catch(e) {
-        instance.value = (await import(/* @vite-ignore */`../${microsite}/${componentName}.js`)).default;
+        instance.value = (await import(/* @vite-ignore */`../${micropage}/${componentName}.js`)).default;
       }
     }, { deep: true });
 
     return {
       instance,
-      state,
     }
   },
   template: `

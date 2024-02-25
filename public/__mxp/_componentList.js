@@ -1,8 +1,8 @@
-import { reactive } from "vue"; export default reactive(//||
+import { ref } from "vue"; export default ref(//||
 [
 	{
 		"id": "912d666b-7c10-4f76-88b5-9cab40a80329",
-		"shortname": "detail"
+		"shortname": "editform"
 	},
 	{
 		"id": "3e010f8d-39c0-4039-a152-d7c5a9fa4fb8",

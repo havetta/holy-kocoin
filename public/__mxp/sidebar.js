@@ -38,14 +38,14 @@ export default {
 
     <nav class="flex flex-col items-center space-y-6">
 
-      <a onclick="openDialog('createMicrosite')" class="p-2 transition-colors duration-300 rounded-lg group hover:bg-white">
+      <a onclick="openDialog('createmicropage')" class="p-2 transition-colors duration-300 rounded-lg group hover:bg-white">
         <svg class="w-5 h-5 group-hover:stroke-blue-700 " viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path class=" group-hover:stroke-blue-700" d="M13 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V9L13 2Z" fill="#969CBA" fill-opacity="0.2" stroke="#969CBA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           <path class=" group-hover:stroke-blue-700" d="M13 2V9H20" stroke="#969CBA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </a>
 
-      <a onclick="openDialog('openMicrosite')" class="p-2 transition-colors duration-300 rounded-lg bg-white">
+      <a onclick="openDialog('openmicropage')" class="p-2 transition-colors duration-300 rounded-lg bg-white">
         <svg class="w-5 h-5 stroke-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000 svg">
           <path d="M22 18.2222C22 18.6937 21.7893 19.1459 21.4142 19.4793C21.0391 19.8127 20.5304 20 20 20H4C3.46957 20 2.96086 19.8127 2.58579 19.4793C2.21071 19.1459 2 18.6937 2 18.2222V5.77778C2 5.30628 2.21071 4.8541 2.58579 4.5207C2.96086 4.1873 3.46957 4 4 4H9L11 6.66667H20C20.5304 6.66667 21.0391 6.85397 21.4142 7.18737C21.7893 7.52076 22 7.97295 22 8.44444V18.2222Z" fill="#969CBA" fill-opacity="0.2" stroke="#969CBA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -77,9 +77,9 @@ export default {
   </div>
 </aside>
 
-<dialog id="createMicrosite" class="bg-white rounded-md p-4 w-[600px]">
+<dialog id="createmicropage" class="bg-white rounded-md p-4 w-[600px]">
   <section class="block max-w p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-    <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Create Microsite</h5>
+    <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Create micropage</h5>
     <article class="font-normal text-gray-700 dark:text-gray-400">
       <form class="max-w-sm mx-auto">
         <input type="text" id="disabled-input" aria-label="disabled input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value="One word abbreviation" disabled>
@@ -92,15 +92,15 @@ export default {
       </form>
     </article>
   </section>
-  <button onclick="closeDialog('createMicrosite')" class="btn-blue">
+  <button onclick="closeDialog('createmicropage')" class="btn-blue">
     Close
   </button>
 </dialog>
 
-<dialog id="openMicrosite" class="bg-white rounded-md p-4 w-[600px]">
+<dialog id="openmicropage" class="bg-white rounded-md p-4 w-[600px]">
   <section class="block max-w p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-    <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Open Microsite</h5>
-    <p class="font-normal text-gray-700 dark:text-gray-400">Select Microsite to open from the list bellow:</p>
+    <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Open micropage</h5>
+    <p class="font-normal text-gray-700 dark:text-gray-400">Select micropage to open from the list bellow:</p>
     <ul class="mt-6 w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
       <li class="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">PPTX generator</li>
       <li class="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">Opportunity Maps</li>
@@ -108,7 +108,7 @@ export default {
       <li class="w-full px-4 py-2 rounded-b-lg">__mxp</li>
     </ul>
   </section>
-  <button onclick="closeDialog('openMicrosite')" class="btn-blue">
+  <button onclick="closeDialog('openmicropage')" class="btn-blue">
     Close
   </button>
 </dialog>

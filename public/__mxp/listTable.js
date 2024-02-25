@@ -1,16 +1,24 @@
-import state from "../_datatypes/state.js";
+import pageStore from "./_pageStore.js";
+import globalStore from "../_globalStore.js";
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
 
     return {
-      state,
       pick: (item) => {
-        state.value.selectedId = item?.id;
+        pageStore.selectedId.value = item?.id;
       },
+      ...pageStore,
+      ...globalStore,
     };
   },
   template: `
+Page:
+<select v-model="selectedPgName" class="py-1 px-2 text-gray-700 placeholder-gray-400 bg-white border border-transparent border-gray-200 rounded-lg sm:w-auto w-36 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+  <option />
+  <option v-for="item in micropageList" :value="item.shortpgname">{{ item.shortpgname }}</option>
+</select>
+
 <div class="flex flex-col mt-6">
   <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
     <div class="inline-block min-w-full py-2 align-middle md:px-2 lg:px-3">
@@ -23,7 +31,7 @@ export default {
                   <!--
                   <input type="checkbox" class="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700">
                   -->
-                  <span>File name</span>
+                  <span :title="selectedId">File name</span>
                 </div>
               </th>
               <th scope="col" class="relative py-3.5 px-4">
@@ -32,7 +40,7 @@ export default {
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-            <tr v-for="item in state.list">
+            <tr v-for="item in currentList">
               <td @click="pick(item)" class="w-full px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                 <div class="inline-flex items-center gap-x-3">
                   <!--

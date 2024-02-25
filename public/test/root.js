@@ -24,7 +24,7 @@ export default {
     Open Modal
   </button>
 
-  <gbutton/>
+  <mybutton/>
 </div>
 
 <section class="pointer-events-none relative w-auto translate-y-[-50px] transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:max-w-[500px]">
