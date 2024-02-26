@@ -1,17 +1,22 @@
-import express from "express";
-import { readFileSync, writeFile, writeFileSync} from "fs";
+import { readFileSync, writeFile, writeFileSync } from 'fs';
+
+import express from 'express';
 
 const router = express.Router();
 router.use(express.json());
 export default router;
 
-
-
 //? /////////////////////////////////////////////////////////
 //?  COMMON /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 const startRequest = (req) => {
-  console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000);
+  console.log(
+    100000000000000000000,
+    `   `,
+    new Date().toLocaleString(),
+    `   `,
+    100000000000000000000,
+  );
   console.log(JSON.stringify(req.body, null, `\t`));
   return req.query?.micropage?.toLowerCase();
 };
@@ -30,16 +35,18 @@ const writeComponentList = (micropage, list) => {
 
 const componentImports = (list) => {
   let out = ``;
-  const imports = list.map(c => `import ${c?.shortname} from "./${c?.shortname}.js";`);
-  const exports = list.map(c => `\n{ name: "${c?.shortname}", instance: ${c?.shortname} }`);
+  const imports = list.map(
+    (c) => `import ${c?.shortname} from "./${c?.shortname}.js";`,
+  );
+  const exports = list.map(
+    (c) => `\n{ name: "${c?.shortname}", instance: ${c?.shortname} }`,
+  );
   out = imports.join(`\n`);
-  out += `\n\nexport default [`
+  out += `\n\nexport default [`;
   out += exports.join(`, `);
   out += `\n];`;
   return out;
 };
-
-
 
 //? /////////////////////////////////////////////////////////
 //?   GETS  /////////////////////////////////////////////////
@@ -51,7 +58,7 @@ router.get(`/`, (req, res) => {
 
 router.get(`/:id`, (req, res) => {
   const list = readComponentList(micropage);
-  const results = list.filter(article => article.id == req.params.id);
+  const results = list.filter((article) => article.id == req.params.id);
   res.json(results);
 });
 
@@ -71,12 +78,13 @@ router.post(`/`, (req, res) => {
   writeComponentList(micropage, list);
 
   // recreate components imports file
-  writeFileSync(`public/${micropage}/!_componentImports.js`, componentImports(list));
+  writeFileSync(
+    `public/${micropage}/!_componentImports.js`,
+    componentImports(list),
+  );
 
-  res.status(201).json({ status: `ok` })
+  res.status(201).json({ status: `ok` });
 });
-
-
 
 //* /////////////////////////////////////////////////////////
 //*   PUT   /////////////////////////////////////////////////
@@ -91,23 +99,19 @@ router.put(`/`, (req, res) => {
   out += `\n${req.body?.texthtml ?? ``}\n`;
   out += '  `,\n\n';
   out += `//! /////////////////////////////////////////////////////////`;
-  out += `\n\n  setup(props, { attrs, emit, expose, slots }) { return {\n`;
+  out += `\n\n  setup(props, { attrs, emit, expose, slots }) {\n`;
   out += req.body?.textscript ?? ``;
-  out += `\n    };`;
   out += `\n  },\n}`;
-  out += `\n  mounted() { if (this.mounted) this.mounted(); },`
 
   writeFileSync(`public/${micropage}/!__${req.body?.shortname}.js`, out);
-  res.status(201).json({ status: `ok` })
+  res.status(201).json({ status: `ok` });
 });
-
-
 
 //! /////////////////////////////////////////////////////////
 //!  DELETE /////////////////////////////////////////////////
 //! /////////////////////////////////////////////////////////
 router.delete(`/`, (req, res) => {
   const { id } = req.body;
-  components.splice(id-1, id);
-  res.json({success: true, message: `deleted`});
+  components.splice(id - 1, id);
+  res.json({ success: true, message: `deleted` });
 });

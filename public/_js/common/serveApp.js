@@ -25,11 +25,20 @@ function storageMock() {
 global['window'] = {};
 global['document'] = {};
 global['location'] = {};
-global['sessionStorage'] = { getItem: (item) => item, setItem: (item, value) => value };
+global['sessionStorage'] = {
+  getItem: (item) => item,
+  setItem: (item, value) => value,
+};
 
 // mock the sessionStorage and localStorage
-window.localStorage = { getItem: (item) => item, setItem: (item, value) => value };;
-window.sessionStorage = { getItem: (item) => item, setItem: (item, value) => value };;
+window.localStorage = {
+  getItem: (item) => item,
+  setItem: (item, value) => value,
+};
+window.sessionStorage = {
+  getItem: (item) => item,
+  setItem: (item, value) => value,
+};
 window.history = { state: '' };
 window.addEventListener = (event, handler) => {};
 window.navigator = {};
@@ -43,14 +52,15 @@ location.host = '';
 document = {};
 
 // https://vuejs.org/guide/scaling-up/ssr.html
-import express from 'express';
+import { readFileSync } from 'fs';
 import https from 'https';
+
+import express from 'express';
 import { renderToString } from 'vue/server-renderer';
-import { readFileSync } from "fs";
 
 import { createApp } from './appshared.js';
-import micropage from "./serverapi/micropage.js";
-import component from "./serverapi/component.js";
+import component from './serverapi/component.js';
+import micropage from './serverapi/micropage.js';
 
 //import domino from 'domino';
 /*const winObj = domino.createWindow();
@@ -60,16 +70,19 @@ global['location'] = winObj.location;*/
 
 const server = express();
 
-server.use("/micropage", micropage);
-server.use("/component", component);
+server.use('/micropage', micropage);
+server.use('/component', component);
 
 server.use(express.static('./public'));
 server.use(express.json());
-server.use(express.urlencoded({extended: true}));
+server.use(express.urlencoded({ extended: true }));
 
-server.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "localhost"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+server.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'localhost'); // update to match the domain you will make the request from
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept',
+  );
   next();
 });
 
@@ -111,10 +124,10 @@ server.get('/', async (req, res) => {
 
 const options = {
   key: readFileSync('./certkey.pem', 'utf8'),
-  cert: readFileSync('./cert.pem', 'utf8')
+  cert: readFileSync('./cert.pem', 'utf8'),
 };
 const httpsServer = https.createServer(options, server).listen(443, () => {
-// const httpsServer = server.listen(80, () => {
+  // const httpsServer = server.listen(80, () => {
   console.log(`listening on port`);
 });
 

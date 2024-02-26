@@ -1,5 +1,5 @@
 function saveChanges() {
-  alert('changed not saved...')
+  alert('changed not saved...');
 }
 
 function openDialog(dialogid) {
