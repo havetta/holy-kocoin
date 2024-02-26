@@ -1,6 +1,6 @@
 import { shallowRef, watch } from 'vue';
 
-import pageStore from './_pageStore.js';
+import { pageStore } from './_pageStore.js';
 import { globalStore } from '../_globalStore.js';
 
 export default {

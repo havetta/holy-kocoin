@@ -2,9 +2,9 @@ import { computed, ref } from 'vue';
 
 import _micropageList from './_micropageList.js';
 
-export const micropageList = _micropageList;
+const micropageList = _micropageList;
 
-export const selectedPgName = ref('');
+const selectedPgName = ref('');
 
 export const globalStore = {
   micropageList,

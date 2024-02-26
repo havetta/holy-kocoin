@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-export const selectedId = ref(0);
+const selectedId = ref(0);
 
 export const pageStore = {
   selectedId,
