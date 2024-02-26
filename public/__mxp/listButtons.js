@@ -1,15 +1,14 @@
-import pageStore from "./_pageStore.js";
-import globalStore from "../_globalStore.js";
-import { fetchJson } from "../_functions.js";
+import { pageStore } from './_pageStore.js';
+import { fetchJson } from '../_functions.js';
+import { globalStore } from '../_globalStore.js';
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
-
     return {
       create: () => {
         const newItem = {
           id: crypto.randomUUID(),
-          shortname: "Change_This_shortname",
+          shortname: 'Change_This_shortname',
         };
 
         globalStore?.currentList?.value?.unshift(newItem); // add new item as first in list
@@ -39,4 +38,5 @@ export default {
     </button>
   </div>
 </div>
-`};
+`,
+};

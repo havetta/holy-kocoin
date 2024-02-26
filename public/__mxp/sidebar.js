@@ -1,11 +1,11 @@
-import { ref } from "vue";
+import { ref } from 'vue';
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     const isOpen = ref(false);
     return {
       isOpen,
-    }
+    };
   },
   template: `
 <header class="text-gray-100 bg-gray-800 lg:hidden">
@@ -112,4 +112,5 @@ export default {
     Close
   </button>
 </dialog>
-`};
+`,
+};

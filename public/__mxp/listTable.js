@@ -1,16 +1,22 @@
-import pageStore from "./_pageStore.js";
-import globalStore from "../_globalStore.js";
+import { pageStore } from './_pageStore.js';
+import { globalStore } from '../_globalStore.js';
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
-
     return {
       pick: (item) => {
         pageStore.selectedId.value = item?.id;
       },
+      mounted: () => {
+        globalStore.selectedPgName.value = 'AccountInfo';
+        pageStore.selectedId.value = '2';
+      },
       ...pageStore,
       ...globalStore,
     };
+  },
+  mounted() {
+    if (this.mounted) this.mounted();
   },
   template: `
 Page:
@@ -71,4 +77,5 @@ Page:
     </div>
   </div>
 </div>
-`};
+`,
+};

@@ -1,27 +1,29 @@
-import pageStore from "./_pageStore.js";
-import globalStore from "../_globalStore.js";
-import { fetchJson } from "../_functions.js";
+import { pageStore } from './_pageStore.js';
+import { fetchJson } from '../_functions.js';
+import { globalStore } from '../_globalStore.js';
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     return {
       del: () => {},
       save: () => {
-        const selectedItem = globalStore?.currentList?.value?.find(i => i?.id === pageStore?.selectedId?.value);
+        const selectedItem = globalStore?.currentList?.value?.find(
+          (i) => i?.id === pageStore?.selectedId?.value,
+        );
         console.log(selectedItem?.shortname);
-        console.log(selectedItem?.texthtml)
-        console.log(selectedItem?.textscript)
+        console.log(selectedItem?.texthtml);
+        console.log(selectedItem?.textscript);
         const micropage = globalStore?.selectedPgName?.value;
         fetchJson(`/component/?micropage=${micropage}`, 'put', {
           id: crypto.randomUUID(),
-          shortname: "Change.This.Name",
+          shortname: 'Change.This.Name',
           texthtml: selectedItem?.texthtml,
           textscript: selectedItem?.textscript,
         });
       },
       ...pageStore,
-      ...globalStore
-    }
+      ...globalStore,
+    };
   },
   template: `
   <div class="m-4">
@@ -72,5 +74,5 @@ export default {
 
     </form>
   </div>
-  `
-}
+  `,
+};
