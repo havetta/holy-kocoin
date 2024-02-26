@@ -3,10 +3,10 @@ export function getDevtoolsGlobalHook() {
 }
 export function getTarget() {
   // @ts-ignore
-  return (typeof navigator !== 'undefined' && typeof window !== 'undefined')
-      ? window
-      : typeof global !== 'undefined'
-          ? global
-          : {};
+  return typeof navigator !== 'undefined' && typeof window !== 'undefined'
+    ? window
+    : typeof global !== 'undefined'
+      ? global
+      : {};
 }
 export const isProxyAvailable = typeof Proxy === 'function';
