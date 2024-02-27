@@ -1,8 +1,6 @@
 import { computed, ref } from 'vue';
 
-import _micropageList from './_micropageList.js';
-
-const micropageList = _micropageList;
+import { micropageList } from './_micropageList.js';
 
 const selectedPgName = ref('');
 
