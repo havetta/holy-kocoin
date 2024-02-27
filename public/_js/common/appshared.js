@@ -32,8 +32,8 @@ const processUrl = (req) => {
   }
 
   if (!component) component = 'root';
-  _micropage.value = micropage;
-  _component.value = component;
+  _micropage.value = micropage === '' ? '__mxp' : micropage ?? '__mxp';
+  _component.value = component === '' ? 'root' : component  ?? 'root';
   console.log(`micropage: ${_micropage.value}`);
   console.log(`component: ${_component.value}`);
 };
@@ -45,11 +45,7 @@ export async function createApp(req) {
     const app = createSSRApp({ template: `<${_component?.value} />` });
     let routes = [];
 
-    const componentImports = (
-      await import(
-        `../../${_micropage.value}/_componentImports.js?t=${Date.now()}`
-      )
-    ).default;
+    const componentImports = (await import(`../../${_micropage.value}/_componentImports.js?t=${Date.now()}`)).default;
     if (componentImports) {
       routes = [
         {

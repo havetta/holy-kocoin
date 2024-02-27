@@ -67,7 +67,7 @@ export default {
           <span>Delete</span>
         </button>
 
-        <a :href="'?' + selectedPgName + '/' + currentList?.find(i => i?.id === selectedId)?.shortname" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+        <a :href="'?' + selectedPgName + '/' + currentList?.find(i => i?.id === selectedId)?.shortname ?? 'root'" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
           Preview
         </a>
       </div>
