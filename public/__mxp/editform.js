@@ -7,18 +7,18 @@ export default {
     return {
       del: () => {},
       save: () => {
-        const selectedItem = globalStore?.currentList?.value?.find(
+        const selectedComponent = globalStore?.currentList?.value?.find(
           (i) => i?.id === pageStore?.selectedId?.value,
         );
-        console.log(selectedItem?.shortname);
-        console.log(selectedItem?.texthtml);
-        console.log(selectedItem?.textscript);
+        console.log(selectedComponent?.shortname);
+        console.log(selectedComponent?.texthtml);
+        console.log(selectedComponent?.textscript);
         const micropage = globalStore?.selectedPgName?.value;
         fetchJson(`/component/?micropage=${micropage}`, 'put', {
           id: crypto.randomUUID(),
           shortname: 'Change.This.Name',
-          texthtml: selectedItem?.texthtml,
-          textscript: selectedItem?.textscript,
+          texthtml: selectedComponent?.texthtml,
+          textscript: selectedComponent?.textscript,
         });
       },
       ...pageStore,
@@ -67,7 +67,7 @@ export default {
           <span>Delete</span>
         </button>
 
-        <a href="?__mxp/test2" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+        <a :href="'?' + selectedPgName + '/' + currentList?.find(i => i?.id === selectedId)?.shortname" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
           Preview
         </a>
       </div>

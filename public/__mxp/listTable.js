@@ -8,8 +8,8 @@ export default {
         pageStore.selectedId.value = item?.id;
       },
       mounted: () => {
-        globalStore.selectedPgName.value = 'AccountInfo';
-        pageStore.selectedId.value = '2';
+        //globalStore.selectedPgName.value = 'AccountInfo';
+        //pageStore.selectedId.value = '2';
       },
       ...pageStore,
       ...globalStore,

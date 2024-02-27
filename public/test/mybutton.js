@@ -38,7 +38,7 @@ export default {
     <li
       v-for="item in groceryList"
       :id="item"
-      >{{ item.id }}</li>
+      >{{ item.id }} = {{ item.text }}</li>
   </ul>
   `
 }

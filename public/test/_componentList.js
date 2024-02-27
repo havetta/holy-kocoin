@@ -1,10 +1,6 @@
 import { ref } from "vue"; export default ref(//||
 [
 	{
-		"id": "64b2a304-9e28-4ebf-956e-1231fcd5da8c",
-		"shortname": "Change_This_shortname"
-	},
-	{
 		"id": "2be40e47-3076-4888-8c93-7a5dbad862c1",
 		"shortname": "logo"
 	},

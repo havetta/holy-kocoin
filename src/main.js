@@ -3,21 +3,28 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import './css/common.css'
 import App from './App.vue'
 import AppRoot from './AppRoot.vue'
-import components from '../public/__mxp/_componentImports.js'
-
-// let micropage = (new URLSearchParams(window.location.search)).get('micropage') ?? '__mxp';
-// const imp = await import(/* @vite-ignore */`/${micropage}/_componentImports.js?t=${Date.now()}`);
-// const components = imp.default;
+import micropageList from '../public/componentList.js'
 
 const routes = [{ path: '/', component: AppRoot }];
-components.forEach(c => routes.push({path: `/${c.name}`, component: c.instance}) );
+micropageList.forEach((pg) => {
+  pg.componentList.forEach((c) => routes.push({path: `${pg.shortpgname}/${c.shortname}`, component: c.instance}) );
+});
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
 
 const app = createApp(App);
-components.forEach(c => app.component(c.name, c.instance) );
-// app.config.globalProperties.$router = router
 app.use(router);
+// app.config.globalProperties.$router = router
+
+const allComponents = [];
+micropageList.forEach((pg) => {
+  let uniqueName = c.shortname;
+  if (allComponents.includes(c.shortname))
+    uniqueName = `${pg.shortname}-${c.shortname}`;
+  componentList.forEach((c) => app.component(uniqueName, c.instance) );
+  allComponents.push(c.shortname);
+});
+
 app.mount('#app');

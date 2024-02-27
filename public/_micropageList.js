@@ -5,21 +5,14 @@ import { ref } from 'vue';
 // import AccountInfo from './AccountInfo/_componentList.js';
 // import AccountInfoDetail from './AccountInfoDetail/_componentList.js';
 
-export const componentList = {
-  __mxp,
-  test,
-};
-
 export const micropageList = ref(
   //||
   [
     {
-      shortpgname: 'AccountInfo',
-      componentList: AccountInfo,
+      shortpgname: '__mxp', componentList: __mxp,
     },
     {
-      shortpgname: 'AccountInfoDetail',
-      componentList: AccountInfoDetail,
+      shortpgname: 'test', componentList: test,
     },
   ],
   //||
