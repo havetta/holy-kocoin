@@ -15,8 +15,6 @@ pgList.value.forEach((pg) => {
   const imp = pgImports.find((i) => i.shortpgname === pg.shortpgname).sectionImports;
 
   pg.sectionList.forEach((sec) => {
-    const instance = imp.find((s) => s.name === sec.shortname);
-
     // Make tag name unique
     let uniqueName = sec.shortname;
     if (allSections.includes(sec.shortname))
@@ -25,9 +23,9 @@ pgList.value.forEach((pg) => {
     
     console.log(`Section Tag: ${uniqueName}  => route:  /${pg.shortpgname}/${sec.shortname}`);
 
-    app.component(uniqueName, instance) 
-
-    routes.push({path: `/${pg.shortpgname}/${sec.shortname}`, component: instance});
+    const componentInstance = imp.find((s) => s.name === sec.shortname).instance;
+    app.component(uniqueName, componentInstance) 
+    routes.push({path: `/${pg.shortpgname}/${sec.shortname}`, component: componentInstance});
   });
 });
 
