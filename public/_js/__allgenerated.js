@@ -1,3 +1,8 @@
+function hello() {
+  console.log(`Hello, let's grab a cup of coffee...`);
+  alert(`Hello, let's grab a cup of coffee...`);
+}
+
 function saveChanges() {
   alert('changed not saved...');
 }

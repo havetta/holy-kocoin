@@ -1,6 +1,5 @@
-import { pageStore } from './_pageStore.js';
 import { fetchJson } from '../_functions.js';
-import { globalStore } from '../_globalStore.js';
+import { globalStore } from '../_globalVars.js';
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
@@ -11,16 +10,15 @@ export default {
           shortname: 'Change_This_shortname',
         };
 
-        globalStore?.currentList?.value?.unshift(newItem); // add new item as first in list
-        const micropage = globalStore?.selectedPgName?.value;
-        fetchJson(`/component/?micropage=${micropage}`, 'post', newItem);
+        globalStore?.currentSectionList?.value?.unshift(newItem); // add new item as first in list
+        const page = globalStore?.currPgName?.value;
+        fetchJson(`/section/?page=${page}`, 'post', newItem);
       },
-      ...pageStore,
     };
   },
   template: `
 <div class="sm:flex sm:items-center sm:justify-between">
-  <h2 class="pr-4 pt-3 text-lg font-medium text-gray-800 dark:text-white">Components</h2>
+  <h2 class="pr-4 pt-3 text-lg font-medium text-gray-800 dark:text-white">Sections</h2>
 
   <div class="flex items-center mt-4 gap-x-3">
     <button @click="create" class="btn-blue">

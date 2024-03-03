@@ -1,56 +1,3 @@
-/*// Storage Mock
-function storageMock() {
-  let storage = {};
-
-  return {
-    setItem: function(key, value) {
-      storage[key] = value || '';
-    },
-    getItem: function(key) {
-      return key in storage ? storage[key] : null;
-    },
-    removeItem: function(key) {
-      delete storage[key];
-    },
-    get length() {
-      return Object.keys(storage).length;
-    },
-    key: function(i) {
-      const keys = Object.keys(storage);
-      return keys[i] || null;
-    }
-  };
-}*/
-
-global['window'] = {};
-global['document'] = {};
-global['location'] = {};
-global['sessionStorage'] = {
-  getItem: (item) => item,
-  setItem: (item, value) => value,
-};
-
-// mock the sessionStorage and localStorage
-window.localStorage = {
-  getItem: (item) => item,
-  setItem: (item, value) => value,
-};
-window.sessionStorage = {
-  getItem: (item) => item,
-  setItem: (item, value) => value,
-};
-window.history = { state: '' };
-window.addEventListener = (event, handler) => {};
-window.navigator = {};
-window.navigator.maxTouchPoints = 0;
-window.navigator.userAgent = 'ssr';
-window.location = {};
-window.location.search = '';
-window.location.hash = '';
-window.location.replace = (url) => url;
-location.host = '';
-document = {};
-
 // https://vuejs.org/guide/scaling-up/ssr.html
 import { readFileSync } from 'fs';
 import https from 'https';
@@ -59,19 +6,16 @@ import express from 'express';
 import { renderToString } from 'vue/server-renderer';
 
 import { createApp } from './appshared.js';
-import component from './serverapi/component.js';
-import micropage from './serverapi/micropage.js';
+import { globalWindowMock } from './serveAppMocks.js';
+import section from './serverapi/section.js';
+import page from './serverapi/page.js';
 
-//import domino from 'domino';
-/*const winObj = domino.createWindow();
-global['window'] = winObj;
-global['document'] = winObj.document;
-global['location'] = winObj.location;*/
+globalWindowMock();
 
 const server = express();
 
-server.use('/micropage', micropage);
-server.use('/component', component);
+server.use('/page', page);
+server.use('/section', section);
 
 server.use(express.static('./public'));
 server.use(express.json());
@@ -86,10 +30,6 @@ server.use(function (req, res, next) {
   next();
 });
 
-server.post('/post', (req, res) => {
-  res.send({ status: 'ok', message: 'post works' });
-});
-
 server.get('/', async (req, res) => {
   const app = await createApp(req);
 
@@ -98,6 +38,7 @@ server.get('/', async (req, res) => {
     <!DOCTYPE html>
     <html lang="en">
       <head>
+        <title>MXP addon</title>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -132,7 +73,7 @@ const options = {
 };
 const httpsServer = https.createServer(options, server).listen(443, () => {
   // const httpsServer = server.listen(80, () => {
-  console.log(`listening on port`);
+  console.log(`listening on port 443`);
 });
 
 // server.listen(80, () => { console.log(`listening on ${80}`); });

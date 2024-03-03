@@ -4,8 +4,8 @@
   const router = useRouter();
   const route = useRoute();
 
-  function clickme() {
-    router.push('/conf');
+  function clickhome() {
+    router.push('/__mxp/home');
   };
 </script>
 

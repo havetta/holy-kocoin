@@ -99,8 +99,8 @@ export default {
 
 <dialog id="openmicropage" class="bg-white rounded-md p-4 w-[600px]">
   <section class="block max-w p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-    <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Open micropage</h5>
-    <p class="font-normal text-gray-700 dark:text-gray-400">Select micropage to open from the list bellow:</p>
+    <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Open page</h5>
+    <p class="font-normal text-gray-700 dark:text-gray-400">Select page to open from the list bellow:</p>
     <ul class="mt-6 w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
       <li class="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">PPTX generator</li>
       <li class="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">Opportunity Maps</li>

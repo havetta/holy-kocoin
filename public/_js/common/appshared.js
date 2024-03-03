@@ -11,14 +11,14 @@ import {
 // import { GButton, GCell, GCellHeader, GFixedBottom, GText } from '../../_npm/@george/core/dist/george-library.js';
 // import { createVuetify, components, directives  } from '../../_npm/vuetify.esm.js'
 
-const _micropage = ref('');
-const _component = ref('');
+const _page = ref('');
+const _section = ref('');
 
 const processUrl = (req) => {
   let query = Object.keys(req?.query ?? {})?.[0] ?? '__mxp';
   let hash = new String(query).replace('#/', '').split('/');
-  let micropage = hash?.[0];
-  let component = hash?.[1];
+  let page = hash?.[0];
+  let section = hash?.[1];
 
   if (typeof window === 'object') {
     hash = new String(window?.location?.search)
@@ -27,39 +27,39 @@ const processUrl = (req) => {
       .split('/');
     if (!hash) hash = window?.location?.hash?.replace('#/', '').split('/');
 
-    if (hash?.[0]) micropage = hash?.[0];
-    if (hash?.[1]) component = hash?.[1];
+    if (hash?.[0]) page = hash?.[0];
+    if (hash?.[1]) section = hash?.[1];
   }
 
-  if (!component) component = 'root';
-  _micropage.value = micropage === '' ? '__mxp' : micropage ?? '__mxp';
-  _component.value = component === '' ? 'root' : component  ?? 'root';
-  console.log(`micropage: ${_micropage.value}`);
-  console.log(`component: ${_component.value}`);
+  if (!section) section = 'home';
+  _page.value = page === '' ? '__mxp' : page ?? '__mxp';
+  _section.value = section === '' ? 'home' : section  ?? 'home';
+  console.log(`page: ${_page.value}`);
+  console.log(`section: ${_section.value}`);
 };
 
 export async function createApp(req) {
   try {
     processUrl(req);
 
-    const app = createSSRApp({ template: `<${_component?.value} />` });
+    const app = createSSRApp({ template: `<${_section?.value} />` });
     let routes = [];
 
-    const componentImports = (await import(`../../${_micropage.value}/_componentImports.js?t=${Date.now()}`)).default;
-    if (componentImports) {
+    const sectionImports = (await import(`../../${_page.value}/_sectionImports.js?t=${Date.now()}`)).default;
+    if (sectionImports) {
       routes = [
         {
           path: '/',
-          component: componentImports?.find((c) => c.name === 'root').instance,
+          component: sectionImports?.find((c) => c.name === 'home').instance,
         },
       ];
-      componentImports?.forEach((c) =>
+      sectionImports?.forEach((c) =>
         routes.push({
-          path: `/${_micropage?.value}/${c?.name}`,
+          path: `/${_page?.value}/${c?.name}`,
           component: c?.instance,
         }),
       );
-      componentImports?.forEach((c) => app.component(c?.name, c?.instance));
+      sectionImports?.forEach((c) => app.component(c?.name, c?.instance));
     }
 
     const router = createRouter({
@@ -94,9 +94,6 @@ export async function createApp(req) {
     //   directives,
     // });
     // app.use(vuetify);
-
-    // app.component('GButton', GButton);
-    // app.component('GText', GText);
 
     return app;
   } catch (e) {

@@ -1,19 +1,19 @@
-// root = await import(`root.js?t=${Date.now()}`).default;
-
 import editform from './editform.js';
 import list from './list.js';
 import listButtons from './listButtons.js';
-import listTable from './listTable.js';
+import listPages from './listPages.js';
+import listParts from './listParts.js';
 import preview from './preview.js';
-import root from './root.js';
+import home from './home.js';
 import sidebar from './sidebar.js';
 //||
 export default [
   { name: 'editform', instance: editform },
   { name: 'listButtons', instance: listButtons },
-  { name: 'listTable', instance: listTable },
+  { name: 'listPages', instance: listPages },
+  { name: 'listParts', instance: listParts },
   { name: 'list', instance: list },
   { name: 'preview', instance: preview },
-  { name: 'root', instance: root },
+  { name: 'home', instance: home },
   { name: 'sidebar', instance: sidebar },
 ];

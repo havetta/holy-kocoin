@@ -2,17 +2,17 @@
 import { createSSRApp } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 
-import components from "../../__mxp/_componentImports.js"
+import sections from "../../__mxp/_sectionImports.js"
 
 const server = express()
 
 server.get('/', (req, res) => {
   const app = createSSRApp({
     data: () => ({ count: 1 }),
-    template: `<root/><button @click="count++">{{ count }}</button>`
+    template: `<home/><button @click="count++">{{ count }}</button>`
   })
 
-  components.forEach(c => app.component(c.name, c.component) );
+  sections.forEach(c => app.component(c.name, c.section) );
 
   renderToString(app).then((html) => {
     res.send(`

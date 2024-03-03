@@ -18,22 +18,22 @@ const startRequest = (req) => {
     100000000000000000000,
   );
   console.log(JSON.stringify(req.body, null, `\t`));
-  return req.query?.micropage?.toLowerCase();
+  return req.query?.page?.toLowerCase();
 };
 
-const readComponentList = (micropage) => {
-  const rawData = readFileSync(`public/${micropage}/_componentList.js`, `utf8`);
+const readSectionList = (page) => {
+  const rawData = readFileSync(`public/${page}/_sectionList.js`, `utf8`);
   return JSON.parse(rawData.toString().split(`//||`)?.[1]);
 };
 
-const writeComponentList = (micropage, list) => {
+const writeSectionList = (page, list) => {
   let out = `import { ref } from "vue"; export default ref(//||\n`;
   out += JSON.stringify(list, null, `\t`);
   out += `\n//||\n)`;
-  writeFileSync(`public/${micropage}/!_componentList.js`, out);
+  writeFileSync(`public/${page}/!_sectionList.js`, out);
 };
 
-const componentImports = (list) => {
+const sectionImports = (list) => {
   let out = ``;
   const imports = list.map(
     (c) => `import ${c?.shortname} from "./${c?.shortname}.js";`,
@@ -52,12 +52,12 @@ const componentImports = (list) => {
 //?   GETS  /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 router.get(`/`, (req, res) => {
-  const list = readComponentList(micropage);
+  const list = readSectionList(page);
   res.json(list);
 });
 
 router.get(`/:id`, (req, res) => {
-  const list = readComponentList(micropage);
+  const list = readSectionList(page);
   const results = list.filter((article) => article.id == req.params.id);
   res.json(results);
 });
@@ -66,21 +66,21 @@ router.get(`/:id`, (req, res) => {
 //*   POST  /////////////////////////////////////////////////
 //* /////////////////////////////////////////////////////////
 router.post(`/`, (req, res) => {
-  const micropage = startRequest(req);
+  const page = startRequest(req);
 
   // read state from disk
-  const list = readComponentList(micropage);
+  const list = readSectionList(page);
 
   // add passed in data as first array item
   list.unshift(req.body);
 
   // write data back to state file
-  writeComponentList(micropage, list);
+  writeSectionList(page, list);
 
-  // recreate components imports file
+  // recreate sections imports file
   writeFileSync(
-    `public/${micropage}/!_componentImports.js`,
-    componentImports(list),
+    `public/${page}/!_sectionImports.js`,
+    sectionImports(list),
   );
 
   res.status(201).json({ status: `ok` });
@@ -90,7 +90,7 @@ router.post(`/`, (req, res) => {
 //*   PUT   /////////////////////////////////////////////////
 //* /////////////////////////////////////////////////////////
 router.put(`/`, (req, res) => {
-  const micropage = startRequest(req);
+  const page = startRequest(req);
 
   let out = ``;
   out += req.body?.imports ?? ``;
@@ -103,7 +103,7 @@ router.put(`/`, (req, res) => {
   out += req.body?.textscript ?? ``;
   out += `\n  },\n}`;
 
-  writeFileSync(`public/${micropage}/!__${req.body?.shortname}.js`, out);
+  writeFileSync(`public/${page}/!__${req.body?.shortname}.js`, out);
   res.status(201).json({ status: `ok` });
 });
 
@@ -112,6 +112,6 @@ router.put(`/`, (req, res) => {
 //! /////////////////////////////////////////////////////////
 router.delete(`/`, (req, res) => {
   const { id } = req.body;
-  components.splice(id - 1, id);
+  sections.splice(id - 1, id);
   res.json({ success: true, message: `deleted` });
 });

@@ -1,28 +1,30 @@
 import { pageStore } from './_pageStore.js';
 import { fetchJson } from '../_functions.js';
-import { globalStore } from '../_globalStore.js';
+import { globalStore, globalVars } from '../_globalVars.js';
 
 export default {
   setup(props, { attrs, emit, expose, slots }) {
     return {
       del: () => {},
       save: () => {
-        const selectedComponent = globalStore?.currentList?.value?.find(
-          (i) => i?.id === pageStore?.selectedId?.value,
+        const currSection = globalStore?.currentSectionList?.value?.find(
+          // (i) => i?.id === pageStore?.selectedId?.value,
+          (i) => i?.id === globalVars?.currSectionId,
         );
-        console.log(selectedComponent?.shortname);
-        console.log(selectedComponent?.texthtml);
-        console.log(selectedComponent?.textscript);
-        const micropage = globalStore?.selectedPgName?.value;
-        fetchJson(`/component/?micropage=${micropage}`, 'put', {
-          id: crypto.randomUUID(),
+        console.log(currSection?.shortname);
+        console.log(currSection?.texthtml);
+        console.log(currSection?.textscript);
+        const page = globalStore?.currPgName?.value;
+        fetchJson(`/section/?page=${page}`, 'put', {
+          id: crypto.randomUUID().split('-')[0],
           shortname: 'Change.This.Name',
-          texthtml: selectedComponent?.texthtml,
-          textscript: selectedComponent?.textscript,
+          texthtml: currSection?.texthtml,
+          textscript: currSection?.textscript,
         });
       },
       ...pageStore,
       ...globalStore,
+      globalVars,
     };
   },
   template: `
@@ -33,21 +35,21 @@ export default {
           shortname
           <sup class="text-cyan-500 text-xs italic animate-pulse"> *** Don't use special chars.</sup>
         </label>
-        <input :value="currentList?.find(i => i?.id === selectedId)?.shortname" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="shortname" type="text" placeholder="shortname">
+        <input :value="currentSectionList?.find(i => i?.id === globalVars?.currSectionId)?.shortname" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="shortname" type="text" placeholder="shortname">
       </div>
 
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="texthtml">
           HTML Template
         </label>
-        <textarea :value="currentList?.find(i => i?.id === selectedId)?.texthtml" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+        <textarea :value="currentSectionList?.find(i => i?.id === globalVars?.currSectionId)?.texthtml" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
       </div>
 
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="textscript">
           Javascript
         </label>
-        <textarea :value="currentList?.find(i => i?.id === selectedId)?.textscript" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm text-gray-900 bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+        <textarea :value="currentSectionList?.find(i => i?.id === globalVars?.currSectionId)?.textscript" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm text-gray-900 bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
       </div>
 
       <div class="flex items-center justify-between">
@@ -67,7 +69,7 @@ export default {
           <span>Delete</span>
         </button>
 
-        <a :href="'?' + selectedPgName + '/' + currentList?.find(i => i?.id === selectedId)?.shortname ?? 'root'" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+        <a :href="'?' + currPgName + '/' + currentSectionList?.find(i => i?.id === globalVars?.currSectionId)?.shortname ?? 'home'" target="_blank" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
           Preview
         </a>
       </div>
