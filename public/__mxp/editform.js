@@ -1,5 +1,4 @@
-import { pageStore } from './_pageStore.js';
-import { fetchJson } from '../_functions.js';
+import { fetchJson } from '../_js/_functions.js';
 import { globalStore, globalVars } from '../_globalVars.js';
 
 export default {
@@ -8,7 +7,6 @@ export default {
       del: () => {},
       save: () => {
         const currSection = globalStore?.currentSectionList?.value?.find(
-          // (i) => i?.id === pageStore?.selectedId?.value,
           (i) => i?.id === globalVars?.currSectionId,
         );
         console.log(currSection?.shortname);
@@ -17,12 +15,11 @@ export default {
         const page = globalStore?.currPgName?.value;
         fetchJson(`/section/?page=${page}`, 'put', {
           id: crypto.randomUUID().split('-')[0],
-          shortname: 'Change.This.Name',
+          shortname: 'Change.This',
           texthtml: currSection?.texthtml,
           textscript: currSection?.textscript,
         });
       },
-      ...pageStore,
       ...globalStore,
       globalVars,
     };

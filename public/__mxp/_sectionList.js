@@ -1,5 +1,5 @@
 import { shallowRef } from 'vue';
-export default shallowRef(
+export default //shallowRef(
   //||
   [
     {
@@ -18,19 +18,14 @@ export default shallowRef(
       // instance: list,
     },
     {
-      id: 'dbe40e47',
-      shortname: 'listButtons',
-      // instance: listButtons,
-    },
-    {
       id: '53528fe5',
       shortname: 'listPages',
       // instance: listPages,
     },
     {
       id: '13528fe5',
-      shortname: 'listParts',
-      // instance: listParts,
+      shortname: 'listSections',
+      // instance: listSections,
     },
     {
       id: 'e7fc0f05',
@@ -42,6 +37,6 @@ export default shallowRef(
       shortname: 'sidebar',
       // instance: sidebar,
     },
-  ],
+  ]
   //||
-);
+//);

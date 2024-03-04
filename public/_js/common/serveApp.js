@@ -53,8 +53,9 @@ server.get('/', async (req, res) => {
         <script type="module" crossorigin src="_js/common/appclient.js"></script>
         <script defer crossorigin src="_js/__allgenerated.js"></script>
 
-        <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script defer src="https://lonekorean.github.io/highlight-within-textarea/jquery.highlight-within-textarea.js"></script>
+        <script defer crossorigin="anonymous" src="_npm/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" crossorigin="anonymous"></script>
+        <script defer crossorigin="anonymous" src="_npm/jquery.highlight-within-textarea.js"></script>
 
         <link rel="stylesheet" crossorigin href="_css/__allgenerated.css">
         <link rel="stylesheet" crossorigin href="_css/output.css">

@@ -1,5 +1,5 @@
-import { shallowRef } from "vue";
-export default shallowRef(//||
+export default
+//||
 [
   {
 		"id": "212d66ab",
@@ -32,5 +32,3 @@ export default shallowRef(//||
     // instance: testFlowbite,
 	}
 ]
-//||
-)
