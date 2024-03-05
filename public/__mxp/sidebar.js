@@ -4,7 +4,7 @@ export default {
   setup(props, { attrs, emit, expose, slots }) {
     const isOpen = ref(false);
     return {
-      isOpen,
+      isOpen: ref(false),
     };
   },
   template: `

@@ -1,17 +1,8 @@
-import { h } from 'vue'
 
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
+import { fetchJson } from '../_js/_functions.js';
+import { globalStore, globalVars } from '../_globalVars.js';
 export default {
-
-  setup(props, { attrs, emit, expose, slots }) {
-    return {
-      mycomponent: h('div', { class: 'bg-red-200', innerHTML: 'hello' }),
-    };
-  },
-
-  // render() {
-  //   return h('div', { class: 'foo' }, [mycomponent])
-  // },
-
   template: `
 
 <div class="p-6 flex flex-col items-center">
@@ -80,5 +71,22 @@ export default {
   </div>
 </dialog>
 </section>
-  `
+  `,
+
+//! /////////////////////////////////////////////////////////
+
+  setup(props, { attrs, emit, expose, slots }) {
+
+    return {
+      ...globalStore,
+      globalVars,
+
+mycomponent: h('div', { class: 'bg-red-200', innerHTML: 'hello' }),
+
+
+    };
+  },
+  mounted() {
+    if (this.mounted) this.mounted();
+  },
 }
