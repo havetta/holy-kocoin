@@ -37,8 +37,8 @@ export default
 	{
 		"id": "e7fc0f05",
 		"shortname": "preview",
-		"texthtml": "<section class=\"container p-4 mx-auto\">\n  <component :is=\"previewComponent\"></component>\n</section>",
-		"textscript": "mounted: () => {\n  watch(\n    () => globalVars?.currSection,\n    async (old, cur) => {\n      const page = globalStore?.currPgName?.value;\n      const sectionName = globalStore?.currSectionList?.value?.find(\n        (i) => i?.id === globalVars?.currSection.id,\n      )?.shortname;\n      try {\n        globalStore.previewComponent.value = (\n          await import(\n            /* @vite-ignore */ `../${page}/${sectionName}.js?t=${Date.now()}`\n          )\n        ).default;\n      } catch (e) {\n        globalStore.previewComponent.value = (\n          await import(\n            /* @vite-ignore */ `../${page}/${sectionName}.js`\n          )\n        ).default;\n      }\n    },\n    { deep: true },\n  );\n},"
+		"texthtml": "<section class=\"container p-4 mx-auto\">\n  <component :is=\"localVars?.previewComponent\"></component>\n</section>",
+		"textscript": "mounted: () => {\n  watch(\n    () => globalVars?.currSection,\n    async (old, cur) => {\n      const page = globalStore?.currPgName?.value;\n      const sectionName = globalStore?.currSectionList?.value?.find(\n        (i) => i?.id === globalVars?.currSection.id,\n      )?.shortname;\n      try {\n        localVars.previewComponent = (\n          await import(\n            /* @vite-ignore */ `../${page}/${sectionName}.js?t=${Date.now()}`\n          )\n        ).default;\n      } catch (e) {\n        localVars.previewComponent = (\n          await import(\n            /* @vite-ignore */ `../${page}/${sectionName}.js`\n          )\n        ).default;\n      }\n    },\n    { deep: true },\n  );\n},"
 	},
 	{
 		"id": "92604787",

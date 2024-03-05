@@ -50,9 +50,10 @@ import { globalStore, globalVars } from '../_globalVars.js';`;
   out += '  `,\n\n';
   out += `//! /////////////////////////////////////////////////////////`;
   out += `\n\n  setup(props, { attrs, emit, expose, slots }) {\n`;
-  out += `\n    return {\n      ...globalStore,\n      globalVars,\n\n`;
+  out += `\n    const localVars = reactive({});\n`;
+  out += `\n    return {\n      ...globalStore,\n      globalVars,\n      localVars,\n\n`;
   out += newItem?.textscript ?? ``;
-  out += `\n\n    };\n  },\n  mounted() {\n    if (this.mounted) this.mounted();\n  },\n}\n`;
+  out += `\n\n    };\n  },\n  mounted() {\n    if (this.mounted) this.mounted(this);\n  },\n}\n`;
 
   writeFileSync(`public/${page}/${newItem?.shortname}.js`, out);
 };
