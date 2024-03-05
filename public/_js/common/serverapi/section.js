@@ -10,100 +10,93 @@ export default router;
 //?  COMMON /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 const startRequest = (req) => {
-  console.log(
-    100000000000000000000,
-    `   `,
-    new Date().toLocaleString(),
-    `   `,
-    100000000000000000000,
-  );
+  console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000,);
   console.log(JSON.stringify(req.body, null, `\t`));
   return req.query?.page?.toLowerCase();
 };
 
 const readSectionList = (page) => {
   const rawData = readFileSync(`public/${page}/_sectionList.js`, `utf8`);
+  console.log(rawData.toString())
+
   return JSON.parse(rawData.toString().split(`//||`)?.[1]);
 };
 
 const writeSectionList = (page, list) => {
-  let out = `import { ref } from "vue"; export default ref(//||\n`;
+  let out = `export default\n//||\n`;
   out += JSON.stringify(list, null, `\t`);
-  out += `\n//||\n)`;
+  out += `\n`;
   writeFileSync(`public/${page}/!_sectionList.js`, out);
 };
 
-const sectionImports = (list) => {
+const writeSectionImports = (page, list) => {
+  const imports = list?.map((i) => `import ${i?.shortname} from "./${i?.shortname}.js";`);
+  const exports = list?.map((i) => `\n{ name: "${i?.shortname}", instance: ${i?.shortname} }`);
   let out = ``;
-  const imports = list.map(
-    (c) => `import ${c?.shortname} from "./${c?.shortname}.js";`,
-  );
-  const exports = list.map(
-    (c) => `\n{ name: "${c?.shortname}", instance: ${c?.shortname} }`,
-  );
   out = imports.join(`\n`);
   out += `\n\nexport default [`;
   out += exports.join(`, `);
   out += `\n];`;
-  return out;
+  
+  writeFileSync(`public/${page}/!_sectionImports.js`, out);
+};
+
+const writeSectionContent = (page, list) => {
+  let out = `
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
+import { fetchJson } from '../_js/_functions.js';
+import { globalStore, globalVars } from '../_globalVars.js';`;
+  out += imports ?? ``;
+  out += `\nexport default {\n  template: `;
+  out += '`';
+  out += `\n${req.body?.texthtml ?? ``}\n`;
+  out += '  `,\n\n';
+  out += `//! /////////////////////////////////////////////////////////`;
+  out += `\n\n  setup(props, { attrs, emit, expose, slots }) {\n`;
+  out += `\n    return {\n      ...globalStore,\n      globalVars,\n`;
+  out += req.body?.textscript ?? ``;
+  out += `\n\n    };\n  },\n  mounted() {\n    if (this.mounted) this.mounted();\n  },\n}\n`;
+
+  writeFileSync(`public/${page}/__${req.body?.shortname}.js`, out);
 };
 
 //? /////////////////////////////////////////////////////////
 //?   GETS  /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 router.get(`/`, (req, res) => {
-  const list = readSectionList(page);
-  res.json(list);
+  res.json(readSectionList(page));
 });
 
 router.get(`/:id`, (req, res) => {
   const list = readSectionList(page);
-  const results = list.filter((article) => article.id == req.params.id);
+  const results = list.filter((i) => i.id === req.params.id);
   res.json(results);
 });
 
 //* /////////////////////////////////////////////////////////
-//*   POST  /////////////////////////////////////////////////
+//*   PUT  //////////////////////////////////////////////////
 //* /////////////////////////////////////////////////////////
-router.post(`/`, (req, res) => {
+router.put(`/`, (req, res) => {
   const page = startRequest(req);
 
-  // read state from disk
   const list = readSectionList(page);
-
-  // add passed in data as first array item
-  list.unshift(req.body);
-
-  // write data back to state file
+  list.unshift(req.body); // add passed in data as first array item
+  writeSectionImports(page, list);
   writeSectionList(page, list);
-
-  // recreate sections imports file
-  writeFileSync(
-    `public/${page}/!_sectionImports.js`,
-    sectionImports(list),
-  );
 
   res.status(201).json({ status: `ok` });
 });
 
 //* /////////////////////////////////////////////////////////
-//*   PUT   /////////////////////////////////////////////////
+//*   POST   ////////////////////////////////////////////////
 //* /////////////////////////////////////////////////////////
-router.put(`/`, (req, res) => {
+router.post(`/`, (req, res) => {
   const page = startRequest(req);
 
-  let out = ``;
-  out += req.body?.imports ?? ``;
-  out += `\nexport default { \n  template: `;
-  out += '`';
-  out += `\n${req.body?.texthtml ?? ``}\n`;
-  out += '  `,\n\n';
-  out += `//! /////////////////////////////////////////////////////////`;
-  out += `\n\n  setup(props, { attrs, emit, expose, slots }) {\n`;
-  out += req.body?.textscript ?? ``;
-  out += `\n  },\n}`;
+  const list = readSectionList(page);
+  writeSectionList(page, list);
+  writeSectionContent(page, list);
 
-  writeFileSync(`public/${page}/!__${req.body?.shortname}.js`, out);
   res.status(201).json({ status: `ok` });
 });
 

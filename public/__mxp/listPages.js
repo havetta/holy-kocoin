@@ -40,7 +40,7 @@ export default {
 </ul>
 
 
-<section class="flex flex-col w-50 mt-4 px-5 py-5 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 rounded-md">
+<section class="flex flex-col w-50 mt-4 px-5 py-3 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 rounded-md">
   <div class="flex flex-col justify-between flex-1">
 
     <nav class="hidden -mx-3 space-y-3 ">

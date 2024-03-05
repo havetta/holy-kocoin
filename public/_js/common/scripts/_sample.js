@@ -2,7 +2,7 @@
 import { createSSRApp } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 
-import sections from "../../__mxp/_sectionImports.js"
+import sections from "../../../__mxp/_sectionImports.js"
 
 const server = express()
 

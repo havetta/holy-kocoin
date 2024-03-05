@@ -8,13 +8,13 @@ function saveChanges() {
 }
 
 function openDialog(dialogid) {
-  const dialog = document.getElementById(dialogid);
+  const dialog = document.querySelector(dialogid);
   dialog.showModal();
   document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
 }
 
 function closeDialog(dialogid) {
-  const dialog = document.getElementById(dialogid);
+  const dialog = document.querySelector(dialogid);
   dialog.close();
   document.body.style.backgroundColor = '';
 }

@@ -6,11 +6,11 @@ export default {
     const instance = shallowRef({ template: '<span></span>' });
 
     watch(
-      () => globalVars?.currSectionId,
+      () => globalVars?.currSection,
       async (old, cur) => {
         const page = globalStore?.currPgName?.value;
-        const sectionName = globalStore?.currentSectionList?.value?.find(
-          (i) => i?.id === globalVars?.currSectionId,
+        const sectionName = globalStore?.currSectionList?.value?.find(
+          (i) => i?.id === globalVars?.currSection.id,
         )?.shortname;
         try {
           instance.value = (

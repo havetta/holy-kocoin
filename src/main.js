@@ -4,6 +4,7 @@ import './assets/scss/main.scss'
 import App from './App.vue'
 import { pageList } from '../public/_pageList.js'
 import { pageImports } from '../public/_pageImports.js'
+// import { useScriptTag, useStyleTag } from '@vueuse/core'  //  npm i @vueuse/core
 
 const app = createApp(App);
 

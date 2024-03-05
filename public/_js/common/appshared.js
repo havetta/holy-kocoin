@@ -1,16 +1,17 @@
-// appshared.js (shared between server and client)
 import { createSSRApp, ref } from 'vue';
-
-// import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
 import {
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
 } from '../../_npm/vue-router.esm-browser.js';
+// import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
 
 // import { GButton, GCell, GCellHeader, GFixedBottom, GText } from '../../_npm/@george/core/dist/george-library.js';
 // import { createVuetify, components, directives  } from '../../_npm/vuetify.esm.js'
 
+//TODO /////////////////////////////////////////////////////////
+//TODO   processUrl  ///////////////////////////////////////////
+//TODO /////////////////////////////////////////////////////////
 const _page = ref('');
 const _section = ref('');
 
@@ -38,6 +39,10 @@ const processUrl = (req) => {
   console.log(`section: ${_section.value}`);
 };
 
+
+//TODO /////////////////////////////////////////////////////////
+//TODO   createApp  ////////////////////////////////////////////
+//TODO /////////////////////////////////////////////////////////
 export async function createApp(req) {
   try {
     processUrl(req);
@@ -72,15 +77,8 @@ export async function createApp(req) {
     //   dark: false,
     //   colors: {
     //     background: "#000000",
-    //     surface: "#000000",
     //     primary: "#000000",
-    //     "primary-darken-1": "#000000",
     //     secondary: "#000000",
-    //     "secondary-darken-1": "#000000",
-    //     error: "#000000",
-    //     info: "#000000",
-    //     success: "#000000",
-    //     warning: "#000000",
     //   },
     // };
     // const vuetify = createVuetify({
