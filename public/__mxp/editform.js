@@ -9,6 +9,7 @@ export default {
       globalVars,
       currSecName: computed(() => globalVars?.currSection?.shortname ?? 'home'),
       del: () => {
+        const page = globalStore?.currPgName?.value;
         fetchJson(`/section/?page=${page}`, 'delete', {id: globalVars?.currSection?.id});
       },
       save: () => {

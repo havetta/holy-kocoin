@@ -17,8 +17,6 @@ const startRequest = (req) => {
 
 const readSectionList = (page) => {
   const rawData = readFileSync(`public/${page}/_sectionList.js`, `utf8`);
-  console.log(rawData.toString())
-
   return JSON.parse(rawData.toString().split(`//||`)?.[1]);
 };
 
@@ -31,7 +29,7 @@ const writeSectionList = (page, list) => {
 
 const writeSectionImports = (page, list) => {
   const imports = list?.map((i) => `import ${i?.shortname} from "./${i?.shortname}.js";`);
-  const exports = list?.map((i) => `\n{ name: "${i?.shortname}", instance: ${i?.shortname} }`);
+  const exports = list?.map((i) => `\n  { name: "${i?.shortname}", instance: ${i?.shortname} }`);
   let out = ``;
   out = imports.join(`\n`);
   out += `\n\nexport default [`;
@@ -95,7 +93,7 @@ router.post(`/`, (req, res) => {
   const list = readSectionList(page);
 
   const index = list?.findIndex((i) => i?.id === req.body?.id);
-  list.splice(index - 1, index);
+  list.splice(index, 1);
   list.push(req.body)
 
   writeSectionImports(page, list);
@@ -112,8 +110,14 @@ router.delete(`/`, (req, res) => {
   const page = startRequest(req);
   const list = readSectionList(page);
 
-  const index = list?.findIndex((i) => i?.id);
-  list.splice(index - 1, index);
+  const index = list?.findIndex((i) => i?.id === req.body?.id);
+  console.log(index)
+  
+  list.splice(index, 1);
+  console.log(list)
 
+  writeSectionImports(page, list);
+  writeSectionList(page, list);
+  
   res.status(201).json({ status: `ok` });
 });
