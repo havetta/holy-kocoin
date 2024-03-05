@@ -1,12 +1,8 @@
-import { ref } from 'vue';
 
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
+import { fetchJson } from '../_js/_functions.js';
+import { globalStore, globalVars } from '../_globalVars.js';
 export default {
-  setup(props, { attrs, emit, expose, slots }) {
-    const isOpen = ref(false);
-    return {
-      isOpen: ref(false),
-    };
-  },
   template: `
 <header class="text-gray-100 bg-gray-800 lg:hidden">
   <div class="container flex items-center justify-between p-4 mx-auto">
@@ -112,5 +108,21 @@ export default {
     Close
   </button>
 </dialog>
-`,
-};
+  `,
+
+//! /////////////////////////////////////////////////////////
+
+  setup(props, { attrs, emit, expose, slots }) {
+
+    return {
+      ...globalStore,
+      globalVars,
+
+isOpen: ref(false),
+
+    };
+  },
+  mounted() {
+    if (this.mounted) this.mounted();
+  },
+}
