@@ -1,17 +1,17 @@
 export default
 //||
 [
-  {
+	{
 		"id": "212d66ab",
 		"shortname": "home",
-    "texthtml": "<home/>",
-    "textscript": ""
+		"texthtml": "<home/>",
+		"textscript": ""
 	},
 	{
 		"id": "2be40e47",
 		"shortname": "logo",
-    "texthtml": "<logo/>",
-    "textscript": ""
+		"texthtml": "<logo/>",
+		"textscript": ""
 	},
 	{
 		"id": "23528fe5",
