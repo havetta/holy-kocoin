@@ -41,23 +41,22 @@ const writeSectionImports = (page, list) => {
   writeFileSync(`public/${page}/_sectionImports.js`, out);
 };
 
-const writeSectionContent = (page, list) => {
+const writeSectionContent = (page, list, newItem) => {
   let out = `
 import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
 import { fetchJson } from '../_js/_functions.js';
 import { globalStore, globalVars } from '../_globalVars.js';`;
-  out += imports ?? ``;
   out += `\nexport default {\n  template: `;
   out += '`';
-  out += `\n${req.body?.texthtml ?? ``}\n`;
+  out += `\n${newItem?.texthtml ?? ``}\n`;
   out += '  `,\n\n';
   out += `//! /////////////////////////////////////////////////////////`;
   out += `\n\n  setup(props, { attrs, emit, expose, slots }) {\n`;
-  out += `\n    return {\n      ...globalStore,\n      globalVars,\n`;
-  out += req.body?.textscript ?? ``;
+  out += `\n    return {\n      ...globalStore,\n      globalVars,\n\n`;
+  out += newItem?.textscript ?? ``;
   out += `\n\n    };\n  },\n  mounted() {\n    if (this.mounted) this.mounted();\n  },\n}\n`;
 
-  writeFileSync(`public/${page}/${req.body?.shortname}.js`, out);
+  writeFileSync(`public/${page}/${newItem?.shortname}.js`, out);
 };
 
 //? /////////////////////////////////////////////////////////
@@ -78,9 +77,10 @@ router.get(`/:id`, (req, res) => {
 //* /////////////////////////////////////////////////////////
 router.put(`/`, (req, res) => {
   const page = startRequest(req);
-
   const list = readSectionList(page);
+
   list.unshift(req.body); // add passed in data as first array item
+
   writeSectionImports(page, list);
   writeSectionList(page, list);
 
@@ -92,14 +92,15 @@ router.put(`/`, (req, res) => {
 //* /////////////////////////////////////////////////////////
 router.post(`/`, (req, res) => {
   const page = startRequest(req);
-
   const list = readSectionList(page);
-  const index = list?.findIndex((i) => i?.id);
-  sections.splice(index - 1, index);
+
+  const index = list?.findIndex((i) => i?.id === req.body?.id);
+  list.splice(index - 1, index);
   list.push(req.body)
+
   writeSectionImports(page, list);
   writeSectionList(page, list);
-  writeSectionContent(page, list);
+  writeSectionContent(page, list, req.body);
 
   res.status(201).json({ status: `ok` });
 });
@@ -108,7 +109,11 @@ router.post(`/`, (req, res) => {
 //!  DELETE /////////////////////////////////////////////////
 //! /////////////////////////////////////////////////////////
 router.delete(`/`, (req, res) => {
+  const page = startRequest(req);
+  const list = readSectionList(page);
+
   const index = list?.findIndex((i) => i?.id);
-  sections.splice(index - 1, index);
+  list.splice(index - 1, index);
+
   res.status(201).json({ status: `ok` });
 });

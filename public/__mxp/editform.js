@@ -8,18 +8,19 @@ export default {
       ...globalStore,
       globalVars,
       currSecName: computed(() => globalVars?.currSection?.shortname ?? 'home'),
-      del: () => {},
+      del: () => {
+        fetchJson(`/section/?page=${page}`, 'delete', {id: globalVars?.currSection?.id});
+      },
       save: () => {
         // const currSection = globalStore?.currSectionList?.value?.find(
         //   (i) => i?.id === globalVars?.currSectionId,
         // );
-        const currSection = globalVars?.currSection;
         const page = globalStore?.currPgName?.value;
         fetchJson(`/section/?page=${page}`, 'post', {
-          id: currSection?.id,
-          shortname: currSection?.shortname,
-          texthtml: currSection?.texthtml,
-          textscript: currSection?.textscript,
+          id: globalVars?.currSection?.id,
+          shortname: globalVars?.currSection?.shortname,
+          texthtml: globalVars?.currSection?.texthtml,
+          textscript: globalVars?.currSection?.textscript,
         });
       },
     };
