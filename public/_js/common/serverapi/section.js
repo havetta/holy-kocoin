@@ -11,7 +11,7 @@ export default router;
 //? /////////////////////////////////////////////////////////
 const startRequest = (req) => {
   console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000,);
-  console.log(JSON.stringify(req.body, null, `\t`));
+  console.log(JSON.stringify(req.body?.shortname, null, `\t`));
   return req.query?.page?.toLowerCase();
 };
 
@@ -81,6 +81,7 @@ router.put(`/`, (req, res) => {
 
   writeSectionImports(page, list);
   writeSectionList(page, list);
+  writeSectionContent(page, list, req.body);
 
   res.status(201).json({ status: `ok` });
 });
@@ -93,8 +94,7 @@ router.post(`/`, (req, res) => {
   const list = readSectionList(page);
 
   const index = list?.findIndex((i) => i?.id === req.body?.id);
-  list.splice(index, 1);
-  list.push(req.body)
+  list.splice(index, 1, req.body);
 
   writeSectionImports(page, list);
   writeSectionList(page, list);
@@ -111,10 +111,7 @@ router.delete(`/`, (req, res) => {
   const list = readSectionList(page);
 
   const index = list?.findIndex((i) => i?.id === req.body?.id);
-  console.log(index)
-  
   list.splice(index, 1);
-  console.log(list)
 
   writeSectionImports(page, list);
   writeSectionList(page, list);
