@@ -26,7 +26,7 @@ const writeSectionList = (page, list) => {
   let out = `export default\n//||\n`;
   out += JSON.stringify(list, null, `\t`);
   out += `\n`;
-  writeFileSync(`public/${page}/!_sectionList.js`, out);
+  writeFileSync(`public/${page}/_sectionList.js`, out);
 };
 
 const writeSectionImports = (page, list) => {
@@ -38,7 +38,7 @@ const writeSectionImports = (page, list) => {
   out += exports.join(`, `);
   out += `\n];`;
   
-  writeFileSync(`public/${page}/!_sectionImports.js`, out);
+  writeFileSync(`public/${page}/_sectionImports.js`, out);
 };
 
 const writeSectionContent = (page, list) => {
@@ -57,7 +57,7 @@ import { globalStore, globalVars } from '../_globalVars.js';`;
   out += req.body?.textscript ?? ``;
   out += `\n\n    };\n  },\n  mounted() {\n    if (this.mounted) this.mounted();\n  },\n}\n`;
 
-  writeFileSync(`public/${page}/__${req.body?.shortname}.js`, out);
+  writeFileSync(`public/${page}/${req.body?.shortname}.js`, out);
 };
 
 //? /////////////////////////////////////////////////////////
@@ -94,6 +94,10 @@ router.post(`/`, (req, res) => {
   const page = startRequest(req);
 
   const list = readSectionList(page);
+  const index = list?.findIndex((i) => i?.id);
+  sections.splice(index - 1, index);
+  list.push(req.body)
+  writeSectionImports(page, list);
   writeSectionList(page, list);
   writeSectionContent(page, list);
 
@@ -104,7 +108,7 @@ router.post(`/`, (req, res) => {
 //!  DELETE /////////////////////////////////////////////////
 //! /////////////////////////////////////////////////////////
 router.delete(`/`, (req, res) => {
-  const { id } = req.body;
-  sections.splice(id - 1, id);
-  res.json({ success: true, message: `deleted` });
+  const index = list?.findIndex((i) => i?.id);
+  sections.splice(index - 1, index);
+  res.status(201).json({ status: `ok` });
 });
