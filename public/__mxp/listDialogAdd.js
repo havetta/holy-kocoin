@@ -1,33 +1,8 @@
-import { globalStore, globalVars } from '../_globalVars.js';
+
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
 import { fetchJson } from '../_js/_functions.js';
-
+import { globalStore, globalVars } from '../_globalVars.js';
 export default {
-  setup(props, { attrs, emit, expose, slots }) {
-    return {
-      ...globalStore,
-      globalVars,
-      addnew: () => {
-        const shortname = document.querySelector('#addSection input[data-id="shortname"]')?.value;
-
-        const newItem = {
-          id: crypto.randomUUID().split('-')[0],
-          shortname,
-        };
-
-        globalStore?.currSectionList?.value?.unshift(newItem); // add new item as first in list
-        fetchJson(`/section/?page=${globalStore?.currPgName?.value}`, 'put', newItem);
-        closeDialog('#addSection');
-      },
-
-      mounted: () => {
-        const ele = document.querySelector('#addSection input[data-id="shortname"]');
-        ele.value = '';
-      },
-    };
-  },
-  mounted() {
-    if (this.mounted) this.mounted();
-  },
   template: `
 <dialog id="addSection" class="bg-gray-100 rounded-md p-4 w-[600px]">
   <section class="block max-w p-6 mb-6 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
@@ -49,5 +24,38 @@ export default {
     <button onclick="closeDialog('#addSection')" class="btn-blue">Cancel</button>
   </div>
 </dialog>
-`,
-};
+  `,
+
+//! /////////////////////////////////////////////////////////
+
+  setup(props, { attrs, emit, expose, slots }) {
+
+    return {
+      ...globalStore,
+      globalVars,
+
+addnew: () => {
+  const shortname = document.querySelector('#addSection input[data-id="shortname"]')?.value;
+
+  const newItem = {
+    id: crypto.randomUUID().split('-')[0],
+    shortname,
+  };
+
+  globalStore?.currSectionList?.value?.unshift(newItem); // add new item as first in list
+  fetchJson(`/section/?page=${globalStore?.currPgName?.value}`, 'put', newItem);
+  closeDialog('#addSection');
+},
+
+mounted: () => {
+  const ele = document.querySelector('#addSection input[data-id="shortname"]');
+  ele.value = '';
+},
+
+
+    };
+  },
+  mounted() {
+    if (this.mounted) this.mounted();
+  },
+}

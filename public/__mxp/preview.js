@@ -1,9 +1,18 @@
-import { shallowRef, watch } from 'vue';
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
+import { fetchJson } from '../_js/_functions.js';
 import { globalStore, globalVars } from '../_globalVars.js';
-
 export default {
+  template: `
+<section class="container p-4 mx-auto">
+  <component :is="instance"></component>
+</section>
+`,
+
+//! /////////////////////////////////////////////////////////
+
   setup(props, { attrs, emit, expose, slots }) {
-    const instance = shallowRef({ template: '<span></span>' });
+
+    const instance = shallowRef({ template: '<span/>' });
 
     watch(
       () => globalVars?.currSection,
@@ -30,12 +39,12 @@ export default {
     );
 
     return {
+      ...globalStore,
+      globalVars,
       instance,
     };
   },
-  template: `
-<section class="container p-4 mx-auto">
-  <component :is="instance"></component>
-</section>
-`,
-};
+  mounted() {
+    if (this.mounted) this.mounted();
+  },
+}

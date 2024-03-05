@@ -1,15 +1,8 @@
-import { globalStore, globalVars } from '../_globalVars.js';
 
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
+import { fetchJson } from '../_js/_functions.js';
+import { globalStore, globalVars } from '../_globalVars.js';
 export default {
-  setup(props, { attrs, emit, expose, slots }) {
-    return {
-      ...globalStore,
-      globalVars,
-    };
-  },
-  mounted() {
-    if (this.mounted) this.mounted();
-  },
   template: `
 <div class="flex flex-col mt-6">
   <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -69,5 +62,21 @@ export default {
     </div>
   </div>
 </div>
-`,
-};
+  `,
+
+//! /////////////////////////////////////////////////////////
+
+  setup(props, { attrs, emit, expose, slots }) {
+
+    return {
+      ...globalStore,
+      globalVars,
+
+
+
+    };
+  },
+  mounted() {
+    if (this.mounted) this.mounted();
+  },
+}
