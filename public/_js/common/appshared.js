@@ -71,7 +71,7 @@ export async function createApp(req) {
           uniqueTagName = `${shortpgnameTag}-${sec.shortname}`;
         allTagNames.push(sec.shortname);
         
-        console.log(`Section Tag: ${uniqueTagName}  => route:  /${shortpgnameTag}/${sec.shortname}`);
+        // console.log(`Section Tag: ${uniqueTagName}  => route:  /${shortpgnameTag}/${sec.shortname}`);
     
         const componentInstance = imp.find((s) => s.name === sec.shortname).instance;
         app.component(uniqueTagName, componentInstance) 

@@ -2,6 +2,12 @@ export default
 //||
 [
 	{
+		"id": "cf3a9ca1",
+		"shortname": "highlight",
+		"texthtml": "<div id=\"containerHtml1\" style=\"height: 400px\"></div>\n<br/>\n<div id=\"containerJs1\" style=\"height: 300px\"></div>\n",
+		"textscript": "mounted: () => {\n  var editorHtml = monaco.editor.create(document.getElementById('containerHtml1'), {value: ['<div style=\"height: 20px\">', '</div>'].join('\\n'), language: 'html'});\n\n  var editorJs = monaco.editor.create(document.getElementById('containerJs1'), {value: ['function x() {', '\\tconsole.log(\"Hello world!\");', '}'].join('\\n'), language: 'javascript'});\n\neditorJs.getModel().setValue(\"export function func(name) {\\n\\\n  if (name === 'highlightHtml') {\\n\\\n    console.log('log fuction call here ...')\\n\\\n  }\\n\\\n}\");\n}"
+	},
+	{
 		"id": "23528fe5",
 		"shortname": "mybutton"
 	},

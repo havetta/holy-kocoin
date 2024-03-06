@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 
 import express from 'express';
+import nodeHtmlToImage from 'node-html-to-image'
 
 const router = express.Router();
 router.use(express.json());
@@ -60,6 +61,13 @@ router.get(`/`, (req, res) => {
 router.get(`/:id`, (req, res) => {
   const list = startRequest(req);
   const results = list.filter((i) => i.id === req.params.id);
+
+nodeHtmlToImage({
+  output: './public/_mockdata/image.jpeg',
+  type: 'jpeg',
+  html: `<html><head><meta name="viewport" content="width=1024px, initial-scale=1.0" /></head><body><iframe src="http://localhost/?demo" width=1024 height=768 /></body></html>`
+}).then(() => console.log('The image was created successfully!'))
+
   res.json(results);
 });
 

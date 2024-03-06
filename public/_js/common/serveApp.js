@@ -51,9 +51,14 @@ server.get('/', async (req, res) => {
           }}
         </script>
         <script type="module" crossorigin src="_js/common/appclient.js"></script>
-        <script defer crossorigin src="_js/__allgenerated.js"></script>
+        <script crossorigin="anonymous" src="_npm/jquery-2.2.4.min.js"></script>
+        <script crossorigin="anonymous" src="_npm/jszip.min.js"></script>
+        <script crossorigin="anonymous" src="_npm/pptxgen.min.js"></script>
+        <script crossorigin src="_js/__allgenerated.js"></script>
 
-        <script defer crossorigin="anonymous" src="_npm/jquery-2.2.4.min.js"></script>
+        <script type="application/javascript">
+          const pptx = new PptxGenJS();
+        </script>
 
         <script>
           var require = { paths: { vs: '_npm/monaco-editor' } };
@@ -79,9 +84,9 @@ const options = {
   key: readFileSync('./certkey.pem', 'utf8'),
   cert: readFileSync('./cert.pem', 'utf8'),
 };
-const httpsServer = https.createServer(options, server).listen(443, () => {
-  // const httpsServer = server.listen(80, () => {
-  console.log(`listening on port 443`);
+// const httpsServer = https.createServer(options, server).listen(443, () => {
+  const httpsServer = server.listen(80, () => {
+  console.log(`listening on port 80 not 443`);
 });
 
 // server.listen(80, () => { console.log(`listening on ${80}`); });

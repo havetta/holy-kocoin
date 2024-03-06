@@ -4,13 +4,16 @@ import { fetchJson, func } from '../_js/_functions.js';
 import { globalStore, globalVars } from '../_globalVars.js';
 export default {
   template: `
-<div class="flex flex-row mx-auto">
-  <test1/>
+<div class="flex flex-col mx-auto gap-4">
+
   <logo1/>
   <section1/>
+  <mySection/>
+  <test1/>
+
 </div>
-xxx
-<mySection></mySection>
+
+
   `,
 
 //! /////////////////////////////////////////////////////////

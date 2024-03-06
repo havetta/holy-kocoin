@@ -13,6 +13,7 @@ export async function fetchJson(url, method, data) {
 }
 
 export function func(name) {
-  if (name === 'highlightHtml') {
+  if (name === 'funcName') {
+
   }
 }

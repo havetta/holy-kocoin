@@ -1,3 +1,4 @@
+import highlight from "./highlight.js";
 import mybutton from "./mybutton.js";
 import testChart from "./testChart.js";
 import testFlowbite from "./testFlowbite.js";
@@ -6,6 +7,7 @@ import test from "./test.js";
 import logo from "./logo.js";
 
 export default [
+  { name: "highlight", instance: highlight }, 
   { name: "mybutton", instance: mybutton }, 
   { name: "testChart", instance: testChart }, 
   { name: "testFlowbite", instance: testFlowbite }, 
