@@ -6,6 +6,9 @@ import {
 } from '../../_npm/vue-router.esm-browser.js';
 // import { createRouter, createWebHashHistory, createMemoryHistory } from 'vue-router'
 
+import { pageList } from '../../_pageList.js'
+import { pageImports } from '../../_pageImports.js'
+
 // import { GButton, GCell, GCellHeader, GFixedBottom, GText } from '../../_npm/@george/core/dist/george-library.js';
 // import { createVuetify, components, directives  } from '../../_npm/vuetify.esm.js'
 
@@ -47,26 +50,43 @@ export async function createApp(req) {
   try {
     processUrl(req);
 
-    const app = createSSRApp({ template: `<${_section?.value} />` });
-    let routes = [];
+    let root = `<${_section?.value} />`;
+    if (_section?.value === 'home')
+      root = `<${_page?.value.replace(/_/g,'')}-${_section?.value} />`;
 
+    const app = createSSRApp({ template: root });
+    const routes = [{ path: '/', component: pageImports.find((i) => i.shortpgname === '__mxp').sectionImports.find((s) => s.name === 'home').instance }];
+
+    const allTagNames = [];
+    
+    pageList.value.forEach((pg) => {
+      const imp = pageImports.find((i) => i.shortpgname === pg.shortpgname).sectionImports;
+      const shortpgnameTag = pg.shortpgname.replace(/_/g,'');
+    
+      pg.sectionList.forEach((sec) => {
+
+        // Make tag name unique
+        let uniqueTagName = sec.shortname;
+        if (allTagNames.includes(sec.shortname) || sec.shortname === 'home')
+          uniqueTagName = `${shortpgnameTag}-${sec.shortname}`;
+        allTagNames.push(sec.shortname);
+        
+        console.log(`Section Tag: ${uniqueTagName}  => route:  /${shortpgnameTag}/${sec.shortname}`);
+    
+        const componentInstance = imp.find((s) => s.name === sec.shortname).instance;
+        app.component(uniqueTagName, componentInstance) 
+        routes.push({path: `/${pg.shortpgname}/${sec.shortname}`, component: componentInstance});
+      });
+    });
+    
+/*    const routes = [];
     const sectionImports = (await import(`../../${_page.value}/_sectionImports.js?t=${Date.now()}`)).default;
     if (sectionImports) {
-      routes = [
-        {
-          path: '/',
-          component: sectionImports?.find((c) => c.name === 'home').instance,
-        },
-      ];
-      sectionImports?.forEach((c) =>
-        routes.push({
-          path: `/${_page?.value}/${c?.name}`,
-          component: c?.instance,
-        }),
-      );
-      sectionImports?.forEach((c) => app.component(c?.name, c?.instance));
+      routes.push({ path: '/', component: sectionImports?.find((c) => c.name === 'home').instance });
+      sectionImports?.forEach((c) => routes.push({ path: `/${_page?.value}/${c?.name}`, component: c?.instance }) );
+      sectionImports?.forEach((c) => app.component(c?.name, c?.instance) );
     }
-
+*/
     const router = createRouter({
       history: createWebHashHistory(),
       routes,

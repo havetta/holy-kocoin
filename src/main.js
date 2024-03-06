@@ -14,15 +14,17 @@ const allTagNames = [];
 
 pageList.value.forEach((pg) => {
   const imp = pageImports.find((i) => i.shortpgname === pg.shortpgname).sectionImports;
+  const shortpgnameTag = pg.shortpgname.replace(/_/g,'');
 
   pg.sectionList.forEach((sec) => {
+
     // Make tag name unique
     let uniqueTagName = sec.shortname;
-    if (allTagNames.includes(sec.shortname))
-      uniqueTagName = `${pg.shortpgname}-${sec.shortname}`;
+    if (allTagNames.includes(sec.shortname) || sec.shortname === 'home')
+      uniqueTagName = `${shortpgnameTag}-${sec.shortname}`;
     allTagNames.push(sec.shortname);
     
-    console.log(`Section Tag: ${uniqueTagName}  => route:  /${pg.shortpgname}/${sec.shortname}`);
+    console.log(`Section Tag: ${uniqueTagName}  => route:  /${shortpgnameTag}/${sec.shortname}`);
 
     const componentInstance = imp.find((s) => s.name === sec.shortname).instance;
     app.component(uniqueTagName, componentInstance) 

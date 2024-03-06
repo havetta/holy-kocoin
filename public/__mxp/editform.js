@@ -18,7 +18,7 @@ export default {
       <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="texthtml">
         HTML Template
       </label>
-      <div id="containerHtml" style="height: 5px"></div>
+      <div id="containerHtml" style="height: 2px"></div>
       <textarea v-model="globalVars.currSection.texthtml" rows="20" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
     </div>
 
@@ -26,7 +26,7 @@ export default {
       <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="textscript">
         Javascript
       </label>
-      <div id="containerJs" style="height: 5px"></div>
+      <div id="containerJs" style="height: 2px"></div>
       <textarea v-model="globalVars.currSection.textscript" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm text-gray-900 bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
     </div>
 
@@ -69,18 +69,12 @@ export default {
 
 currSecName: computed(() => globalVars?.currSection?.shortname ?? 'home'),
 mounted: () => {
-  console.log('create editor')
-  // localVars.editorHtml = monaco.editor.create(document.getElementById('containerHtml'), {	language: 'html' });
-  // localVars.editorJs = monaco.editor.create(document.getElementById('containerJs'), {	language: 'javascript' });
-  // localVars.editorHtml.getModel().setValue("<div>ahoj</div>");
+  //localVars.editorHtml = monaco.editor.create(document.getElementById('containerHtml'), {	language: 'html' });
+  //localVars.editorJs = monaco.editor.create(document.getElementById('containerJs'), {	language: 'javascript' });
 
   watch(
     () => globalVars?.currSection,
-    (old, cur) => {
-      console.log('Monaco Editor Set Value')
-      console.log(globalVars?.currSection?.texthtml);
-      // localVars.editorHtml.getModel().setValue("<div>ahoj</div>");
-      //localVars.editorJs.getModel().setValue(globalVars?.currSection?.textscript);
+    async (old, cur) => {      //localVars.editorHtml.getModel().setValue(globalVars?.currSection?.texthtml);      //localVars.editorJs.getModel().setValue(globalVars?.currSection?.textscript);
     },
     { deep: true },
   );
