@@ -4,8 +4,7 @@ import { ref } from 'vue';
 
 export const pageList = ref([
   //||
-    { shortpgname: '__mxp', sectionList:__mxp},
-    { shortpgname: 'test', sectionList:test},
-  ]
+  { shortpgname: 'test', sectionList:test},
+  { shortpgname: '__mxp', sectionList:__mxp},
   //||
 ]);

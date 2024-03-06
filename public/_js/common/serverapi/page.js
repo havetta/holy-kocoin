@@ -19,10 +19,10 @@ const readPageList = () => {
   const rawData = readFileSync(`public/_pageList.js`, `utf8`);
   const text = rawData.toString().split(`//||`)?.[1];
   const list = [];
-  text.split('\n').forEach((i) => {
-    const row = i.split(',');
-    const pageName = row[1].split(':')[1];
-    list.push( pageName.replace('},', '') );
+  text?.split('},\n').forEach((i) => {
+    const pageName = i?.split('sectionList:')?.[1];
+    if (pageName)
+      list.push( pageName.trim().replace('},', '') );
   });
   return list;
 };
