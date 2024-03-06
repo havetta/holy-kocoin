@@ -1,4 +1,4 @@
-import { readFileSync, writeFile, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 
 import express from 'express';
 
@@ -42,7 +42,7 @@ const writeSectionImports = (page, list) => {
 const writeSectionContent = (page, list, newItem) => {
   let out = `
 import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
-import { fetchJson } from '../_js/_functions.js';
+import { fetchJson, func } from '../_js/_functions.js';
 import { globalStore, globalVars } from '../_globalVars.js';`;
   out += `\nexport default {\n  template: `;
   out += '`';
@@ -62,10 +62,12 @@ import { globalStore, globalVars } from '../_globalVars.js';`;
 //?   GETS  /////////////////////////////////////////////////
 //? /////////////////////////////////////////////////////////
 router.get(`/`, (req, res) => {
+  const page = req.query?.page?.toLowerCase();
   res.json(readSectionList(page));
 });
 
 router.get(`/:id`, (req, res) => {
+  const page = req.query?.page?.toLowerCase();
   const list = readSectionList(page);
   const results = list.filter((i) => i.id === req.params.id);
   res.json(results);

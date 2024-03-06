@@ -53,9 +53,16 @@ server.get('/', async (req, res) => {
         <script type="module" crossorigin src="_js/common/appclient.js"></script>
         <script defer crossorigin src="_js/__allgenerated.js"></script>
 
-        <script defer crossorigin="anonymous" src="_npm/jquery.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" crossorigin="anonymous"></script>
-        <script defer crossorigin="anonymous" src="_npm/jquery.highlight-within-textarea.js"></script>
+        <script defer crossorigin="anonymous" src="_npm/jquery-2.2.4.min.js"></script>
+
+        <script>
+          var require = { paths: { vs: '_npm/monaco-editor' } };
+        </script>
+        <script src="_npm/monaco-editor/loader.js"></script>
+        <script src="_npm/monaco-editor/editor/editor.main.nls.js"></script>
+        <script src="_npm/monaco-editor/editor/editor.main.js"></script>
+
+        <link rel="stylesheet" href="_npm/monaco-editor/editor/editor.main.css" data-name="vs/editor/editor.main" />
 
         <link rel="stylesheet" crossorigin href="_css/__allgenerated.css">
         <link rel="stylesheet" crossorigin href="_css/output.css">

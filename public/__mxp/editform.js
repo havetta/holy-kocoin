@@ -1,6 +1,6 @@
 
 import { computed, h, reactive, ref, shallowRef, watch } from 'vue';
-import { fetchJson } from '../_js/_functions.js';
+import { fetchJson, func } from '../_js/_functions.js';
 import { globalStore, globalVars } from '../_globalVars.js';
 export default {
   template: `
@@ -18,13 +18,15 @@ export default {
       <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="texthtml">
         HTML Template
       </label>
-      <textarea v-model="globalVars.currSection.texthtml" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+      <div id="containerHtml" style="height: 5px"></div>
+      <textarea v-model="globalVars.currSection.texthtml" rows="20" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="textscript">
         Javascript
       </label>
+      <div id="containerJs" style="height: 5px"></div>
       <textarea v-model="globalVars.currSection.textscript" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-sm text-gray-900 bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
     </div>
 
@@ -58,19 +60,36 @@ export default {
 
   setup(props, { attrs, emit, expose, slots }) {
 
+    const localVars = reactive({});
+
     return {
       ...globalStore,
       globalVars,
+      localVars,
 
 currSecName: computed(() => globalVars?.currSection?.shortname ?? 'home'),
+mounted: () => {
+  console.log('create editor')
+  // localVars.editorHtml = monaco.editor.create(document.getElementById('containerHtml'), {	language: 'html' });
+  // localVars.editorJs = monaco.editor.create(document.getElementById('containerJs'), {	language: 'javascript' });
+  // localVars.editorHtml.getModel().setValue("<div>ahoj</div>");
+
+  watch(
+    () => globalVars?.currSection,
+    (old, cur) => {
+      console.log('Monaco Editor Set Value')
+      console.log(globalVars?.currSection?.texthtml);
+      // localVars.editorHtml.getModel().setValue("<div>ahoj</div>");
+      //localVars.editorJs.getModel().setValue(globalVars?.currSection?.textscript);
+    },
+    { deep: true },
+  );
+},
 del: () => {
   const page = globalStore?.currPgName?.value;
   fetchJson(`/section/?page=${page}`, 'delete', {id: globalVars?.currSection?.id});
 },
 save: () => {
-  // const currSection = globalStore?.currSectionList?.value?.find(
-  //   (i) => i?.id === globalVars?.currSectionId,
-  // );
   const page = globalStore?.currPgName?.value;
   fetchJson(`/section/?page=${page}`, 'post', {
     id: globalVars?.currSection?.id,
@@ -83,6 +102,6 @@ save: () => {
     };
   },
   mounted() {
-    if (this.mounted) this.mounted();
+    if (this.mounted) this.mounted(this);
   },
 }
