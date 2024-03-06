@@ -11,7 +11,7 @@ export default router;
 //? /////////////////////////////////////////////////////////
 const startRequest = (req) => {
   console.log(100000000000000000000, `   `, new Date().toLocaleString(), `   `, 100000000000000000000,);
-  console.log(JSON.stringify(req.body?.shortname, null, `\t`));
+  console.log(JSON.stringify(req.body?.id, null, `\t`));
   return readPageList();
 };
 
@@ -28,22 +28,21 @@ const readPageList = () => {
 };
 
 const writePageList = (list) => {
-  const imports = list?.map((i) => `import ${i} from "./${i}/_sectionList.js";`);
   let out = ``;
-  out = imports.join(`\n`);
-  out += `import { ref } from 'vue';`;
-  out += `export const pageList = ref([\n//||\n`;
-  out += list.map((i) => { `{ shortpgname: '${i}', sectionList:${i}\n}` }).join('\n');
+  out = list?.map((i) => `import ${i} from './${i}/_sectionList.js';`).join(`\n`);
+  out += `\n\nimport { ref } from 'vue';`;
+  out += `\n\nexport const pageList = ref([\n//||\n`;
+  out += list?.map((i) => `  { shortpgname: '${i}', sectionList: ${i} },`).join('\n');
   out += `\n//||\n]);`;
   writeFileSync(`public/_pageList.js`, out);
 };
 
 const writePageImports = (list) => {
-  const imports = list?.map((i) => `import ${i} from "./${i}/_sectionImports.js";`);
-  const exports = list?.map((i) => `\n  { shortpgname: "${i}", sectionImports: ${i} }`);
+  const imports = list?.map((i) => `import ${i} from './${i}/_sectionImports.js';`);
+  const exports = list?.map((i) => `\n  { shortpgname: '${i}', sectionImports: ${i} }`);
   let out = ``;
   out = imports.join(`\n`);
-  out += `\n\nexport const pageImports =`;
+  out += `\n\nexport const pageImports = [`;
   out += exports.join(`, `);
   out += `\n];`;
   
@@ -70,7 +69,7 @@ router.get(`/:id`, (req, res) => {
 router.put(`/`, (req, res) => {
   const list = startRequest(req);
 
-  list.unshift(req.body); // add passed in data as first array item
+  list.unshift(req.body?.id); // add passed in data as first array item
 
   writePageImports(list);
   writePageList(list);

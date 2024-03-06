@@ -14,7 +14,7 @@ export default {
           Short Name
           <sup class="text-cyan-500 text-xs italic animate-pulse"> *** Don't use special chars.</sup>
         </label>
-        <input type="text" data-id="shortname" aria-label="input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        <input type="text" data-id="shortPgName" aria-label="input" class="mb-5 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
       </div>
       </form>
     </article>
@@ -38,20 +38,15 @@ export default {
       localVars,
 
 addnew: () => {
-  const shortname = document.querySelector('#addSection input[data-id="shortname"]')?.value;
+  const shortPgName = document.querySelector('#addPage input[data-id="shortPgName"]')?.value;
 
-  const newItem = {
-    id: crypto.randomUUID().split('-')[0],
-    shortname,
-  };
-
-  globalStore?.pageList?.value?.push(newItem);
-  fetchJson(`/page/?page=${globalStore?.currPgName?.value}`, 'put', newItem);
+  globalStore?.pageList?.value?.push(shortPgName);
+  fetchJson(`/page`, 'put', {id:shortPgName});
   closeDialog('#addPage');
 },
 
 mounted: () => {
-  const ele = document.querySelector('#addPage input[data-id="shortname"]');
+  const ele = document.querySelector('#addPage input[data-id="shortPgName"]');
   ele.value = '';
 },
 
