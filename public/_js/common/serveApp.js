@@ -84,9 +84,11 @@ const options = {
   key: readFileSync('./certkey.pem', 'utf8'),
   cert: readFileSync('./cert.pem', 'utf8'),
 };
-// const httpsServer = https.createServer(options, server).listen(443, () => {
-  const httpsServer = server.listen(80, () => {
-  console.log(`listening on port 80 not 443`);
+const httpsServer = https.createServer(options, server).listen(443, () => {
+  console.log(`listening on port 443`);
+});
+const httpServer = server.listen(80, () => {
+  console.log(`listening on port 80`);
 });
 
 // server.listen(80, () => { console.log(`listening on ${80}`); });
