@@ -21,13 +21,13 @@ export default {
   </li>
 </ul>
 
-<section class="flex flex-col w-50 mt-4 px-5 py-3 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 rounded-md">
+<section class="flex flex-col w-50 mt-4 px-5 py-3 overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 md:rounded-lg shadow-lg shadow-r-5">
   <div class="flex flex-col justify-between flex-1">
     <div>
       <div class="flex items-center justify-between">
         <h2 class="text-base font-semibold text-gray-800 dark:text-white">Pages</h2>
 
-        <button onclick="openDialog('#addPage')" class="flex items-center gap-x-3 btn-blue hover:bg-gray-100 duration-200 transition-colors text-gray-500 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 border rounded-lg">
+        <button onclick="openDialog('#addPage')" class="btn-blue">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
           </svg>
