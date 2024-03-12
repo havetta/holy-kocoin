@@ -13,24 +13,24 @@ export const conf = {
     mi: `binance`,
   },
   symbol: {
-    au: `BTC`,
+    au: `USDC`,
     mi: `BTC`,
   },
   spread: {
-    au: 10,
-    mi: 10,
+    au: 0.0005,
+    mi: 50,
   },
   port: {
     au: 3333,
     mi: 3334,
   },
-  buyEveryXSeconds: {
-    au: 3000,
-    mi: 1500,
+  buyEveryXSeconds: { // 1200 = 20 minutes
+    au: 120,
+    mi: 300,
   },
   smallestAmount: {
-    au: 0.1,
-    mi: 0.0004,
+    au: 1000,
+    mi: 0.001,
   },
 }
 
@@ -72,7 +72,7 @@ export async function initExchange() {
   
   const exchangeName = conf.exchangeName[conf.usr] ?? cliArgs.exchangeName ?? process.env.exchangeName;
 
-  state.symbol += (exchangeName === 'binance' ? '/TUSD' : '/USDC');
+  state.symbol += (exchangeName === 'binance' ? '/TUSD' : '/USDT');
   
   state.exchange = new ccxt[exchangeName]({
     apiKey: process.env[`${conf.usr}-apikey`],

@@ -1,18 +1,19 @@
-import Fastify from 'fastify'
-import FastifyCORS from '@fastify/cors'
+import ExpressJS from 'express'
+// import expressCORS from '@express/cors'
 import { conf, state, getExchange } from './store.js'
 
-export const fastify = Fastify({ logger: false });
+export const express = ExpressJS({ logger: false });
 
-await fastify.register((instance, options, done) => {
-  instance.register(FastifyCORS, {origin: "*"});
-  done();
+express.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "localhost"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
 ///////////////////////////////////////////////////////////
 // buy
 ///////////////////////////////////////////////////////////
-fastify.get('/buy', async (req, reply) => {
+express.get('/buy', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   try {
     state.buyPrice = state.curPrice - state.spread;
@@ -27,7 +28,7 @@ fastify.get('/buy', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 // sell
 ///////////////////////////////////////////////////////////
-fastify.get('/sell', async (req, reply) => {
+express.get('/sell', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   try {
     let higher = state.curPrice < state.avgPrice ? state.avgPrice : state.curPrice;
@@ -43,7 +44,7 @@ fastify.get('/sell', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 // price
 ///////////////////////////////////////////////////////////
-fastify.get('/price', async (req, reply) => {
+express.get('/price', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   return {
     curPrice: state.curPrice,
@@ -60,7 +61,7 @@ fastify.get('/price', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 // balance
 ///////////////////////////////////////////////////////////
-fastify.get('/balance', async (req, reply) => {
+express.get('/balance', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
 
   const bal = await getExchange().fetchBalance();
@@ -79,7 +80,7 @@ fastify.get('/balance', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 // orders
 ///////////////////////////////////////////////////////////
-fastify.get('/orders', async (req, reply) => {
+express.get('/orders', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   const side = req.query?.side?.toUpperCase();
   let orders = [];
@@ -95,7 +96,7 @@ fastify.get('/orders', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 // cancel sell
 ///////////////////////////////////////////////////////////
-fastify.get('/cancel', async (req, reply) => {
+express.get('/cancel', async (req, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   const side = req.query?.side?.toUpperCase();
   
@@ -115,12 +116,13 @@ fastify.get('/cancel', async (req, reply) => {
 ///////////////////////////////////////////////////////////
 const start = async () => {
   try {
-    const myPort = conf.port[conf.usr] ?? 6000 + new Date().getMilliseconds();
-    await fastify.listen({ port: myPort })
-    console.log(`Listening on port ${myPort}`)
+    const myPort = conf?.port?.[conf.usr] ?? 6000 + new Date().getMilliseconds();
+    await express.listen({ port: myPort });
+    console.log(`Listening on port ${myPort}`);
   } catch (err) {
-    fastify.log.error(err)
-    process.exit(1)
+    express.log.error(err);
+    console.error(err);
+    process.exit(1);
   }
 };
 start();

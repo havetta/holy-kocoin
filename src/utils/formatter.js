@@ -1,12 +1,14 @@
 ///////////////////////////////////////////////////////////
+export function fourDecimals(num) {
+  const noDecimal = Math.trunc(num);
+  return `${noDecimal}.${(new String(Math.trunc(num*100) - noDecimal*100) + "0000").substring(0,4)}`;
+};
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
 export function twoDecimals(num) {
   const noDecimal = Math.trunc(num);
-  let res = `${noDecimal}.`;
-
-  const twoDecimal = Math.trunc(num*100) - noDecimal*100;
-
-  res += (new String(twoDecimal) + "00").substring(0,2);
-  return res;
+  return `${noDecimal}.${(new String(Math.trunc(num*100) - noDecimal*100) + "00").substring(0,2)}`;
 };
 ///////////////////////////////////////////////////////////
 

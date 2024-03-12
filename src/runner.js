@@ -4,7 +4,7 @@ import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } fro
 import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./utils/order.js";
 import { conf, state, getExchange, initExchange } from "./store.js";
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
-import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
+import { fourDecimals, twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
 
 
 // await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 2, "buy", "stop_loss_limit");
@@ -100,7 +100,7 @@ const runner = async () => {
     oneLine(`\x1b[1m\x1b[45m${rightPad(countLoopsForBuy, 5)}`);
 
     // Wait x miliseconds
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     try {
       const [bal, openOrders] = await Promise.all( [
@@ -126,7 +126,7 @@ const runner = async () => {
       state.realizedBuyOrders = state.buyOrders.filter(i => !state.openOrders.some(open => open.id === i.id) );
 
       // if (await cancelOldOrders(state.openOrders, 150, "sell", "stop_loss_limit")) {
-      //   oneLine(`\x1b[43mRESET`, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
+      //   oneLine(`\x1b[43mRESET`, fourDecimals(state.buyPrice), fourDecimals(state.curPrice),
       //     `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
       // }
       // const sells = state.openOrders.filter(i => i.symbol === state.symbol && i.side === "sell");
@@ -151,9 +151,9 @@ const runner = async () => {
 
         // state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
         // const exName = conf.exchangeName[conf.usr];
-        state.buyPrice = Math.min(...state.recentPrices)// + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
+        state.buyPrice = Math.min(...state.recentPrices) - state.spread// + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
 
-        oneLine(`\x1b[42mBUY  `, twoDecimals(state.buyPrice), twoDecimals(state.curPrice),
+        oneLine(`\x1b[42mBUY  `, fourDecimals(state.buyPrice), fourDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
         try {
@@ -180,13 +180,13 @@ const runner = async () => {
       //! /////////////////////////////////////////////////////////
       //!  SELL ///////////////////////////////////////////////////
       //! /////////////////////////////////////////////////////////
-      if (state.freeBtc >= state.smallestAmount * 1.024)
+      if (state.freeBtc >= state.smallestAmount)
       {
         // await getExchange().createMarketSellOrder(state.symbol, state.smallestAmount);
         // await getExchange().createOrder(state.symbol, "limit", "sell", state.smallestAmount, state.buyPrice + state.spread);
 
         for (let realized of state.realizedBuyOrders) {
-          oneLine(`\x1b[41mSELL `, twoDecimals(realized.price + state.spread), twoDecimals(state.curPrice),
+          oneLine(`\x1b[41mSELL `, fourDecimals(realized.price + state.spread), fourDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
           await getExchange().createOrder(state.symbol, "limit", "sell", realized.amount, realized.price + state.spread);
@@ -206,7 +206,7 @@ const runner = async () => {
         state.stopPrice = stopPrice;
 
         // EDIT STOP LOSS
-        oneLine(`\x1b[4mEDIT `, twoDecimals(stopPrice), twoDecimals(state.curPrice),
+        oneLine(`\x1b[4mEDIT `, fourDecimals(stopPrice), fourDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}\n`);
 
         const id = stopLoss[0].id;
@@ -218,7 +218,7 @@ const runner = async () => {
         state.stopPrice = stopPrice;
     
         // CREATE STOP LOSS
-        oneLine(`\x1b[4mSTOP `, twoDecimals(stopPrice), twoDecimals(state.curPrice),
+        oneLine(`\x1b[4mSTOP `, fourDecimals(stopPrice), fourDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}\n`);
 
         try {

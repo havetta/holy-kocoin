@@ -33,7 +33,7 @@ const color = "\x1b[1m\x1b[42m*\x1b[0m";
 let p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
 
 // GET PRICE OVER BINANCE WEBSOCKET
-const ws = new WebSocket(`wss://stream.binance.com:9443/ws/ethusdt@trade`);
+const ws = new WebSocket(`wss://stream.binance.com:9443/ws/usdcusdt@trade`);
 ws.on('message', function incoming(data) {
   const btc = JSON.parse(data);
   state.curPrice = new Number(btc.p);
