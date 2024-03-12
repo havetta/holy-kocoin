@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////
 export function fourDecimals(num) {
   const noDecimal = Math.trunc(num);
-  return `${noDecimal}.${(new String(Math.trunc(num*100) - noDecimal*100) + "0000").substring(0,4)}`;
+  return `${noDecimal}.${(new String(Math.trunc(num*10000) - noDecimal*10000) + "0000").substring(0,4)}`;
 };
 ///////////////////////////////////////////////////////////
 

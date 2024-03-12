@@ -3,7 +3,7 @@ import WebSocket from "ws";
 import { conf, state, getExchange } from "./store.js";
 import { recentPriceAvg } from "./utils/priceTrends.js";
 import { err, oneLine } from "./utils/logger.js";
-import { twoDecimals, rightPad } from "./utils/formatter.js";
+import { fourDecimals, twoDecimals, rightPad } from "./utils/formatter.js";
 
 export function runWebSocket() {
 
@@ -43,7 +43,7 @@ export function runWebSocket() {
         state.recentPrices.shift();
 
       const tick = rightPad(Math.random(), 5);
-      oneLine(tick, twoDecimals(state.avgPrice), twoDecimals(state.curPrice),
+      oneLine(tick, fourDecimals(state.avgPrice), fourDecimals(state.curPrice),
         `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent5: ${twoDecimals(recentPriceAvg(-15, 15))}   Buy: ${twoDecimals(state.buyPrice)}      ${state.balanceStr}`);
       
     }

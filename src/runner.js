@@ -30,17 +30,23 @@ runWebSocket();
 //!  READ STDIN
 // /////////////////////////////////////////////////////////
 process.stdin.setEncoding('utf8')
-process.stdin.on('data', (d) => {
+process.stdin.on('data', async (d) => {
   try {
     console.log(`\n${d}`);
     switch (d[0]) {
       case `0`:
-        console.log(eval(`state.freeUsd\n`));
-        getExchange().createOrder(`BTC/USDC`, "limit", "buy", state.freeUsd, state.curPrice);
+        await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 2, "buy", "stop_loss_limit");
         break;
       case `1`:
+        console.log(eval(`state.freeUsd\n`));
+        getExchange().createOrder(`BTC/TUSD`, "limit", "buy", 100, state.curPrice);
+        break;
+      case `2`:
         console.log(eval(`state.freeBtc\n`));
-        getExchange().createOrder(`BTC/USDC`, "limit", "sell", state.freeBtc, state.curPrice);
+        getExchange().createOrder(`BTC/TUSD`, "limit", "sell", state.freeBtc, state.curPrice);
+        break;
+      case `9`:
+        getExchange().createOrder(`BTC/USDC`, "limit", "buy", 0.0001573693601, state.curPrice);
         break;
       case `.`:
         break;
@@ -139,9 +145,11 @@ const runner = async () => {
       //* /////////////////////////////////////////////////////////
       //*  BUY  ///////////////////////////////////////////////////
       //* /////////////////////////////////////////////////////////
+      // const exName = conf.exchangeName[conf.usr];
+      const calculatedBuyPrice = Math.min(...state.recentPrices) - state.spread// + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
       if ( state.freeUsd >= state.curPrice * setAmount
         && countLoopsForBuy > state.buyEveryXSeconds
-        // && state.curPrice < state.lastPrice
+        && (conf.usr === 'au' ? calculatedBuyPrice : 1) <= 1
         // && state.avgPrice > state.curPrice
         // && !isUpTrend()
         // && !state.buyOrderCreated
@@ -150,8 +158,7 @@ const runner = async () => {
         countLoopsForBuy = 0;
 
         // state.buyPrice = (state.curPrice < state.lastPrice ? state.curPrice : state.lastPrice);
-        // const exName = conf.exchangeName[conf.usr];
-        state.buyPrice = Math.min(...state.recentPrices) - state.spread// + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
+        state.buyPrice = calculatedBuyPrice;
 
         oneLine(`\x1b[42mBUY  `, fourDecimals(state.buyPrice), fourDecimals(state.curPrice),
           `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);

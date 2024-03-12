@@ -17,7 +17,7 @@ export const conf = {
     mi: `BTC`,
   },
   spread: {
-    au: 0.0005,
+    au: 0.0001,
     mi: 50,
   },
   port: {
@@ -25,7 +25,7 @@ export const conf = {
     mi: 3334,
   },
   buyEveryXSeconds: { // 1200 = 20 minutes
-    au: 120,
+    au: 40,
     mi: 300,
   },
   smallestAmount: {
