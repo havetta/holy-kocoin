@@ -1,25 +1,42 @@
 import { createApp, ref } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import './css/common.css'
+import './assets/scss/main.scss'
 import App from './App.vue'
-import AppRoot from './AppRoot.vue'
+import { pageList } from '../public/_pageList.js'
+import { pageImports } from '../public/_pageImports.js'
+// import { useScriptTag, useStyleTag } from '@vueuse/core'  //  npm i @vueuse/core
 
-let microsite = (new URLSearchParams(window.location.search)).get('microsite');
-if (!microsite)
-  microsite = 'mxp';
-const importname = `/datatypes/${microsite}/__generated!__.js?t=${Date.now()}`;
-const imp = await import(/* @vite-ignore */importname);
-const components = imp.default;
+const app = createApp(App);
 
-const routes = [{ path: '/', component: AppRoot }];
-components.forEach(c => routes.push({path: `/${c.name}`, component: c.instance}) );
+const routes = [{ path: '/', component: pageImports.find((i) => i.shortpgname === '__mxp').sectionImports.find((s) => s.name === 'home').instance, }];
+
+const allTagNames = [];
+
+pageList.value.forEach((pg) => {
+  const imp = pageImports.find((i) => i.shortpgname === pg.shortpgname).sectionImports;
+  const shortpgnameTag = pg.shortpgname.replace(/_/g,'');
+
+  pg.sectionList.forEach((sec) => {
+
+    // Make tag name unique
+    let uniqueTagName = sec.shortname;
+    if (allTagNames.includes(sec.shortname) || sec.shortname === 'home')
+      uniqueTagName = `${shortpgnameTag}-${sec.shortname}`;
+    allTagNames.push(sec.shortname);
+    
+    console.log(`Section Tag: ${uniqueTagName}  => route:  /${shortpgnameTag}/${sec.shortname}`);
+
+    const componentInstance = imp.find((s) => s.name === sec.shortname).instance;
+    app.component(uniqueTagName, componentInstance) 
+    routes.push({path: `/${pg.shortpgname}/${sec.shortname}`, component: componentInstance});
+  });
+});
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-})
+});
 
-const app = createApp(App);
-components.forEach(c => app.component(c.name, c.instance) );
 // app.config.globalProperties.$router = router
 app.use(router);
 app.mount('#app');

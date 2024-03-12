@@ -8,9 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "npx tailwindcss -i ./src/css/common.css -o ./public/css/output.css && node --no-warnings ./public/js/common/_server.js",
-    "static": "node --no-warnings ./public/js/common/_static.js",
-    "gen": "node --no-warnings ./public/js/common/_gen.js",
+    "r": "node --no-warnings ./public/_js/common/serveApp.js",
+    "serve": "npx tailwindcss -i ./src/assets/scss/main.scss -o ./public/_css/output.css && node --no-warnings ./public/_js/common/serveApp.js",
+    "static": "node --no-warnings ./public/_js/common/scripts/serveStatic.js",
+    "generate": "node --no-warnings ./public/_js/common/scripts/generate.js",
     "test": "node --no-warnings ./src/test.js"
   },
   "keywords": [],
@@ -21,8 +22,10 @@
     "axios-oauth-client": "^2.0.4",
     "ccxt": "^4.1.40",
     "pptxgenjs": "^3.12.0",
+    "vite-plugin-top-level-await": "^1.4.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
+    "vuetify": "^3.5.5",
     "ws": "^8.14.0"
   },
   "devDependencies": {
@@ -30,7 +33,6 @@
     "@vitejs/plugin-vue": "^5.0.3",
     "@vue/compiler-sfc": "^3.4.19",
     "autoprefixer": "^10.4.17",
-    "body-parser": "^1.20.2",
     "daisyui": "^4.6.2",
     "domino": "^2.1.6",
     "dotenv": "^16.3.0",
@@ -38,10 +40,11 @@
     "fastify": "^4.24.3",
     "glob": "^10.3.10",
     "http-proxy-middleware": "^2.0.6",
-    "morgan": "^1.10.0",
     "minimist": "^1.2.8",
+    "morgan": "^1.10.0",
     "node-html-to-image": "^4.0.0",
     "postcss": "^8.4.35",
+    "sass": "^1.71.1",
     "tailwindcss": "^3.4.1",
     "vite": "^5.1.0"
   }
