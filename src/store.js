@@ -13,11 +13,11 @@ export const conf = {
     mi: `binance`,
   },
   symbol: {
-    au: `USDC`,
-    mi: `BTC`,
+    au: `ETH`, // USDT
+    mi: `BTC`,  // TUSD
   },
   spread: {
-    au: 0.0001,
+    au: 5,
     mi: 50,
   },
   port: {
@@ -25,12 +25,12 @@ export const conf = {
     mi: 3334,
   },
   buyEveryXSeconds: { // 1200 = 20 minutes
-    au: 40,
+    au: 120,
     mi: 300,
   },
   smallestAmount: {
-    au: 1000,
-    mi: 0.001,
+    au: 0.1, // ETH
+    mi: 0.001, // BTC
   },
 }
 
