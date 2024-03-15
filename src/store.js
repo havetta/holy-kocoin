@@ -6,30 +6,41 @@ dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
 
 export const conf = {
-  usr: cliArgs.usr ?? `au`,
+  usr: cliArgs.usr ?? `si`,
   multiplyBy: [1.024,1.001,1.002,1.003,1.004,1.005,1.006,1.007,1.008,1.009,1.010,1.011,1.012,1.013,1.014,1.015,1.016,1.017,1.018,1.019,1.020,1.021,1.022,1.023],
   exchangeName: {
     au: `bybit`,
+    si: `binance`,
     mi: `binance`,
   },
   symbol: {
-    au: `ETH`, // USDT
-    mi: `BTC`,  // TUSD
+    au: `ETH`,
+    si: `BTC`,
+    mi: `BTC`,
+  },
+  stable: {
+    au: `USDT`,
+    si: `FDUSD`,
+    mi: `TUSD`,
   },
   spread: {
-    au: 5,
+    au: 15,
+    si: 70,
     mi: 50,
   },
   port: {
-    au: 3333,
+    au: 3332,
+    si: 3333,
     mi: 3334,
   },
   buyEveryXSeconds: { // 1200 = 20 minutes
-    au: 120,
+    au: 300,
+    si: 300,
     mi: 300,
   },
   smallestAmount: {
     au: 0.1, // ETH
+    si: 0.001, // BTC
     mi: 0.001, // BTC
   },
 }
@@ -38,9 +49,10 @@ export const conf = {
 export const state = {
   exchange: null,
 
-  symbol: conf?.symbol?.[conf.usr] ?? cliArgs.symbol ?? process.env.symbol,
-  spread: conf?.spread?.[conf.usr] ?? cliArgs.spread ?? process.env.spread,
-  smallestAmount: parseFloat(conf?.smallestAmount?.[conf.usr] ?? cliArgs.amount ?? process.env.amount),
+  symbol: conf?.symbol?.[conf.usr] ?? cliArgs.symbol ?? process.env.symbol ?? 'BTC',
+  stable: conf?.stable?.[conf.usr] ?? cliArgs.stable ?? process.env.stable ?? 'FDUSD',
+  spread: conf?.spread?.[conf.usr] ?? cliArgs.spread ?? process.env.spread ?? 50,
+  smallestAmount: parseFloat(conf?.smallestAmount?.[conf.usr] ?? cliArgs.amount ?? process.env.amount ?? 0.001),
   buyEveryXSeconds: conf?.buyEveryXSeconds?.[conf.usr] ?? 1200,
 
   curPrice: 0,
@@ -72,7 +84,7 @@ export async function initExchange() {
   
   const exchangeName = conf.exchangeName[conf.usr] ?? cliArgs.exchangeName ?? process.env.exchangeName;
 
-  state.symbol += (exchangeName === 'binance' ? '/TUSD' : '/USDT');
+  state.symbol += '/' + state.stable;
   
   state.exchange = new ccxt[exchangeName]({
     apiKey: process.env[`${conf.usr}-apikey`],

@@ -73,6 +73,7 @@ const runner = async () => {
   console.log(`USDT: ${bal?.free['USDT']}`);
   console.log(`USDC: ${bal?.free['USDC']}`);
   console.log(`TUSD: ${bal?.free['TUSD']}`);
+  console.log(`FDUSD: ${bal?.free['FDUSD']}`);
   
   state.openOrders = await getExchange().fetchOpenOrders(state.symbol);
   state.buyOrders = state.openOrders.filter(i => i.side === "buy" && i.type != "stop_loss_limit");
