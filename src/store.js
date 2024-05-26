@@ -21,26 +21,26 @@ export const conf = {
   stable: {
     au: `USDT`,
     si: `FDUSD`,
-    mi: `TUSD`,
+    mi: `FDUSD`,
   },
   spread: {
-    au: 15,
-    si: 70,
-    mi: 50,
+    au: 1,
+    si: 30,
+    mi: 30,
   },
   port: {
     au: 3332,
     si: 3333,
     mi: 3334,
   },
-  buyEveryXSeconds: { // 1200 = 20 minutes
-    au: 300,
+  buyEveryXSeconds: { // 1200 = 30 minutes
+    au: 1200,
     si: 300,
     mi: 300,
   },
   smallestAmount: {
     au: 0.1, // ETH
-    si: 0.001, // BTC
+    si: 0.01, // BTC
     mi: 0.001, // BTC
   },
 }

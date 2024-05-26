@@ -34,14 +34,17 @@ process.stdin.on('data', async (d) => {
   try {
     console.log(`\n${d}`);
     switch (d[0]) {
-      case `0`:
+      case `1`:
         await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 2, "buy", "stop_loss_limit");
         break;
-      case `1`:
+      case `2`:
+        await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 2, "sell", "stop_loss_limit");
+        break;
+      case `5`:
         console.log(eval(`state.freeUsd\n`));
         getExchange().createOrder(state.symbol, "limit", "buy", state.freeUsd, state.curPrice);
         break;
-      case `2`:
+      case `6`:
         console.log(eval(`state.freeBtc\n`));
         getExchange().createOrder(state.symbol, "limit", "sell", state.freeBtc, state.curPrice);
         break;
@@ -80,9 +83,9 @@ const runner = async () => {
   console.log(`\x1b[1m\x1b[42mOPEN \x1b[91m ORDERS\x1b[104m`);  // 1m is bold, 0m is reset
   console.table(state.openOrders.map((i) => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
 
-  const closedOrders = await getExchange().fetchClosedOrders(state.symbol);
-  console.log(`\x1b[45mCLOSED \x1b[93m ORDERS\x1b[101m`);  // 1m is bold, 0m is resets
-  console.table(closedOrders.map(i => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
+  // const closedOrders = await getExchange().fetchClosedOrders(state.symbol);
+  // console.log(`\x1b[45mCLOSED \x1b[93m ORDERS\x1b[101m`);  // 1m is bold, 0m is resets
+  // console.table(closedOrders.map(i => { return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price*i.amount, status: i.status }; }));
 
   // WAIT FOR FIRST PRICE
   while (state.curPrice === 0) {
