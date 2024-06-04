@@ -3,28 +3,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Templafy PPTX configuration manager</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js",
+          "vue-router": "//unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
+          "@vue/devtools-api": "//unpkg.com/@vue/devtools-api@6.4.5/lib/esm/index.js",
+          "vue": "//unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
+          "axios": "//unpkg.com/axios/dist/axios.min.js"
+        }
+      }
+    </script>
+    <script type="importmap">
+      { "imports": {
+      }}
+    </script>
     <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/libs/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.min.js"></script>
+
+    <script src="https://gist.github.com/havettaa/47ad9ab3ff4a1b452e9b1ab4c7709092.js"></script>
   </head>
   <body>
-    <div class="relative min-h-screen">
+    <header hx-get="https://aurelhavetta.eu/lit/reuse/header.html" hx-trigger="load">
+      <ins>=</ins>
+    </header>
+    
+    <div id="app" class="relative min-h-screen">
       <header class="text-gray-100 bg-gray-800">
         <div class="container flex items-center justify-between p-4 mx-auto">
           <a href="#" class="text-white">
-            <svg width="80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 412.38 204"><defs><style>.cls-1,.cls-2{fill-rule:evenodd;}.cls-1{fill:url(#linear-gradient);}.cls-2{fill:#fff;}</style><linearGradient id="linear-gradient" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset="0.02" stop-color="#01b6f0"/><stop offset="0.31" stop-color="#0d90d9"/><stop offset="0.58" stop-color="#1775c8"/><stop offset="0.82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><title>SAP_grad_R_scrn_Zeichenfläche 1</title><polyline class="cls-1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="cls-2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg>
+            <svg width="80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 412.38 204"><defs><style>.cls-1,.cls-2{fill-rule:evenodd;}.cls-1{fill:url(#linear-gradient);}.cls-2{fill:#fff;}</style><linearGradient id="linear-gradient" x1="206.19" x2="206.19" y2="204" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00b8f1"/><stop offset="0.02" stop-color="#01b6f0"/><stop offset="0.31" stop-color="#0d90d9"/><stop offset="0.58" stop-color="#1775c8"/><stop offset="0.82" stop-color="#1c65bf"/><stop offset="1" stop-color="#1e5fbb"/></linearGradient></defs><title>SAP</title><polyline class="cls-1" points="0 204 208.41 204 412.38 0 0 0 0 204"/><path class="cls-2" d="M244.73,38.36l-40.6,0v96.52L168.67,38.33H133.51l-30.27,80.72C100,98.7,79,91.67,62.4,86.4,51.46,82.89,39.85,77.72,40,72c.09-4.68,6.23-9,18.38-8.38,8.17.43,15.37,1.09,29.71,8l14.1-24.55C89.06,40.42,71,36.21,56.17,36.19h-.09c-17.28,0-31.68,5.6-40.6,14.83A34.23,34.23,0,0,0,5.77,74.7C5.54,87.15,10.11,96,19.71,103c8.1,5.94,18.46,9.79,27.6,12.62,11.27,3.49,20.47,6.53,20.36,13A9.57,9.57,0,0,1,65,135c-2.81,2.9-7.13,4-13.09,4.1-11.49.24-20-1.56-33.61-9.59L5.77,154.42a93.77,93.77,0,0,0,46,12.22l2.11,0c14.24-.25,25.74-4.31,34.92-11.71.53-.41,1-.84,1.49-1.28L86.17,164.5H123l6.19-18.82a67.46,67.46,0,0,0,21.68,3.43,68.33,68.33,0,0,0,21.16-3.25l6,18.64h60.14v-39h13.11c31.71,0,50.46-16.15,50.46-43.2C301.74,52.19,283.52,38.36,244.73,38.36ZM150.91,121a36.93,36.93,0,0,1-13-2.28l12.87-40.59H151l12.65,40.71A38.5,38.5,0,0,1,150.91,121Zm96.2-23.33h-8.94V64.91h8.94c11.93,0,21.44,4,21.44,16.14,0,12.6-9.51,16.57-21.44,16.57"/></svg>
           </a>
-          <button class="p-2 text-white rounded-lg focus:outline-none hover:bg-gray-700">
-            Save Configuration
+          <button @click="count++" class="p-2 text-white rounded-lg focus:outline-none hover:bg-gray-700">
+            Button the will do it all in {{ count }} seconds.
           </button>
         </div>
       </header>
+
       <main>
         <section class="m-5">
           <div class="container my-4 bg-light">
             <div class="row">
               <div class="col p-3">
-                <h1 class="text-3xl">Templafy PPTX generator</h1>
+                <h1 class="text-3xl">Templafy POC</h1>
               </div>
               <div id="ver" class="col p-3">
                 <h5>?</h5>
@@ -77,26 +99,12 @@
           </script>
 
           <script type="module">
-          htmx.logger = function(elt, event, data) {
-            if(console) {
-                console.debug(event, elt, data);
-            }
-          }
-
-          document.body.addEventListener('configRequest.htmx', function(evt) {
-              // try to remove x-hx-* headers because gist api complains about CORS
-              Object.keys(evt.detail.headers).forEach(function(key) { 
-                delete evt.detail.headers[key]; 
-              });
-          });
-
           htmx.defineExtension('client-side-templates', {
               transformResponse : function(text, xhr, elt) {
                 var nunjucksTemplate = htmx.closest(elt, "[nunjucks-template]");
                   if (nunjucksTemplate) {
                       var data = {
                         gists: JSON.parse(text).map((item) => {
-                          // parser : https://codepen.io/localhorst/pen/ZEbqVZd
                           //item.parsed = new leptonParser().parse(item.description);
                           return item; 
                         })
@@ -104,7 +112,6 @@
 
                       var templateName = nunjucksTemplate.getAttribute('nunjucks-template');
                       var template = htmx.find('#' + templateName);
-                      console.warn(templateName,data);
                       return nunjucks.renderString(template.innerHTML, data);
                   }
                   return text;
@@ -117,8 +124,82 @@
     </div>
   </body>
 
+  <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
+  <script src="https://unpkg.com/mustache@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nunjucks@3.2.4/browser/nunjucks.min.js"></script>
+
+  <script type="module">
+    import { createApp } from './_js/common/appshared.js';
+    (await createApp()).mount('#app');
+
+    // import { createApp } from 'vue'
+
+    // const app = createApp({
+    //   data() {
+    //     return {
+    //       count: 0
+    //     }
+    //   }
+    // })
+    // app.mount('#app')
+  </script>
+
   <script type="application/javascript">
-    
+    const xmlGetHttpRequest = async (url) => {
+      return new Promise(res => {
+        try {
+          const request = new XMLHttpRequest();
+
+          request.onreadystatechange = function () {
+            if (request.readyState === 4) {
+              if (request.status === 200) {
+                console.warn(request.responseText);
+                res({data: request.responseText});
+              }
+              else res({error: String(request.status)});
+            }
+          };
+
+          request.open('GET', url, true);
+          request.send();
+        } catch (e) {
+          res({error: String(e)});
+        }
+      });
+    };
+
+    const getGistFirstFileText = async (url) => {
+      return new Promise(async res => {
+        try {
+          const {data: gistData, error: gistError} = await xmlGetHttpRequest(url);
+          if (gistError) res({error: gistError});
+
+          // ─────────────────────────────────────────────────────
+          // 1. find raw link
+          const html = JSON.parse(gistData).div;
+          let rawLink = '';
+          html.split('href="').forEach(text => {
+            const link = text.split('"')[0];
+            if (link.includes('/raw/')) rawLink = link;
+          });
+          if (!rawLink) res({error: 'raw link not found'});
+          // ─────────────────────────────────────────────────────
+          // 2. get raw text
+          const {data: rawData, error: rawError} = await xmlGetHttpRequest(rawLink);
+          if (rawError) res({error: rawError});
+          // ─────────────────────────────────────────────────────
+
+          res({data: rawData});
+        } catch (e) {
+          res({error: String(e)});
+        }
+      });
+    };
+
+    (async () => {
+      const {data, error} = await getGistFirstFileText('https://api.github.com/gists/eb4104ed6407a9bee20280c03690c25e');
+    })();
+
     // Lets make sure were setup correctly
     const pptx = new PptxGenJS();
     document.getElementById('ver').innerHTML = pptx.version;
