@@ -6,42 +6,42 @@ dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
 
 export const conf = {
-  usr: cliArgs.usr ?? `si`,
+  usr: cliArgs.usr ?? `mi`,
   multiplyBy: [1.024,1.001,1.002,1.003,1.004,1.005,1.006,1.007,1.008,1.009,1.010,1.011,1.012,1.013,1.014,1.015,1.016,1.017,1.018,1.019,1.020,1.021,1.022,1.023],
   exchangeName: {
     au: `bybit`,
     si: `binance`,
-    mi: `binance`,
+    mi: `bybit`,
   },
   symbol: {
-    au: `ETH`,
+    au: `BTC`,
     si: `BTC`,
     mi: `BTC`,
   },
   stable: {
-    au: `USDT`,
+    au: `USDC`,
     si: `FDUSD`,
-    mi: `FDUSD`,
+    mi: `USDC`,
   },
   spread: {
-    au: 1,
+    au: 8,
     si: 30,
-    mi: 30,
+    mi: 9,
   },
   port: {
-    au: 3332,
-    si: 3333,
-    mi: 3334,
+    au: 3331,
+    si: 3332,
+    mi: 3333,
   },
   buyEveryXSeconds: { // 1200 = 30 minutes
-    au: 1200,
+    au: 600,
     si: 300,
-    mi: 300,
+    mi: 151,
   },
   smallestAmount: {
-    au: 0.1, // ETH
+    au: 0.034, // BTC
     si: 0.01, // BTC
-    mi: 0.001, // BTC
+    mi: 0.019, // BTC
   },
 }
 
@@ -50,7 +50,7 @@ export const state = {
   exchange: null,
 
   symbol: conf?.symbol?.[conf.usr] ?? cliArgs.symbol ?? process.env.symbol ?? 'BTC',
-  stable: conf?.stable?.[conf.usr] ?? cliArgs.stable ?? process.env.stable ?? 'FDUSD',
+  stable: conf?.stable?.[conf.usr] ?? cliArgs.stable ?? process.env.stable ?? 'USDT',
   spread: conf?.spread?.[conf.usr] ?? cliArgs.spread ?? process.env.spread ?? 50,
   smallestAmount: parseFloat(conf?.smallestAmount?.[conf.usr] ?? cliArgs.amount ?? process.env.amount ?? 0.001),
   buyEveryXSeconds: conf?.buyEveryXSeconds?.[conf.usr] ?? 1200,
@@ -97,7 +97,7 @@ export async function initExchange() {
 
   await state.exchange.load_time_difference();
 
-  console.log("\x1b[1m\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${process.env.exchange}`);
+  // console.log("\x1b[1m\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${exchangeName}`);
 }
 ///////////////////////////////////////////////////////////
 
