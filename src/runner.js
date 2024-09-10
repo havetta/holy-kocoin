@@ -71,7 +71,7 @@ process.stdin.on("data", async (d) => {
 // /////////////////////////////////////////////////////////
 
 // /////////////////////////////////////////////////////////
-//!  TOP LEVEL AWAIT WORKAROUNT
+//!  INITIALIZATION
 // /////////////////////////////////////////////////////////
 const runner = async () => {
   // LOAD LIST OF ORDERS
@@ -113,7 +113,7 @@ const runner = async () => {
   }
 
   //TODO /////////////////////////////////////////////////////////
-  //TODO  LOOP
+  //!    MAIN LOOP ///////////////////////////////////////////////
   //TODO /////////////////////////////////////////////////////////
   while (1) {
     oneLine(`\x1b[1m\x1b[45m${rightPad(_sinceBuyCount, 5)}`);
@@ -151,7 +151,7 @@ const runner = async () => {
       // const exName = conf.exchangeName[conf.usr];
       const calculatedBuyPrice = Math.min(...state.recentPrices /*state.lastPrice, state.curPrice*/); // + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
 
-      const specificHours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 22, 23];
+      const specificHours = [6, 7, 8, 9, 10, 11, 12];
       if ( state.freeUsd >= calculatedBuyPrice * setAmount
         && specificHours.includes(hour)
         && _sinceBuyCount > state.buyEveryXSeconds
@@ -257,7 +257,9 @@ const runner = async () => {
       //*  Memorize last price
       //* /////////////////////////////////////////////////////////
       state.lastPrice = state.curPrice;
-      _sinceBuyCount++;
+      if (state.openOrders.length > 0) {
+        _sinceBuyCount++;
+      }
     } catch (e) {
       if (e?.message != `binance Stop price would trigger immediately.`) err(e?.message);
       // warn(e?.stack);

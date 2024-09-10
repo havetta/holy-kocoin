@@ -14,7 +14,7 @@ export const conf = {
     mi: `bybit`,
   },
   symbol: {
-    au: `BTC`,
+    au: `SOL`,
     si: `BTC`,
     mi: `BTC`,
   },
@@ -24,7 +24,7 @@ export const conf = {
     mi: `USDC`,
   },
   spread: {
-    au: 8,
+    au: 0.5,
     si: 30,
     mi: 9,
   },
@@ -39,7 +39,7 @@ export const conf = {
     mi: 151,
   },
   smallestAmount: {
-    au: 0.034, // BTC
+    au: 1.2, // BTC
     si: 0.01, // BTC
     mi: 0.019, // BTC
   },
