@@ -2,12 +2,35 @@ import { getExchange, state } from "../store.js";
 import { err, oneLine } from "./logger.js";
 
 ///////////////////////////////////////////////////////////
-export async function createOrder(side, amount, price) {
-  const type = "limit"; // or market
+export async function doBuy(amount, price) {
+  const side = 'buy'
+  const type = 'limit'; // or market
+  let res = {};
+
+  if (state.exchangeName !== 'mexc') {
+    res = await getExchange().createOrder(state.symbol, type, side, amount, price);
+  } else {
+    res = await client.futures.placeOrder({symbol: state.symbol, 
+      side: 'buy',
+      type: 'limit',
+      leverage: 10,
+      quantity: state.smallestAmount,
+      price: state.buyPrice
+    });
+  }
+  return res;
+}
+///////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+export async function doSell(amount, price) {
+  const side = 'sell'
+  const type = 'limit'; // or market
   const res = await getExchange().createOrder(state.symbol, type, side, amount, price);
   return res;
 }
 ///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 export async function createOrderStopPrice(side, amount, price, stopPrice) {
   const type = "limit"; // or market

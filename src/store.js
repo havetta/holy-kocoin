@@ -1,4 +1,5 @@
 import ccxt from "ccxt";
+import mexc from "mexc-api-sdk";
 import dotenv from "dotenv";
 import minimist from "minimist";
 
@@ -9,24 +10,24 @@ export const conf = {
   usr: cliArgs.usr ?? `mi`,
   multiplyBy: [1.024,1.001,1.002,1.003,1.004,1.005,1.006,1.007,1.008,1.009,1.010,1.011,1.012,1.013,1.014,1.015,1.016,1.017,1.018,1.019,1.020,1.021,1.022,1.023],
   exchangeName: {
-    au: `bybit`,
+    au: `mexc`,
     si: `binance`,
     mi: `bybit`,
   },
   symbol: {
-    au: `SOL`,
+    au: `BTC`,
     si: `BTC`,
     mi: `BTC`,
   },
   stable: {
-    au: `USDC`,
-    si: `FDUSD`,
-    mi: `USDC`,
+    au: `USDT`,
+    si: `USDT`,
+    mi: `USDT`,
   },
   spread: {
-    au: 0.5,
+    au: 60,
     si: 30,
-    mi: 9,
+    mi: 350,
   },
   port: {
     au: 3331,
@@ -36,18 +37,19 @@ export const conf = {
   buyEveryXSeconds: { // 1200 = 30 minutes
     au: 600,
     si: 300,
-    mi: 151,
+    mi: 3000,
   },
   smallestAmount: {
-    au: 1.2, // BTC
+    au: 0.5, // BTC
     si: 0.01, // BTC
-    mi: 0.019, // BTC
+    mi: 0.001, // BTC
   },
 }
 
 ///////////////////////////////////////////////////////////
 export const state = {
   exchange: null,
+  exchangeName: '',
 
   symbol: conf?.symbol?.[conf.usr] ?? cliArgs.symbol ?? process.env.symbol ?? 'BTC',
   stable: conf?.stable?.[conf.usr] ?? cliArgs.stable ?? process.env.stable ?? 'USDT',
@@ -82,20 +84,31 @@ export async function initExchange() {
   if (state.exchange)
     return;
   
-  const exchangeName = conf.exchangeName[conf.usr] ?? cliArgs.exchangeName ?? process.env.exchangeName;
+  state.exchangeName = conf.exchangeName[conf.usr] ?? cliArgs.exchangeName ?? process.env.exchangeName;
 
-  state.symbol += '/' + state.stable;
-  
-  state.exchange = new ccxt[exchangeName]({
-    apiKey: process.env[`${conf.usr}-apikey`],
-    secret: process.env[`${conf.usr}-secret`],
-    enableRateLimit: true,
-    options: {
-      defaultType: "spot",//future
-    },
-  });
+  if (state.exchangeName === 'mexc') {
+    
+    //!   MEXC
+    state.symbol += state.stable;
+    state.exchange = new mexc.Spot();
+    state.exchange.config.apiKey = process.env[`${conf.usr}-apikey`];
+    state.exchange.config.apiSecret = process.env[`${conf.usr}-secret`];
 
-  await state.exchange.load_time_difference();
+  } else {
+
+    //!   OTHERS
+    state.symbol += '/' + state.stable;
+    state.exchange = new ccxt[state.exchangeName]({
+      apiKey: process.env[`${conf.usr}-apikey`],
+      secret: process.env[`${conf.usr}-secret`],
+      enableRateLimit: true,
+      options: {
+        defaultType: "spot",//future
+      },
+    });
+    await state.exchange.load_time_difference();
+
+  }
 
   // console.log("\x1b[1m\x1b[43m%s\x1b[0m", `Trading ${state.symbol} on ${exchangeName}`);
 }

@@ -1,7 +1,7 @@
 import { runWebSocket } from "./webSocket.js";
 // import { express } from "./server.js";
 import { highestPrice, lowestPrice, recentPriceAvg, isDownTrend, isUpTrend } from "./utils/priceTrends.js";
-import { cancelOldOrders, createOrder, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./utils/order.js";
+import { doBuy, doSell, cancelOldOrders, cancelOrder, cancelAllOrders, createOrderStopPrice } from "./utils/order.js";
 import { conf, state, getExchange, initExchange } from "./store.js";
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 import { twoDecimals, leftPad, rightPad } from "./utils/formatter.js";
@@ -32,34 +32,57 @@ process.stdin.on("data", async (d) => {
   try {
     console.log(`\n${d}`);
     switch (d[0]) {
-      case `_`:
-        console.log(eval(`${d}\n`));
-        break;
       case `0`:
+        break;
+      case `1`:
+        console.log(`freeUsd: ${state.freeUsd}      freeBtc: ${state.freeBtc}`);
+        getExchange().createOrder(state.symbol, "limit", "buy", 0.02, state.curPrice);
+        break;
+      case `2`:
+        console.log(`freeUsd: ${state.freeUsd}      freeBtc: ${state.freeBtc}`);
+        getExchange().createOrder(state.symbol, "limit", "sell", state.freeBtc, state.curPrice);
+        break;
+      case `3`:
+        console.log(`freeUsd: ${state.freeUsd}      freeBtc: ${state.freeBtc}`);
+        await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 0, "buy", "stop_loss_limit");
+        break;
+      case `4`:
+        console.log(`freeUsd: ${state.freeUsd}      freeBtc: ${state.freeBtc}`);
+        await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 0, "sell", "stop_loss_limit");
+        break;
+      case `9`:
+        console.log(`freeUsd: ${state.freeUsd}      freeBtc: ${state.freeBtc}`);
+        getExchange().createOrder(`BTCUSDT`, "limit", "buy", 12, state.curPrice);
+        break;
+      case `-`:
+        break;
+      case `=`:
+        const exchangeInfo = await state.exchange.exchangeInfo({ symbol: state.symbol});
+        console.log(exchangeInfo);
+        break;
+      case `[`:
+        break;
+      case `]`:
+        break;
+      case `;`:
+        break;
+      case `'`:
+        break;
+      case `/`:
+        break;
+      case `!`:
+        state.exchange.setLeverage(3, 'BTCUSD');
+        break;
+      case `.`:
+        console.log(`freeUsd: ${state.freeUsd}      freeBtc: ${state.freeBtc}`);
         console.table(
           state.openOrders.map((i) => {
             return { datetime: i.datetime, side: i.side, price: i.price, amount: i.amount, usd: i.price * i.amount, status: i.status };
           })
         );
         break;
-      case `1`:
-        await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 0, "buy", "stop_loss_limit");
-        break;
-      case `2`:
-        await cancelOldOrders(await getExchange().fetchOpenOrders(state.symbol), 0, "sell", "stop_loss_limit");
-        break;
-      case `6`:
-        console.log(eval(`state.freeUsd\n`));
-        getExchange().createOrder(state.symbol, "limit", "buy", state.freeUsd, state.curPrices);
-        break;
-      case `7`:
-        console.log(eval(`state.freeBtc\n`));
-        getExchange().createOrder(state.symbol, "limit", "sell", state.freeBtc, state.curPrice);
-        break;
-      case `9`:
-        getExchange().createOrder(`BTC/USDC`, "limit", "sell", state.freeBtc, state.curPrice);
-        break;
-      case `.`:
+      case `_`:
+        console.log(eval(`${d}\n`));
         break;
       default:
         console.log(eval(`state.${d}\n`));
@@ -69,14 +92,16 @@ process.stdin.on("data", async (d) => {
   }
 });
 // /////////////////////////////////////////////////////////
-
+while (1) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+}
 // /////////////////////////////////////////////////////////
 //!  INITIALIZATION
 // /////////////////////////////////////////////////////////
 const runner = async () => {
   // LOAD LIST OF ORDERS
   const bal = await getExchange().fetchBalance();
-  console.log(`USDC: ${bal?.free["USDC"]}      BTC: ${bal?.free["BTC"]}`);
+  console.log(`USDT: ${bal?.free["USDT"]}      BTC: ${bal?.free["BTC"]}`);
   // console.log(`ETH: ${bal?.free["ETH"]}`);
   // console.log(`SOL: ${bal?.free["SOL"]}`);
   // console.log(`USDT: ${bal?.free["USDT"]}`);
@@ -151,9 +176,10 @@ const runner = async () => {
       // const exName = conf.exchangeName[conf.usr];
       const calculatedBuyPrice = Math.min(...state.recentPrices /*state.lastPrice, state.curPrice*/); // + (exName === "bybit" ? 20 : 30); // + X => websocket price difference should be corrected
 
-      const specificHours = [6, 7, 8, 9, 10, 11, 12];
-      if ( state.freeUsd >= calculatedBuyPrice * setAmount
-        && specificHours.includes(hour)
+      const specificHours = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+      if (
+        state.freeUsd >= calculatedBuyPrice * setAmount
+        // && specificHors.includes(hour)
         && _sinceBuyCount > state.buyEveryXSeconds
         // && state.avgPrice > state.curPrice
         // && !isUpTrend()
@@ -186,18 +212,22 @@ const runner = async () => {
       //! /////////////////////////////////////////////////////////
       //!  SELL ///////////////////////////////////////////////////
       //! /////////////////////////////////////////////////////////
-      state.buyOrders = await cancelOldOrders(state.buyOrders, 120, "buy", "stop_loss_limit"); // ignore stoploss
+      // state.buyOrders = await cancelOldOrders(state.buyOrders, 120, "buy", "stop_loss_limit"); // ignore stoploss
       state.realizedBuyOrders = state.buyOrders.filter((i) => !state.openOrders.some((open) => open.id === i.id));
 
-      if ( state.freeBtc >= state.smallestAmount
-        && state.openOrders.length === 0)
-      {
+      if (
+          state.freeBtc >= state.smallestAmount
+        && state.openOrders.length === 0
+        // && state.openOrders.length === 0
+      ) {
         _sinceBuyCount = 0;
+
+        const sellAt = /* TODO realized.price*/ Math.max(...state.recentBuyPrices) + state.spread;
         // await getExchange().createMarketSellOrder(state.symbol, state.smallestAmount);
         // TODO for (let realized of state.realizedBuyOrders) {
-        oneLine(`\x1b[41mSELL `, twoDecimals(/* TODO realized.price*/ state.buyPrice + state.spread), twoDecimals(state.curPrice), `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
+        // oneLine(`\x1b[41mSELL `, twoDecimals(sellAt), twoDecimals(state.curPrice), `Recent0-5: ${twoDecimals(recentPriceAvg(0, 15))}   recent15: ${twoDecimals(recentPriceAvg(-15, 15))}   ${state.balanceStr}\n`);
 
-        await getExchange().createOrder(state.symbol, "limit", "sell", state.smallestAmount, state.buyPrice + state.spread);
+        // await getExchange().createOrder(state.symbol, "limit", "sell", state.smallestAmount, sellAt);
         // TODO await getExchange().createOrder(state.symbol, "limit", "sell", realized.amount, realized.price + state.spread);
         // TODO state.buyOrders = state.buyOrders.filter(i => i.id !== realized.id);
         //}
