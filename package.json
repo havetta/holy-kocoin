@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "bot": "node --no-warnings ./src/bot.js",
     "r": "node --no-warnings ./public/_js/common/serveApp.js",
     "serve": "npx tailwindcss -i ./src/assets/scss/main.scss -o ./public/_css/output.css && node --no-warnings ./public/_js/common/serveApp.js",
     "static": "node --no-warnings ./public/_js/common/scripts/serveStatic.js",
@@ -20,6 +21,7 @@
   "dependencies": {
     "axios": "^1.6.0",
     "axios-oauth-client": "^2.0.4",
+    "bybit-api": "^3.10.25",
     "ccxt": "^4.1.40",
     "mexc-api-sdk": "^1.0.3",
     "pptxgenjs": "^3.12.0",
