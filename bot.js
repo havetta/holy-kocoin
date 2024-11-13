@@ -8,15 +8,15 @@ const restClient = new RestClientV5({ key: process.env.k, secret: process.env.s,
 
 while(1) {
   const bal = await restClient.getWalletBalance({ accountType: 'UNIFIED', });
-  const totalEquity = bal.result.list[0].totalEquity
+  const eqv = Math.round(+bal.result.list[0].totalEquity);
 
   const pos = await restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', });
-  let markPrice = Math.round(+pos.result.list[0].markPrice);
-  let orderPrice = markPrice - 100;
-  let tpPrice = markPrice + 100;
-  process.stdout.write(`price buy sell \x1b[46m ${markPrice} \x1b[42m ${orderPrice} \x1b[41m ${tpPrice} \x1b[45m totalEquity ${totalEquity} \x1b[m\r\n`);
+  let markP = Math.round(+pos.result.list[0].markPrice);
+  let orderP = markP - 10;
+  let takeP = markP + 100;
+  process.stdout.write(`\x1b[47m markPrice: \x1b[46m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[45m totalEquity: ${eqv} \x1b[m\r\n`);
 
-  if (markPrice < 92300) {
+  if (markP < 92300) {
 
     const response = await restClient.submitOrder({
       category: 'linear',
@@ -25,10 +25,10 @@ while(1) {
       side: 'Buy',
       orderType: 'Limit',
       qty: '0.01',
-      price: orderPrice.toString(),
-      takeProfit: tpPrice.toString(),
+      price: orderP.toString(),
+      takeProfit: takeP.toString(),
       tpslMode: 'Partial',
-      tpLimitPrice: tpPrice.toString(),
+      tpLimitPrice: takeP.toString(),
       tpOrderType: 'Limit',
     });
     if (response.retCode !== 0)
