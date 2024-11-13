@@ -1,19 +1,44 @@
 
 import { DefaultLogger, RestClientV5, WebsocketClient } from 'bybit-api';
+import axios from "axios";
+import crypto from "crypto";
 import dotenv from 'dotenv';
 dotenv.config();
 
-const amount = process.env.amount;
-const apikey = process.env.apikey;
-const secret = process.env.secret;
+const restClient = new RestClientV5({ key: process.env.apikey, secret: process.env.secret, parseAPIRateLimits: true, });
 
-console.log(secret);
-
-const restClient = new RestClientV5({
-  key: apikey,
-  secret: secret,
-  parseAPIRateLimits: true,
+const bal = await restClient.getWalletBalance({
+  accountType: 'UNIFIED',
 });
+console.log(bal.result.list);
+console.log(bal.result.list[0].coin);
+
+
+// const params = {
+//   api_key: secret,
+//   symbol: 'BTCUSDT',
+//   side: 'Buy',
+//   order_type: 'Market',
+//   qty: 0.0001,
+//   time_in_force: 'GoodTillCancel',
+//   leverage: 2,
+//   take_profit: 1,
+//   tp_trigger_by: 'ROE',
+//   reduce_only: false,
+//   close_on_trigger: false,
+//   timestamp: Date.now()
+// };
+
+// const queryString = Object.keys(params).sort().map(key => `${key}=${params[key]}`).join('&');
+
+// params.sign = crypto.createHmac('sha256', secret).update(queryString).digest('hex')
+
+// const response = await axios.post('https://api.bybit.com/v2/private/order/create', null, { params });
+// console.log(response.data);
+
+
+
+
 
 // Optional, uncomment the "silly" override to log a lot more info about what the WS client is doing
 const customLogger = {
@@ -22,11 +47,7 @@ const customLogger = {
 };
 
 const wsClient = new WebsocketClient(
-  {
-    key: apikey,
-    secret: secret,
-    market: 'v5',
-  },
+  { key: process.env.apikey, secret: process.env.secret, market: 'v5', },
   customLogger,
 );
 
@@ -137,8 +158,8 @@ async function doloop() {
   }
 }
 
-while(1) {
-  await doloop();
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+// while(1) {
+//   await doloop();
+//   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-}
+// }
