@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "bot": "node --no-warnings ./src/bot.js",
+    "bot": "node --no-warnings ./bot.js",
     "r": "node --no-warnings ./public/_js/common/serveApp.js",
     "serve": "npx tailwindcss -i ./src/assets/scss/main.scss -o ./public/_css/output.css && node --no-warnings ./public/_js/common/serveApp.js",
     "static": "node --no-warnings ./public/_js/common/scripts/serveStatic.js",
