@@ -1,21 +1,17 @@
 
-import { DefaultLogger, RestClientV5, WebsocketClient } from 'bybit-api';
-import axios from "axios";
-import crypto from "crypto";
+import { RestClientV5 } from 'bybit-api';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const restClient = new RestClientV5({ key: process.env.k, secret: process.env.s, parseAPIRateLimits: true, });
 
 
-async function doloop() {
+while(1) {
   const bal = await restClient.getWalletBalance({ accountType: 'UNIFIED', });
   const totalEquity = bal.result.list[0].totalEquity
 
-
   const pos = await restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', });
-  let markPrice = +pos.result.list[0].markPrice;
-  markPrice = Math.round(markPrice);
+  let markPrice = Math.round(+pos.result.list[0].markPrice);
   let orderPrice = markPrice - 100;
   let tpPrice = markPrice + 100;
   process.stdout.write(`price buy sell \x1b[46m ${markPrice} \x1b[42m ${orderPrice} \x1b[41m ${tpPrice} \x1b[45m totalEquity ${totalEquity} \x1b[m\r\n`);
@@ -39,11 +35,6 @@ async function doloop() {
       console.warn("\x1b[1m\x1b[43m%s\x1b[0m", response);
   }
 
-}
-
-
-while(1) {
-  await doloop();
   await new Promise((resolve) => setTimeout(resolve, 10000));
 }
 
@@ -53,131 +44,134 @@ while(1) {
 
 
 
-// Optional, uncomment the "silly" override to log a lot more info about what the WS client is doing
-const customLogger = {
-  ...DefaultLogger,
-  // silly: (...params) => console.log('trace', ...params),
-};
+// import { DefaultLogger, RestClientV5, WebsocketClient } from 'bybit-api';
+// // Optional, uncomment the "silly" override to log a lot more info about what the WS client is doing
+// const customLogger = {
+//   ...DefaultLogger,
+//   // silly: (...params) => console.log('trace', ...params),
+// };
 
-const wsClient = new WebsocketClient(
-  { key: process.env.k, secret: process.env.s, market: 'v5', },
-  customLogger,
-);
+// const wsClient = new WebsocketClient(
+//   { key: process.env.k, secret: process.env.s, market: 'v5', },
+//   customLogger,
+// );
 
-function setWsClientEventListeners(websocketClient, accountRef) {
-  return new Promise((resolve) => {
-    websocketClient.on('update', (data) => {
-      console.log(new Date(), accountRef, 'data ', JSON.stringify(data));
-      // console.log('raw message received ', JSON.stringify(data, null, 2));
-    });
+// function setWsClientEventListeners(websocketClient, accountRef) {
+//   return new Promise((resolve) => {
+//     websocketClient.on('update', (data) => {
+//       console.log(new Date(), accountRef, 'data ', JSON.stringify(data));
+//       // console.log('raw message received ', JSON.stringify(data, null, 2));
+//     });
 
-    websocketClient.on('open', (data) => {
-      console.log(
-        new Date(),
-        accountRef,
-        'connection opened open:',
-        data.wsKey,
-      );
-    });
-    websocketClient.on('response', (data) => {
-      console.log(
-        new Date(),
-        accountRef,
-        'log response: ',
-        JSON.stringify(data, null, 2),
-      );
+//     websocketClient.on('open', (data) => {
+//       console.log(
+//         new Date(),
+//         accountRef,
+//         'connection opened open:',
+//         data.wsKey,
+//       );
+//     });
+//     websocketClient.on('response', (data) => {
+//       console.log(
+//         new Date(),
+//         accountRef,
+//         'log response: ',
+//         JSON.stringify(data, null, 2),
+//       );
 
-      if (typeof data.req_id === 'string') {
-        const topics = data.req_id.split(',');
-        if (topics.length) {
-          console.log(new Date(), accountRef, 'Subscribed to topics: ', topics);
-          return resolve();
-        }
-      }
-    });
-    websocketClient.on('reconnect', ({ wsKey }) => {
-      console.log(
-        new Date(),
-        accountRef,
-        'ws automatically reconnecting.... ',
-        wsKey,
-      );
-    });
-    websocketClient.on('reconnected', (data) => {
-      console.log(new Date(), accountRef, 'ws has reconnected ', data?.wsKey);
-    });
-    websocketClient.on('error', (data) => {
-      console.error(new Date(), accountRef, 'ws exception: ', data);
-    });
-  });
-}
+//       if (typeof data.req_id === 'string') {
+//         const topics = data.req_id.split(',');
+//         if (topics.length) {
+//           console.log(new Date(), accountRef, 'Subscribed to topics: ', topics);
+//           return resolve();
+//         }
+//       }
+//     });
+//     websocketClient.on('reconnect', ({ wsKey }) => {
+//       console.log(
+//         new Date(),
+//         accountRef,
+//         'ws automatically reconnecting.... ',
+//         wsKey,
+//       );
+//     });
+//     websocketClient.on('reconnected', (data) => {
+//       console.log(new Date(), accountRef, 'ws has reconnected ', data?.wsKey);
+//     });
+//     websocketClient.on('error', (data) => {
+//       console.error(new Date(), accountRef, 'ws exception: ', data);
+//     });
+//   });
+// }
 
-async function sample() {
-  try {
-    const onSubscribed = setWsClientEventListeners(wsClient, 'demoAcc');
+// async function sample() {
+//   try {
+//     const onSubscribed = setWsClientEventListeners(wsClient, 'demoAcc');
 
-    wsClient.subscribeV5(['position', 'execution', 'wallet'], 'linear');
+//     wsClient.subscribeV5(['position', 'execution', 'wallet'], 'linear');
 
-    // Simple promise to ensure we're subscribed before trying anything else
-    await onSubscribed;
+//     // Simple promise to ensure we're subscribed before trying anything else
+//     await onSubscribed;
 
-    // Start trading
-    const balResponse1 = await restClient.getWalletBalance({
-      accountType: 'UNIFIED',
-    });
-    console.log('balResponse1: ', JSON.stringify(balResponse1, null, 2));
+//     // Start trading
+//     const balResponse1 = await restClient.getWalletBalance({
+//       accountType: 'UNIFIED',
+//     });
+//     console.log('balResponse1: ', JSON.stringify(balResponse1, null, 2));
 
-    const demoFunds = await restClient.requestDemoTradingFunds();
-    console.log('requested demo funds: ', demoFunds);
+//     const demoFunds = await restClient.requestDemoTradingFunds();
+//     console.log('requested demo funds: ', demoFunds);
 
-    const balResponse2 = await restClient.getWalletBalance({
-      accountType: 'UNIFIED',
-    });
-    console.log('balResponse2: ', JSON.stringify(balResponse2, null, 2));
+//     const balResponse2 = await restClient.getWalletBalance({
+//       accountType: 'UNIFIED',
+//     });
+//     console.log('balResponse2: ', JSON.stringify(balResponse2, null, 2));
 
-    /** Simple examples for private REST API calls with bybit's V5 REST APIs */
-    const response = await restClient.getPositionInfo({
-      category: 'linear',
-      symbol: 'BTCUSDT',
-    });
+//     /** Simple examples for private REST API calls with bybit's V5 REST APIs */
+//     const response = await restClient.getPositionInfo({
+//       category: 'linear',
+//       symbol: 'BTCUSDT',
+//     });
 
-    console.log('response:', response);
+//     console.log('response:', response);
 
-    // Trade USDT linear perps
-    const buyOrderResult = await restClient.submitOrder({
-      category: 'linear',
-      symbol: 'BTCUSDT',
-      orderType: 'Market',
-      qty: '1',
-      side: 'Buy',
-    });
-    console.log('buyOrderResult:', buyOrderResult);
+//     // Trade USDT linear perps
+//     const buyOrderResult = await restClient.submitOrder({
+//       category: 'linear',
+//       symbol: 'BTCUSDT',
+//       orderType: 'Market',
+//       qty: '1',
+//       side: 'Buy',
+//     });
+//     console.log('buyOrderResult:', buyOrderResult);
 
-    const sellOrderResult = await restClient.submitOrder({
-      category: 'linear',
-      symbol: 'BTCUSDT',
-      orderType: 'Market',
-      qty: '1',
-      side: 'Sell',
-    });
-    console.log('sellOrderResult:', sellOrderResult);
+//     const sellOrderResult = await restClient.submitOrder({
+//       category: 'linear',
+//       symbol: 'BTCUSDT',
+//       orderType: 'Market',
+//       qty: '1',
+//       side: 'Sell',
+//     });
+//     console.log('sellOrderResult:', sellOrderResult);
 
-    const balResponse3 = await restClient.getWalletBalance({
-      accountType: 'UNIFIED',
-    });
-    console.log('balResponse2: ', JSON.stringify(balResponse3, null, 2));
-  } catch (e) {
-    console.error('request failed: ', e);
-  }
-}
-
-
-
+//     const balResponse3 = await restClient.getWalletBalance({
+//       accountType: 'UNIFIED',
+//     });
+//     console.log('balResponse2: ', JSON.stringify(balResponse3, null, 2));
+//   } catch (e) {
+//     console.error('request failed: ', e);
+//   }
+// }
 
 
 
 
 
+
+
+
+// import axios from "axios";
+// import crypto from "crypto";
 
 
 // const params = {
