@@ -4,8 +4,8 @@ import { RestClientV5 } from 'bybit-api';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const apikey = process.env.apikey;
-const secret = process.env.secret;
+const apikey = ;
+const secret = ;
 
 // import { runner } from "./runner.js";
 // (async () => {
@@ -20,7 +20,7 @@ const secret = process.env.secret;
 
 
 async function getMarkPrice() {
-  const client = new RestClientV5({ key: apikey, secret: secret, parseAPIRateLimits: true });
+  const client = new RestClientV5({ key: process.env.k, secret: process.env.s, parseAPIRateLimits: true });
   const ret = await client.getMarkPriceKline({
     interval: '5', category: 'linear', symbol: 'BTCUSDT',
   });
