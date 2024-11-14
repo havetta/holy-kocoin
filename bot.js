@@ -11,6 +11,7 @@ dotenv.config();
 let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
 let params = {}, position = {};
 const _restClient = new RestClientV5({ key: process.env.k, secret: process.env.s, parseAPIRateLimits: true, });
+process.stdout.write(`\x1b[1m\x1b[46mMinimal\x1b[44m MarkP \x1b[42m BuyP  \x1b[41mTakeProfit\x1b[43m Total Equity\x1b[45m Open Position PnL\x1b[m\r\n`);
 
 
 
@@ -92,10 +93,10 @@ async function runloop() {
   eqv = Math.round(+bal?.result?.list?.[0].totalEquity);
 
   const min = await _restClient.getMarkPriceKline({ interval: '5', category: 'linear', symbol: 'BTCUSDT', });
-  minP = min.result.list?.[0][3];
+  minP = Math.round(min.result.list?.[0]?.[3]);
   min.result.list.forEach(i => {
     if (i[3] < minP)
-      minP = i[3];
+      minP = Math.round(i[3]);
   });
   
   await getTickers();
@@ -108,9 +109,9 @@ async function getTickers() {
 
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].indexPrice);
-  orderP = markP - 100;
-  takeP = markP + 200;
-  process.stdout.write(`\x1b[46m ${minP}: \x1b[44m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[45m Equity: ${eqv} \x1b[43m Pnl: ${position?.list?.[0]?.unrealisedPnl}\x1b[m\r\n`);
+  orderP = markP - 10;
+  takeP = markP + 100;
+  process.stdout.write(`\x1b[1m\x1b[46m ${minP} \x1b[44m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m PnL: ${position?.list?.[0]?.unrealisedPnl}\x1b[m\r\n`);
 }
 
 
