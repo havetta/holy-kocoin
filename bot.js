@@ -5,7 +5,7 @@ dotenv.config();
 
 const _restClient = new RestClientV5({ key: process.env.k, secret: process.env.s, parseAPIRateLimits: true, });
 
-let markP = 0, orderP = 0, takeP = 0, eqv = 0;
+let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
 let params = {};
 
 process.stdin.setEncoding("utf8");
@@ -15,11 +15,9 @@ process.stdin.on("data", async (d) => {
     switch (d[0]) {
       case `-`:
         await getTickers();
-      break;
+        break;
       case `=`:
-          await setParams();
-          const response = await _restClient.submitOrder(params);
-          console.log(response);
+        await submitOrder();
         break;
       case `[`:
         const act = await _restClient.getActiveOrders({ category: 'linear', symbol: 'BTCUSDT', });
@@ -34,6 +32,8 @@ process.stdin.on("data", async (d) => {
       case `'`:
         break;
       case `\\`:
+        const min = await _restClient.getMarkPriceKline({ interval: '1', category: 'linear', symbol: 'BTCUSDT', });
+        console.table(min.result.list);
         break;
       case `,`:
         const balcoin = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
@@ -57,26 +57,35 @@ process.stdin.on("data", async (d) => {
         console.log(eval(`state.${d}\n`));
     }
   } catch (e) {
-    err(e?.message);
+    console.error(e?.message);
   }
 });
 
 
 
+setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 
 while(1) {
+  if (markP < minP) {
+    await submitOrder();
+  }
+  await new Promise((resolve) => setTimeout(resolve, 30*60000)); // 30*60000 milliseconds == 30 minute
+}
+
+
+
+async function runloop() {
   const bal = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
   eqv = Math.round(+bal.result.list?.[0].totalEquity);
+
+  const min = await _restClient.getMarkPriceKline({ interval: '5', category: 'linear', symbol: 'BTCUSDT', });
+  minP = min.result.list[0][3];
+  min.result.list.forEach(i => {
+    if (i[3] < minP)
+      minP = i[3];
+  });
   
-  await setParams();
-
-  if (markP < 78000) {
-    const response = await _restClient.submitOrder(params);
-    if (response.retCode !== 0)
-      console.warn("\x1b[1m\x1b[43m%s\x1b[0m", response);
-  }
-
-  await new Promise((resolve) => setTimeout(resolve, 360000));
+  await getTickers();
 }
 
 
@@ -86,12 +95,14 @@ async function getTickers() {
   markP = Math.round(+tic.result.list?.[0].indexPrice);
   orderP = markP - 100;
   takeP = markP + 200;
-  process.stdout.write(`\x1b[44m markPrice: \x1b[46m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[45m totalEquity: ${eqv} \x1b[m\r\n`);
+  process.stdout.write(`\x1b[44m ${minP}: \x1b[46m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[45m totalEquity: ${eqv} \x1b[m\r\n`);
 }
 
 
-async function setParams() {
+
+async function submitOrder() {
   await getTickers();
+
   params = {
     category: 'linear',
     symbol: 'BTCUSDT',
@@ -105,5 +116,7 @@ async function setParams() {
     tpLimitPrice: takeP.toString(),
     tpOrderType: 'Limit',
   };
+  const response = await _restClient.submitOrder(params);
+  console.log(response);
 }
 

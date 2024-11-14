@@ -1,11 +1,7 @@
 import { log, table, sameline, warn, err, oneLine } from "./utils/logger.js";
 // import { state, getExchange, initExchange } from "./store.js";
-import { RestClientV5 } from 'bybit-api';
 import dotenv from 'dotenv';
 dotenv.config();
-
-const apikey = ;
-const secret = ;
 
 // import { runner } from "./runner.js";
 // (async () => {
@@ -17,18 +13,6 @@ const secret = ;
 // import {readFileSync} from "fs"
 // const string_output = readFileSync("jsconfig.json", 'utf8');
 // console.log(string_output);
-
-
-async function getMarkPrice() {
-  const client = new RestClientV5({ key: process.env.k, secret: process.env.s, parseAPIRateLimits: true });
-  const ret = await client.getMarkPriceKline({
-    interval: '5', category: 'linear', symbol: 'BTCUSDT',
-  });
-  console.table(ret.result.list);
-}
-
-await getMarkPrice();
-
 
 
 async function fetchBalance() {
