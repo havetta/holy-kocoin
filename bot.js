@@ -3,70 +3,24 @@ import { RestClientV5 } from 'bybit-api';
 import dotenv from 'dotenv';
 dotenv.config();
 
+
+
+//? /////////////////////////////////////////////////////////
+//? *****  STATE  *****
+//? /////////////////////////////////////////////////////////
+let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
+let params = {}, position = {};
 const _restClient = new RestClientV5({ key: process.env.k, secret: process.env.s, parseAPIRateLimits: true, });
 
-let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
-let params = {};
-
-process.stdin.setEncoding("utf8");
-process.stdin.on("data", async (d) => {
-  // console.log(`\n${d}`);
-  try {
-    switch (d[0]) {
-      case `-`:
-        await getTickers();
-        break;
-      case `=`:
-        await submitOrder();
-        break;
-      case `[`:
-        const act = await _restClient.getActiveOrders({ category: 'linear', symbol: 'BTCUSDT', });
-        console.log(act.result);
-        break;
-      case `]`:
-        const pos = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
-        console.log(pos.result);
-        break;
-      case `;`:
-        break;
-      case `'`:
-        break;
-      case `\\`:
-        const min = await _restClient.getMarkPriceKline({ interval: '1', category: 'linear', symbol: 'BTCUSDT', });
-        console.table(min.result.list);
-        break;
-      case `,`:
-        const balcoin = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
-        console.log(`\x1b[1m\x1b[43m`);
-        console.log(balcoin.result.list?.[0].coin);
-        console.log(`\x1b[0m\r\n`);
-        break;
-      case `.`:
-        const bal = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
-        console.log(bal.result);
-        break;
-      case `/`:
-        const eqv = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
-        const totalEquity = Math.round(+eqv.result.list?.[0].totalEquity);
-        process.stdout.write(`\x1b[45m totalEquity: ${totalEquity} \x1b[m\r\n`);
-        break;
-      case `_`:
-        console.log(eval(`${d}\n`));
-        break;
-      default:
-        console.log(eval(`state.${d}\n`));
-    }
-  } catch (e) {
-    console.error(e?.message);
-  }
-});
 
 
-
+//! /////////////////////////////////////////////////////////
+//! *****   MAIN LOOP  *****
+//! /////////////////////////////////////////////////////////
+dosetup();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
-
 while(1) {
-  if (markP < minP) {
+  if (markP < minP  &&  position?.list?.lenght === 0) {
     await submitOrder();
   }
   await new Promise((resolve) => setTimeout(resolve, 30*60000)); // 30*60000 milliseconds == 30 minute
@@ -74,12 +28,71 @@ while(1) {
 
 
 
+//* /////////////////////////////////////////////////////////
+//* *****  FUNCTIONS  *****
+//* /////////////////////////////////////////////////////////
+async function dosetup() {
+  process.stdin.setEncoding("utf8");
+  process.stdin.on("data", async (d) => {
+    // console.log(`\n${d}`);
+    try {
+      switch (d[0]) {
+        case `-`:
+          await getTickers();
+          break;
+
+        case `=`:
+          await submitOrder();
+          break;
+
+        case `[`:
+          const act = await _restClient.getActiveOrders({ category: 'linear', symbol: 'BTCUSDT', });
+          console.log(act?.result);
+          break;
+        case `]`:
+          const pos = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
+          console.log(pos?.result);
+          break;
+        case `;`:
+          break;
+        case `'`:
+          break;
+        case `\\`:
+          break;
+        case `,`:
+          const balcoin = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
+          console.log(`\x1b[1m\x1b[43m`);
+          console.log(balcoin?.result?.list?.[0].coin);
+          console.log(`\x1b[0m\r\n`);
+          break;
+        case `.`:
+          const bal = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
+          console.log(bal?.result);
+          break;
+        case `/`:
+          const min = await _restClient.getMarkPriceKline({ interval: '1', category: 'linear', symbol: 'BTCUSDT', });
+          console.table(min?.result?.list);
+          break;
+        case `_`:
+          console.log(eval(`${d}\n`));
+          break;
+        default:
+          console.log(eval(`state.${d}\n`));
+      }
+    } catch (e) {
+      console.error(e?.message);
+    }
+  });
+}
+
+
+
 async function runloop() {
   const bal = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
-  eqv = Math.round(+bal.result.list?.[0].totalEquity);
+  eqv = Math.round(+bal?.result?.list?.[0].totalEquity);
 
   const min = await _restClient.getMarkPriceKline({ interval: '5', category: 'linear', symbol: 'BTCUSDT', });
-  minP = min.result.list[0][3];
+  minP = min.result.list?.[0][3];
   min.result.list.forEach(i => {
     if (i[3] < minP)
       minP = i[3];
@@ -91,18 +104,19 @@ async function runloop() {
 
 
 async function getTickers() {
+  position = (await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, }))?.result;
+
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
-  markP = Math.round(+tic.result.list?.[0].indexPrice);
+  markP = Math.round(+tic?.result?.list?.[0].indexPrice);
   orderP = markP - 100;
   takeP = markP + 200;
-  process.stdout.write(`\x1b[44m ${minP}: \x1b[46m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[45m totalEquity: ${eqv} \x1b[m\r\n`);
+  process.stdout.write(`\x1b[46m ${minP}: \x1b[44m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[45m Equity: ${eqv} \x1b[43m Pnl: ${position?.list?.[0]?.unrealisedPnl}\x1b[m\r\n`);
 }
 
 
 
 async function submitOrder() {
   await getTickers();
-
   params = {
     category: 'linear',
     symbol: 'BTCUSDT',
