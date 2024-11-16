@@ -110,9 +110,9 @@ async function getTickers() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].indexPrice);
   orderP = markP;
-  takeP = markP + 200;
-  const size = position?.list?.[0]?.size;
-  const PnL = position?.list?.[0]?.unrealisedPnl;
+  takeP = markP + 100;
+  const size = parseFloat(position?.list?.[0]?.size);
+  const PnL = Math.round(position?.list?.[0]?.unrealisedPnl);
   process.stdout.write(`\x1b[1m\x1b[46m ${minP} \x1b[44m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[43m Equity: ${eqv} \x1b[40m Size: ${size} \x1b[45m PnL: ${PnL}\x1b[m\r\n`);
 }
 
