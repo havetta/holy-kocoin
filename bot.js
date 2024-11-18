@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
 const usr = cliArgs?._?.[0] ?? `a`;
-console.log(`User: ${usr}`)
+
 
 
 //? /////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@ console.log(`User: ${usr}`)
 let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
 let params = {}, position = {};
 const _restClient = new RestClientV5({ key: process.env[`${usr}-k`], secret: process.env[`${usr}-s`], parseAPIRateLimits: true, });
-process.stdout.write(`\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[42mBuyPrice\x1b[41mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m\r\n`);
+process.stdout.write(`\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[42mBuyPrice\x1b[41mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m User: ${usr}\r\n`);
 
 
 
@@ -113,7 +113,7 @@ async function getTickers() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].indexPrice);
   orderP = markP + 50;
-  takeP = markP + 350;
+  takeP = markP + 200;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   process.stdout.write(`\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
