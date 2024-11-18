@@ -4,8 +4,8 @@ import minimist from "minimist";
 import dotenv from 'dotenv';
 dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
-const usr = cliArgs.u ?? `au`;
-
+const usr = cliArgs?._?.[0] ?? `a`;
+console.log(`User: ${usr}`)
 
 
 //? /////////////////////////////////////////////////////////
@@ -112,8 +112,8 @@ async function getTickers() {
 
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].indexPrice);
-  orderP = markP;
-  takeP = markP + 400;
+  orderP = markP + 50;
+  takeP = markP + 350;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   process.stdout.write(`\x1b[1m\x1b[46m ${minP} \x1b[44m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[43m Equity: ${eqv} \x1b[40m Size: ${size} \x1b[45m PnL: ${PnL}\x1b[m\r\n`);
