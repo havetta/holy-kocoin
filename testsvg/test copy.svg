@@ -1,0 +1,26 @@
+<svg
+    xmlns='http://www.w3.org/2000/svg'
+    xmlns:xlink='http://www.w3.org/1999/xlink'
+    class='o'
+    id="svg"
+    version="1.1"
+    x="0px"
+    y="0px"
+    viewBox="0 0 1186.4 662.8" 
+    style="enable-background:new 0 0 1186.4 662.8;"
+    xml:space="preserve">
+    <style type="text/css" >
+        <![CDATA[
+        rect {
+            fill:   #red;
+        }
+        ]]>
+    </style>
+    <g>
+    <rect id="vertical-rectangle" width="48" height="4" x="1" y="23" transform="rotate(90 25 24)"/>
+    <rect id="horizontal-rectangle" style="fill: #aacca4;" width="48" height="4" y="21"/>
+    </g>
+
+    <circle cx='150' cy='150' r='40' stroke='black' stroke-width='3' fill='red' />
+    <a xlink:href='https://sap.com'><circle cx='150' cy='100' r='50' fill='blue' /></a>
+</svg>

@@ -31,6 +31,7 @@ server.use(function (req, res, next) {
 });
 
 server.get('/', async (req, res) => {
+  console.log(100000000000000000000, `   CREATEAPP   `, 100000000000000000000,);
   const app = await createApp(req);
 
   renderToString(app).then((html) => {

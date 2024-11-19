@@ -1,0 +1,62 @@
+<svg
+    xmlns='http://www.w3.org/2000/svg'
+    xmlns:xlink='http://www.w3.org/1999/xlink'
+    class='o'
+    id="svg"
+    version="1.1"
+    x="0px"
+    y="0px"
+    viewBox="0 0 1186.4 662.8" 
+    style="enable-background:new 0 0 1186.4 662.8;"
+    xml:space="preserve">
+  <g>
+    <rect x="50" y="60" width="50" height="10" fill="lightblue" stroke="black" />
+    <circle cx="75" cy="50" r="15" fill="blue" />
+    <rect x="200" y="60" width="50" height="10" fill="pink" stroke="black" />
+    <circle cx="225" cy="50" r="15" fill="red" />
+  </g>
+  <g transform="translate(0,50)">
+  
+    <circle cx="75" cy="32" r="5" fill="black"/>
+    <circle cx="82" cy="35" r="2" fill="white"/>
+    <path d="M 73 40 C 78 37, 82 40, 78 43" fill="none" stroke="black"/>
+    <circle cx="72" cy="46" r="2" fill="black"/>
+    <circle cx="67" cy="45" r="2" fill="black"/>
+    <rect x="60" y="40" width="7" height="6" fill="none" stroke="black"/>
+    
+    <circle cx="225" cy="32" r="5" fill="black"/>
+    <circle cx="232" cy="35" r="2" fill="white"/>
+    <path d="M 223 40 C 228 37, 232 40, 228 43" fill="none" stroke="black"/>
+    <circle cx="222" cy="46" r="2" fill="black"/>
+    <circle cx="217" cy="45" r="2" fill="black"/>
+    <rect x="210" y="40" width="7" height="6" fill="none" stroke="black"/>
+      <g id="red">
+    <rect x="20" y="15" width="50" height="120" fill="red"/>
+    <circle cx="30" cy="50" r="5" fill="white"/>
+    <circle cx="50" cy="50" r="5" fill="white"/>
+    <rect x="30" y="55" width="20" height="20" fill="red"/>
+    <rect x="30" y="77" width="7" height="10" fill="white"/>
+    <rect x="37" y="77" width="7" height="10" fill="white"/>
+    <polygon points="40,45 38,50 44,50" fill="white"/>
+  </g> 
+  
+  <g id="blue">
+    <rect x="330" y="15" width="50" height="120" fill="blue"/>
+    <circle cx="340" cy="50" r="5" fill="white"/>
+    <circle cx="360" cy="50" r="5" fill="white"/>
+    <rect x="340" y="55" width="20" height="20" fill="blue"/>
+    <rect x="340" y="77" width="7" height="10" fill="white"/>
+    <rect x="347" y="77" width="7" height="10" fill="white"/>
+    <polygon points="350,45 348,50 354,50" fill="white"/>
+  </g> 
+  </g>
+  
+  <animateTransform
+    attributeName="transform"
+    attributeType="XML"
+    type="translate"
+    dur="5s"
+    from="0 0"
+    to="200 0"
+    repeatCount="indefinite"/>
+</svg>
