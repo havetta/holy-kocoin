@@ -25,6 +25,7 @@ dosetup();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 while(1) {
   if (markP < minP  &&  position?.list?.lenght === 0) {
+    console.log(`Doing order now ${new Date().toISOString()}`)
     await submitOrder();
   }
   await new Promise((resolve) => setTimeout(resolve, 30*60000)); // 30*60000 milliseconds == 30 minute
