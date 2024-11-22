@@ -22,6 +22,7 @@ process.stdout.write(`\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPrice\x1b[4
 //! *****   MAIN LOOP  *****
 //! /////////////////////////////////////////////////////////
 dosetup();
+runloop();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 while(1) {
   if (markP < minP  &&  position?.list?.lenght === 0) {
