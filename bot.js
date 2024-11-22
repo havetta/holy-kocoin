@@ -49,7 +49,6 @@ async function dosetup() {
 
         case `=`:
         case `+`:
-          console.log(`Manual order now at ${new Date().toISOString()}`)
           await submitOrder();
           break;
 
@@ -141,7 +140,7 @@ async function submitOrder() {
     tpOrderType: 'Limit',
   };
   const response = await _restClient.submitOrder(params);
-  console.log(response);
+  console.log(response?.retMsg);
 }
 
 
