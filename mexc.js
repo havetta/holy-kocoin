@@ -8,10 +8,10 @@ const cliArgs = minimist(process.argv.slice(2));
 const usr = cliArgs?._?.[0] ?? `a`;
 
 class MexcClient {
-  constructor(apiKey, apiSecret) {
+  constructor() {
     this.apiKey = process.env[`${usr}-mexck`];
     this.apiSecret = process.env[`${usr}-mexcs`];
-    this.baseUrl = "https://api.mexc.com";
+    this.baseUrl = "https://contract.mexc.com/";
   }
 
   async signedRequest(endpoint, params = {}, method = "GET") {
@@ -76,53 +76,34 @@ class MexcClient {
     }
   }
 
-  async placeOrder({ symbol = "WBTCUSDT", side = "BUY", orderType = "LIMIT", quantity, price, timeInForce = "GTC" }) {
-    const endpoint = "/api/v3/order";
+  async placeOrder({ symbol = "BTCUSDC", vol, price }) {
+    const endpoint = "api/v1/private/order/submit";
 
     // Prepare order parameters
     const params = {
       symbol,
-      side,
-      type: orderType,
-      quantity: quantity.toString(),
+      price,
+      vol: vol.toString(),
+      leverage: 2,
+      side: 1,
+      type: 6,
+      openType: 1,
+      takeProfitPrice: price + 100
     };
-
-    // Add price for LIMIT orders
-    if (orderType === "LIMIT") {
-      params.price = price.toString();
-      params.timeInForce = timeInForce;
-    }
 
     return this.signedRequest(endpoint, params, "POST");
   }
 }
 
 const main = async () => {
-  const API_KEY = "your_api_key";
-  const API_SECRET = "your_api_secret";
-
-  const client = new MexcClient(API_KEY, API_SECRET);
+  const client = new MexcClient();
 
   // Example: Place a limit buy order
   const order = await client.placeOrder({
-    symbol: "WBTCUSDT",
-    side: "BUY",
-    orderType: "LIMIT",
-    quantity: 0.01,
-    price: 30000,
-    timeInForce: "GTC",
+    vol: 0.0001,
+    price: 97222.0,
   });
-
-  if (order) {
-    console.log("\nOrder placed successfully:");
-    console.log("Order ID:", order.orderId);
-    console.log("Symbol:", order.symbol);
-    console.log("Price:", order.price);
-    console.log("Quantity:", order.origQty);
-    console.log("Status:", order.status);
-    console.log("Type:", order.type);
-    console.log("Side:", order.side);
-  }
+  console.log(order);
 };
 
 // Only run if this file is being run directly
