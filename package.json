@@ -25,6 +25,7 @@
     "ccxt": "^4.1.40",
     "mexc-api-sdk": "^1.0.3",
     "pptxgenjs": "^3.12.0",
+    "querystring": "^0.2.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vuetify": "^3.5.5",
