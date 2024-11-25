@@ -11,7 +11,8 @@ class MexcClient {
   constructor() {
     this.apiKey = process.env[`${usr}-mexck`];
     this.apiSecret = process.env[`${usr}-mexcs`];
-    this.baseUrl = "https://contract.mexc.com/";
+    this.spotUrl = "https://api.mexc.com";
+    this.futuresUrl = "https://futures.mexc.com";
   }
 
   async signedRequest(endpoint, params = {}, method = "GET") {
@@ -24,7 +25,8 @@ class MexcClient {
 
       console.log("Request Parameters:", parameters);
 
-      const response = await axios({ method: method, url: `${this.baseUrl}${endpoint}`, headers: headers, params: parameters, });
+      const url = `${endpoint.startsWith('http') ? '' : this.spotUrl}/${endpoint}`;
+      const response = await axios({ method: method, url: `${url}`, headers: headers, params: parameters, });
 
       console.log(response.status);
       return response.data;
@@ -43,7 +45,23 @@ class MexcClient {
     }
   }
 
-  async placeOrder({ symbol = "WBTCUSDC", vol, price }) {
+  async order_deal_fee({ params }) {
+    return this.signedRequest("api/v1/private/account/asset_book/order_deal_fee/total", params, "GET");
+  }
+
+  async order({ symbol = 'APT_USDT', vol, price }) {
+    const params = {
+      symbol,
+      price,
+      quantity: vol,
+      side: 'BUY',
+      orderType: 'LIMIT',
+      timeInForce: 'GTC'
+    };
+    return this.signedRequest('api/v3/order', params, 'POST');
+  }
+  
+  async futuresOrder({ symbol = 'WBTCUSDT', vol, price }) {
     const params = {
       symbol,
       price,
@@ -54,14 +72,15 @@ class MexcClient {
       openType: 1,
       takeProfitPrice: price + 100
     };
-    return this.signedRequest("api/v1/private/order/submit", params, "POST");
+    return this.signedRequest(`${this.futuresUrl}/api/v1/private/order/submit`, params, "POST");
   }
 }
 
 const main = async () => {
   const client = new MexcClient();
-  const order = await client.placeOrder({ vol: 0.0001, price: 97130.0, });
-  console.log(order);
+  // const ret = await client.placeOrder({ vol: 0.0001, price: 97130.0, });
+  const ret = await client.order({ vol: 6, price: `12.35`, });
+  console.log(ret);
 };
 
 // Only run if this file is being run directly
