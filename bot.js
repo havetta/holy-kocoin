@@ -61,7 +61,7 @@ async function dosetup() {
           console.log(pos?.result);
           break;
         case `;`:
-          const ret = await _restClient.cancelAllOrders({category: 'linear',});
+          const ret = await _restClient.cancelAllOrders({category: 'linear', symbol: 'BTCUSDT'});
           console.log(ret?.result);
           break;
         case `'`:
@@ -117,8 +117,8 @@ async function getTickers() {
 
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].indexPrice);
-  orderP = markP - 70;
-  takeP = markP + 170;
+  orderP = markP + 70;
+  takeP = markP + 470;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   process.stdout.write(`\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
