@@ -14,7 +14,7 @@ const usr = cliArgs?._?.[0] ?? `a`;
 let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
 let params = {}, position = {};
 const _restClient = new RestClientV5({ key: process.env[`${usr}-k`], secret: process.env[`${usr}-s`], parseAPIRateLimits: true, });
-process.stdout.write(`\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPrice\x1b[42mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m User: ${usr}\r\n`);
+process.stdout.write(`Datetime\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPrice\x1b[42mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m User: ${usr}\r\n`);
 
 
 
@@ -116,12 +116,13 @@ async function getTickers() {
   const position = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
 
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
-  markP = Math.round(+tic?.result?.list?.[0].indexPrice);
-  orderP = markP + 70;
-  takeP = markP + 470;
+  markP = Math.round(+tic?.result?.list?.[0].markPrice);
+  orderP = markP - 100;
+  takeP = markP + 400;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
-  process.stdout.write(`\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
+  const time = new Date().toISOString().slice(8, 10) + '-' + new Date().toISOString().slice(11, 16);
+  process.stdout.write(`${time}\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
 }
 
 
