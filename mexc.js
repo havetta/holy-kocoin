@@ -23,13 +23,9 @@ class MexcClient {
       const signature = crypto.createHmac("sha256", this.apiSecret).update(queryStr).digest("hex");
       parameters.signature = signature;
 
-      console.log("Request Parameters:", parameters);
-
-      const url = `${endpoint.startsWith('http') ? '' : this.spotUrl}/${endpoint}`;
+      const url = `${endpoint.startsWith('http') ? endpoint : this.spotUrl}/${endpoint}`;
       const response = await axios({ method: method, url: `${url}`, headers: headers, params: parameters, });
-
-      console.log(response.status);
-      return response.data;
+      return response?.data;
     }
     catch (error) {
       if (error.response) {
@@ -45,42 +41,60 @@ class MexcClient {
     }
   }
 
-  async order_deal_fee({ params }) {
+  async order_deal_fee({}) {
     return this.signedRequest("api/v1/private/account/asset_book/order_deal_fee/total", params, "GET");
   }
 
-  async order({ symbol = 'APT_USDT', vol, price }) {
-    const params = {
-      symbol,
-      price,
-      quantity: vol,
-      side: 'BUY',
-      orderType: 'LIMIT',
-      timeInForce: 'GTC'
-    };
+  async account(params) {
+    return this.signedRequest('api/v3/account', params, 'GET');
+  }
+
+  async avgPrice({ symbol = 'APTUSDT' }) {
+    return this.signedRequest('api/v3/avgPrice', { symbol }, 'GET');
+  }
+
+  async openOrders({ symbol = 'APTUSDT' }) {
+    return this.signedRequest('api/v3/openOrders', { symbol }, 'GET');
+  }
+
+  async cancelAllOrders({ symbol = 'APTUSDT' }) {
+    return this.signedRequest('api/v3/openOrders', { symbol }, 'DELETE');
+  }
+
+  async order({ symbol = 'APTUSDT', side = 'BUY', type = 'LIMIT_MAKER', quantity, price, takeProfit }) {
+    const params = { symbol, price, quantity, side, type, timeInForce: 'GTC' };
+    if (type === 'TAKE_PROFIT_LIMIT')
+      params.triggerPrice = takeProfit.toString();
     return this.signedRequest('api/v3/order', params, 'POST');
   }
-  
-  async futuresOrder({ symbol = 'WBTCUSDT', vol, price }) {
-    const params = {
-      symbol,
-      price,
-      vol: vol.toString(),
-      leverage: 2,
-      side: 1,
-      type: 6,
-      openType: 1,
-      takeProfitPrice: price + 100
-    };
+
+  async futuresOrder({ symbol = 'APTUSDT', vol, price }) {
+    const params = { symbol, price, vol: vol.toString(), leverage: 2, side: 1, type: 6, openType: 1, takeProfitPrice: price + 100 };
     return this.signedRequest(`${this.futuresUrl}/api/v1/private/order/submit`, params, "POST");
   }
 }
 
 const main = async () => {
   const client = new MexcClient();
-  // const ret = await client.placeOrder({ vol: 0.0001, price: 97130.0, });
-  const ret = await client.order({ vol: 6, price: `12.35`, });
-  console.log(ret);
+  const bal = await client.account({})
+  console.log(bal?.balances);
+
+  // console.log(await client.cancelAllOrders({}));
+
+  const avg = await client.avgPrice({})
+  console.log(`avgPrice = ${+avg.price}`);
+
+  // console.log(await client.order({ quantity: 10, price: +avg.price - 0.1 }));
+  // console.log(await client.order({ quantity: 10, price: +avg.price + 0.1, side: 'SELL' }));
+
+
+  const openOrd = await client.openOrders({});
+  console.table(openOrd.map(o => ({ side: o.side.substring(0, 3), price: o.price, qty: o.origQty, quote: o.origQuoteOrderQty, sym: o.symbol, type: o.type })));
+
+  // console.log(await client.order({ quantity: 10, price: 14.95, side: 'SELL'}));
+  // console.log(await client.order({ quantity: 10, price: 12.84, }));
+
+  // const ret = await client.futuresOrder({ vol: 2, price: avg.price, });
 };
 
 // Only run if this file is being run directly
