@@ -76,23 +76,22 @@ class MexcClient {
 
 const main = async () => {
   const client = new MexcClient();
-  const bal = await client.account({})
-  console.log(bal?.balances);
 
   // console.log(await client.cancelAllOrders({}));
 
   const avg = await client.avgPrice({})
   console.log(`avgPrice = ${+avg.price}`);
 
-  // console.log(await client.order({ quantity: 10, price: +avg.price - 0.1 }));
-  // console.log(await client.order({ quantity: 10, price: +avg.price + 0.1, side: 'SELL' }));
+  // console.log(await client.order({ quantity: 10, price: +avg.price - 0.12 }));
+  // console.log(await client.order({ quantity: 10, price: +avg.price + 0.22, side: 'SELL' }));
 
+  // console.log(await client.order({ quantity: 10, price: 13.46, side: 'SELL'}));
+  // console.log(await client.order({ quantity: 10, price: 12.84, }));
 
+  const bal = await client.account({})
+  console.log(bal?.balances);
   const openOrd = await client.openOrders({});
   console.table(openOrd.map(o => ({ side: o.side.substring(0, 3), price: o.price, qty: o.origQty, quote: o.origQuoteOrderQty, sym: o.symbol, type: o.type })));
-
-  // console.log(await client.order({ quantity: 10, price: 14.95, side: 'SELL'}));
-  // console.log(await client.order({ quantity: 10, price: 12.84, }));
 
   // const ret = await client.futuresOrder({ vol: 2, price: avg.price, });
 };
