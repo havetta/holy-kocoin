@@ -12,7 +12,8 @@ const usr = cliArgs?._?.[0] ?? `a`;
 //? *****  STATE  *****
 //? /////////////////////////////////////////////////////////
 let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
-let params = {}, position = {};
+let params = {};
+let position = { list: [{size: 0}]};
 const _restClient = new RestClientV5({ key: process.env[`${usr}-k`], secret: process.env[`${usr}-s`], parseAPIRateLimits: true, });
 process.stdout.write(`Datetime\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPrice\x1b[42mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m User: ${usr}\r\n`);
 
@@ -22,22 +23,22 @@ process.stdout.write(`Datetime\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPri
 //! *****   MAIN LOOP  *****
 //! /////////////////////////////////////////////////////////
 dosetup();
-runloop();
+await runloop();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 while(1) {
   console.log(`Auto order now at ${new Date().toISOString()}`)
   const maxAmount = +process.env[`${usr}-a`] * 5; // maximum of 5 amount increments
-  const largePositions = position?.list?.filter(p => Math.abs(p.size) >= maxAmount);
-  if (largePositions?.lenght === 0) {
-    await submitOrder();
-    if (markP + 1000 < minP) {
-      console.log(`!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!! ${position?.list?.lenght}`)
-      await submitOrder();
-    }
+  const largePosition = position?.result?.list?.filter(p => Math.abs(p.size) >= maxAmount);
+  if (largePosition.length > 0) {
+    console.log(`!!!!!!!!!!!!!!!!!! LARGE POSITION SIZE ${largePosition[0].size} !!!!!!!!!!!!!!!!!!`)
   }
   else
   {
-    console.log(`!!!!!!!!!!!!!!!!!! LARGE POSITION !!!!!!!!!!!!!!!!!! ${largePositions}`)
+    // await submitOrder();
+    if (markP < minP + 1000) {
+      console.log(`!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!!`)
+      await submitOrder();
+    }
   }
   await new Promise((resolve) => setTimeout(resolve, 5*60*60000)); // 60*60000 milliseconds == 1 hour
 }
@@ -54,7 +55,7 @@ async function dosetup() {
     try {
       switch (d[0]) {
         case `-`:
-          await getTickers();
+          await runloop();
           break;
 
         case `=`:
@@ -116,15 +117,15 @@ async function runloop() {
     if (i[3] < minP)
       minP = Math.round(i[3]);
   });
+
+  position = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
   
-  await getTickers();
+  await getCurrentPrice();
 }
 
 
 
-async function getTickers() {
-  const position = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
-
+async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
   orderP = markP - 100;
@@ -138,7 +139,7 @@ async function getTickers() {
 
 
 async function submitOrder() {
-  await getTickers();
+  await getCurrentPrice();
   params = {
     category: 'linear',
     symbol: 'BTCUSDT',
@@ -147,7 +148,7 @@ async function submitOrder() {
     orderType: 'Limit',
     qty: process.env[`${usr}-a`],
     price: orderP.toString(),
-    takeProfit: takeP.toString()-200, // Make sure limit order is not executes right away
+    takeProfit: (takeP-200).toString(), // Make sure limit order is not executes right away
     tpslMode: 'Partial',
     tpLimitPrice: takeP.toString(),
     tpOrderType: 'Limit',
