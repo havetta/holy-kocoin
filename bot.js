@@ -25,11 +25,13 @@ dosetup();
 runloop();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 while(1) {
-  if (markP < minP  &&  position?.list?.lenght === 0) {
-    console.log(`Auto order now at ${new Date().toISOString()}`)
-    await submitOrder();
+  console.log(`Auto order now at ${new Date().toISOString()}`)
+  await submitOrder();
+  if (markP + 1000 < minP  &&  position?.list?.lenght === 0) {
+    console.log(`!!!!!!!!!!!!!!!!!! CONDITIONS MET !!!!!!!!!!!!!!!!!! ${position?.list?.lenght}`)
+    // await submitOrder();
   }
-  await new Promise((resolve) => setTimeout(resolve, 30*60000)); // 30*60000 milliseconds == 30 minute
+  await new Promise((resolve) => setTimeout(resolve, 5*60*60000)); // 60*60000 milliseconds == 1 hour
 }
 
 
