@@ -139,7 +139,7 @@ async function submitOrder() {
     orderType: 'Limit',
     qty: process.env[`${usr}-a`],
     price: orderP.toString(),
-    takeProfit: takeP.toString(),
+    takeProfit: takeP.toString()-200, // Make sure limit order is not executes right away
     tpslMode: 'Partial',
     tpLimitPrice: takeP.toString(),
     tpOrderType: 'Limit',
