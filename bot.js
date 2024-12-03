@@ -26,10 +26,18 @@ runloop();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 while(1) {
   console.log(`Auto order now at ${new Date().toISOString()}`)
-  await submitOrder();
-  if (markP + 1000 < minP  &&  position?.list?.lenght === 0) {
-    console.log(`!!!!!!!!!!!!!!!!!! CONDITIONS MET !!!!!!!!!!!!!!!!!! ${position?.list?.lenght}`)
-    // await submitOrder();
+  const maxAmount = +process.env[`${usr}-a`] * 5; // maximum of 5 amount increments
+  const largePositions = position?.list?.filter(p => Math.abs(p.size) >= maxAmount);
+  if (largePositions?.lenght === 0) {
+    await submitOrder();
+    if (markP + 1000 < minP) {
+      console.log(`!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!! ${position?.list?.lenght}`)
+      await submitOrder();
+    }
+  }
+  else
+  {
+    console.log(`!!!!!!!!!!!!!!!!!! LARGE POSITION !!!!!!!!!!!!!!!!!! ${largePositions}`)
   }
   await new Promise((resolve) => setTimeout(resolve, 5*60*60000)); // 60*60000 milliseconds == 1 hour
 }
