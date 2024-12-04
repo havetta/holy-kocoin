@@ -122,8 +122,6 @@ const main = async () => {
     await new Promise((resolve) => setTimeout(resolve, 10*60000)); // 60*60000 milliseconds == 1 hour
   }
 
-
-
 };
 
 

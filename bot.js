@@ -34,13 +34,13 @@ while(1) {
   }
   else
   {
-    // await submitOrder();
+    await submitOrder();
     if (markP < minP + 1000) {
       console.log(`!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!!`)
       await submitOrder();
     }
   }
-  await new Promise((resolve) => setTimeout(resolve, 5*60*60000)); // 60*60000 milliseconds == 1 hour
+  await new Promise((resolve) => setTimeout(resolve, 4*60*60000)); // 60*60000 milliseconds == 1 hour
 }
 
 
@@ -48,6 +48,58 @@ while(1) {
 //* /////////////////////////////////////////////////////////
 //* *****  FUNCTIONS  *****
 //* /////////////////////////////////////////////////////////
+async function runloop() {
+  const bal = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
+  eqv = Math.round(+bal?.result?.list?.[0].totalEquity);
+
+  const min = await _restClient.getMarkPriceKline({ interval: '5', category: 'linear', symbol: 'BTCUSDT', });
+  minP = Math.round(min.result.list?.[0]?.[3]);
+  min.result.list.forEach(i => {
+    if (i[3] < minP)
+      minP = Math.round(i[3]);
+  });
+
+  position = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
+  
+  await getCurrentPrice();
+}
+
+
+
+async function getCurrentPrice() {
+  const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
+  markP = Math.round(+tic?.result?.list?.[0].markPrice);
+  orderP = markP - 200;
+  takeP = markP + 500;
+  const size = parseFloat(position?.result?.list?.[0].size);
+  const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
+  const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
+  process.stdout.write(`${time}\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
+}
+
+
+
+async function submitOrder() {
+  await getCurrentPrice();
+  params = {
+    category: 'linear',
+    symbol: 'BTCUSDT',
+    isLeverage: 1,
+    side: 'Buy',
+    orderType: 'Limit',
+    qty: process.env[`${usr}-a`],
+    price: orderP.toString(),
+    takeProfit: (takeP-200).toString(), // Make sure limit order is not executes right away
+    tpslMode: 'Partial',
+    tpLimitPrice: takeP.toString(),
+    tpOrderType: 'Limit',
+  };
+  const response = await _restClient.submitOrder(params);
+  console.log(`${response?.retMsg} -> buy at: ${orderP} | sell at: ${takeP}`);
+}
+
+
+
 async function dosetup() {
   process.stdin.setEncoding("utf8");
   process.stdin.on("data", async (d) => {
@@ -107,56 +159,4 @@ async function dosetup() {
 
 
 
-async function runloop() {
-  const bal = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
-  eqv = Math.round(+bal?.result?.list?.[0].totalEquity);
-
-  const min = await _restClient.getMarkPriceKline({ interval: '5', category: 'linear', symbol: 'BTCUSDT', });
-  minP = Math.round(min.result.list?.[0]?.[3]);
-  min.result.list.forEach(i => {
-    if (i[3] < minP)
-      minP = Math.round(i[3]);
-  });
-
-  position = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
-  
-  await getCurrentPrice();
-}
-
-
-
-async function getCurrentPrice() {
-  const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
-  markP = Math.round(+tic?.result?.list?.[0].markPrice);
-  orderP = markP - 100;
-  takeP = markP + 400;
-  const size = parseFloat(position?.result?.list?.[0].size);
-  const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
-  const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
-  process.stdout.write(`${time}\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
-}
-
-
-
-async function submitOrder() {
-  await getCurrentPrice();
-  params = {
-    category: 'linear',
-    symbol: 'BTCUSDT',
-    isLeverage: 1,
-    side: 'Buy',
-    orderType: 'Limit',
-    qty: process.env[`${usr}-a`],
-    price: orderP.toString(),
-    takeProfit: (takeP-200).toString(), // Make sure limit order is not executes right away
-    tpslMode: 'Partial',
-    tpLimitPrice: takeP.toString(),
-    tpOrderType: 'Limit',
-  };
-  const response = await _restClient.submitOrder(params);
-  console.log(`${response?.retMsg} -> buy at: ${orderP} | sell at: ${takeP}`);
-}
-
-
-
-export default {};
+export default _restClient;
