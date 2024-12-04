@@ -132,7 +132,7 @@ async function getCurrentPrice() {
   takeP = markP + 400;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
-  const time = new Date().toISOString().slice(8, 10) + '-' + new Date().toISOString().slice(11, 16);
+  const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
   process.stdout.write(`${time}\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
 }
 
