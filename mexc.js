@@ -6,6 +6,9 @@ import dotenv from "dotenv";
 dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
 const usr = cliArgs?._?.[0] ?? `a`;
+let maxBuy = 0, markP = 0, orderP = 0, takeP = 0;
+
+
 
 class MexcClient {
   constructor() {
@@ -74,28 +77,62 @@ class MexcClient {
   }
 }
 
+
+
 const main = async () => {
   const client = new MexcClient();
 
   // console.log(await client.cancelAllOrders({}));
+  // console.log(await client.order({ quantity: 1, price: 13.45, side: 'SELL'}));
+  // console.log(await client.order({ quantity: 1, price: 12.11, }));
+  // const ret = await client.futuresOrder({ vol: 2, price: avg.price, });
 
-  const avg = await client.avgPrice({});    console.log(`avgPrice = ${+avg.price}`);
-
-  // console.log(await client.order({ quantity: 10, price: +avg.price - 0.12 }));
-  // console.log(await client.order({ quantity: 10, price: +avg.price + 0.22, side: 'SELL' }));
-
-  // console.log(await client.order({ quantity: 10, price: 13.45, side: 'SELL'}));
-  // console.log(await client.order({ quantity: 10, price: 12.11, }));
-
-  const bal = await client.account({});    console.log(bal?.balances);
   const openOrd = await client.openOrders({});    console.table(openOrd.map(o => ({ side: o.side.substring(0, 3), price: o.price, qty: o.origQty, quote: o.origQuoteOrderQty, sym: o.symbol, type: o.type })));
 
-  // const ret = await client.futuresOrder({ vol: 2, price: avg.price, });
+  while(1) {
+    let bal = await client.account({});
+    let eqv = Math.round(bal?.balances?.find(b => b.asset === 'USDT')?.free); // and 'locked' is sum in orders
+    let eqvlocked = Math.round(bal?.balances?.find(b => b.asset === 'USDT')?.locked);
+    let apt = (+bal?.balances?.find(b => b.asset === 'APT')?.free).toFixed(2);
+    let locked = (+bal?.balances?.find(b => b.asset === 'APT')?.locked).toFixed(2);
+
+    // if(apt > 0)
+    //   await client.order({ quantity: 1, price: maxBuy, side: 'SELL' });
+
+    const avg = await client.avgPrice({});
+    markP = (+avg.price).toFixed(2);
+    orderP = (+markP - 0.01).toFixed(2);
+    takeP = (+markP + 0.1).toFixed(2);
+    maxBuy = maxBuy > takeP ? maxBuy : takeP;
+
+    // if(eqv > 20)
+    //   await client.order({ quantity: 1, price: orderP });
+
+    const time = new Date().toISOString().slice(8, 10) + '-' + new Date().toISOString().slice(11, 16);
+    process.stdout.write(`${time}\x1b[1m\x1b[46m ${maxBuy} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv}+${eqvlocked} \x1b[45m aptSize: ${apt} \x1b[44m locked: ${locked}\x1b[m\r\n`);
+
+    // Wait a minute
+    await new Promise((resolve) => setTimeout(resolve, 1*60000)); // 60*60000 milliseconds == 1 hour
+
+    bal = await client.account({});
+    apt = Math.round(+bal?.balances?.find(b => b.asset === 'APT')?.free);
+    // if(apt > 0)
+    //   await client.order({ quantity: 1, price: takeP, side: 'SELL' });
+
+    await new Promise((resolve) => setTimeout(resolve, 10*60000)); // 60*60000 milliseconds == 1 hour
+  }
+
+
+
 };
+
+
 
 // Only run if this file is being run directly
 if (import.meta.url.startsWith('file:')) {
   main().catch(console.error);
 }
+
+
 
 export default MexcClient;

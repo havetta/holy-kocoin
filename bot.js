@@ -154,7 +154,7 @@ async function submitOrder() {
     tpOrderType: 'Limit',
   };
   const response = await _restClient.submitOrder(params);
-  console.log(response?.retMsg);
+  console.log(`${response?.retMsg} -> buy at: ${orderP} | sell at: ${takeP}`);
 }
 
 
