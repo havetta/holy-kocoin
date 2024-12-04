@@ -26,21 +26,23 @@ dosetup();
 await runloop();
 setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
 while(1) {
+  await new Promise((resolve) => setTimeout(resolve, 4*60*60000)); // 60*60000 milliseconds == 1 hour
+
   console.log(`Auto order now at ${new Date().toISOString()}`)
   const maxAmount = +process.env[`${usr}-a`] * 5; // maximum of 5 amount increments
   const largePosition = position?.result?.list?.filter(p => Math.abs(p.size) >= maxAmount);
   if (largePosition.length > 0) {
-    console.log(`!!!!!!!!!!!!!!!!!! LARGE POSITION SIZE ${largePosition[0].size} !!!!!!!!!!!!!!!!!!`)
+    console.log(`========================= LARGE POSITION SIZE ${largePosition[0].size} =========================`)
   }
   else
   {
-    await submitOrder();
     if (markP < minP + 1000) {
-      console.log(`!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!!`)
+      console.log(`!!!!!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!!!!!!`)
       await submitOrder();
     }
+    else
+      console.log(`********************** CONDITIONS NOT MET **********************`)
   }
-  await new Promise((resolve) => setTimeout(resolve, 4*60*60000)); // 60*60000 milliseconds == 1 hour
 }
 
 
@@ -69,8 +71,8 @@ async function runloop() {
 async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
-  orderP = markP - 200;
-  takeP = markP + 500;
+  orderP = markP - 300;
+  takeP = markP + 200;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
@@ -95,7 +97,7 @@ async function submitOrder() {
     tpOrderType: 'Limit',
   };
   const response = await _restClient.submitOrder(params);
-  console.log(`${response?.retMsg} -> buy at: ${orderP} | sell at: ${takeP}`);
+  console.log(`${response?.retMsg} ==========>  BUY at:   ${orderP}   =====  SELL at:   ${takeP}`);
 }
 
 
