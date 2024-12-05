@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
 const usr = cliArgs?._?.[0] ?? `a`;
-let maxBuy = 0, markP = 0, orderP = 0, takeP = 0;
+let maxBuy = null, markP = 0, orderP = 0, takeP = 0;
 
 
 
@@ -96,17 +96,20 @@ const main = async () => {
     let apt = (+bal?.balances?.find(b => b.asset === 'APT')?.free).toFixed(2);
     let locked = (+bal?.balances?.find(b => b.asset === 'APT')?.locked).toFixed(2);
 
-    if(apt > 0)
-      await client.order({ quantity: 1, price: maxBuy, side: 'SELL' });
-
     const avg = await client.avgPrice({});
     markP = (+avg.price).toFixed(2);
-    orderP = (+markP - 0.01).toFixed(2);
+    orderP = (+markP - 0.1).toFixed(2);
     takeP = (+markP + 0.1).toFixed(2);
+
+    if(apt > 0) {
+      await client.order({ quantity: 1, price: maxBuy ?? +markP+0.7, side: 'SELL' });
+    }
+    
     maxBuy = maxBuy > takeP ? maxBuy : takeP;
 
-    if(eqv > 20)
+    if(eqv > 20) {
       await client.order({ quantity: 1, price: orderP });
+    }
 
     const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
     process.stdout.write(`${time}\x1b[1m\x1b[46m ${maxBuy} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv}+${eqvlocked} \x1b[45m apt: ${apt} \x1b[44m locked: ${locked}\x1b[m\r\n`);
