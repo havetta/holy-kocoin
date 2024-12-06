@@ -71,7 +71,7 @@ async function runloop() {
 async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
-  orderP = markP - 300;
+  orderP = markP - 100;
   takeP = markP + 200;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
