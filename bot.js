@@ -38,7 +38,7 @@ while(1) {
   {
     if (markP < minP + 1000) {
       console.log(`!!!!!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!!!!!!`)
-      await submitOrder();
+      await submitOrder({});
     }
     else
       console.log(`********************** CONDITIONS NOT MET **********************`)
@@ -71,7 +71,7 @@ async function runloop() {
 async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
-  orderP = markP - 300;
+  orderP = markP - 200;
   takeP = markP + 100;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
@@ -81,21 +81,25 @@ async function getCurrentPrice() {
 
 
 
-async function submitOrder() {
+async function submitOrder({ symbol = 'BTCUSDT', side= 'Buy' }) {
   await getCurrentPrice();
   params = {
     category: 'linear',
-    symbol: 'BTCUSDT',
+    symbol,
+    side,
     isLeverage: 1,
-    side: 'Buy',
     orderType: 'Limit',
     qty: process.env[`${usr}-a`],
-    price: orderP.toString(),
-    takeProfit: (takeP-200).toString(), // Make sure limit order is not executes right away
-    tpslMode: 'Partial',
-    tpLimitPrice: takeP.toString(),
-    tpOrderType: 'Limit',
+    price: (side === 'Sell' ? takeP : orderP).toString(),
   };
+  if (side === 'Buy') {
+    Object.assign(params, {
+      takeProfit: (takeP-200).toString(), // Make sure limit order is not executes right away
+      tpslMode: 'Partial',
+      tpLimitPrice: takeP.toString(),
+      tpOrderType: 'Limit',
+    });
+  }
   const response = await _restClient.submitOrder(params);
   console.log(`${response?.retMsg} ==========>  BUY at:   ${orderP}   =====  SELL at:   ${takeP}`);
 }
@@ -114,10 +118,14 @@ async function dosetup() {
 
         case `=`:
         case `+`:
-          await submitOrder();
+          await submitOrder({});
           break;
 
-        case `[`:
+        case `_`:
+          await submitOrder({side: 'Sell'});
+          break;
+  
+          case `[`:
           const act = await _restClient.getActiveOrders({ category: 'linear', symbol: 'BTCUSDT', });
           console.log(act?.result);
           break;
