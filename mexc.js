@@ -1,3 +1,8 @@
+/* npm install axios crypto querystring minimist dotenv
+// create .env file with this content:
+a-mexck=yourkey
+a-mexcs=yoursecret
+*/
 import axios from "axios";
 import crypto from "crypto";
 import querystring from "querystring";
