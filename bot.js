@@ -72,7 +72,7 @@ async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
   orderP = markP - 200;
-  takeP = markP + 100;
+  takeP = markP + 300;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
@@ -94,7 +94,7 @@ async function submitOrder({ symbol = 'BTCUSDT', side= 'Buy' }) {
   };
   if (side === 'Buy') {
     Object.assign(params, {
-      takeProfit: (takeP-200).toString(), // Make sure limit order is not executes right away
+      takeProfit: (takeP-200).toString(), // Make sure limit order is not executed right away
       tpslMode: 'Partial',
       tpLimitPrice: takeP.toString(),
       tpOrderType: 'Limit',
@@ -112,7 +112,7 @@ async function dosetup() {
     // console.log(`\n${d}`);
     try {
       switch (d[0]) {
-        case `-`:
+        case ` `:
           await runloop();
           break;
 
@@ -121,8 +121,9 @@ async function dosetup() {
           await submitOrder({});
           break;
 
+        case `-`:
         case `_`:
-          await submitOrder({side: 'Sell'});
+            await submitOrder({side: 'Sell'});
           break;
   
           case `[`:
@@ -133,13 +134,11 @@ async function dosetup() {
           const pos = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
           console.log(pos?.result);
           break;
-        case `;`:
+        case `\\`:
           const ret = await _restClient.cancelAllOrders({category: 'linear', symbol: 'BTCUSDT'});
           console.log(ret?.result);
           break;
         case `'`:
-          break;
-        case `\\`:
           break;
         case `,`:
           const balcoin = await _restClient.getWalletBalance({ accountType: 'UNIFIED', });
@@ -155,11 +154,8 @@ async function dosetup() {
           const min = await _restClient.getMarkPriceKline({ interval: '1', category: 'linear', symbol: 'BTCUSDT', });
           console.table(min?.result?.list);
           break;
-        case `_`:
-          console.log(eval(`${d}\n`));
-          break;
         default:
-          console.log(eval(`state.${d}\n`));
+          console.log(eval(`${d}\n`));
       }
     } catch (e) {
       console.error(e?.message);
