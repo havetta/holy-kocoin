@@ -36,8 +36,8 @@ while(1) {
   else
   {
     if (markP < minP + 2000) {
-      console.log(`#######################################################################################`);
       await submitOrder({});
+      console.log(`#######################################################################################`);
     }
     else
       console.log(`@@@@@@@@@@@@@@@@ CONDITIONS NOT MET markP ${markP} | minP ${minP} @@@@@@@@@@@@@@@@`);
@@ -71,7 +71,7 @@ async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
   orderP = markP - 100;
-  takeP = markP + 100;
+  takeP = markP + 150;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
