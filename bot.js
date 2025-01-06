@@ -24,24 +24,23 @@ process.stdout.write(`Datetime\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPri
 //! /////////////////////////////////////////////////////////
 dosetup();
 await runloop();
-setInterval(runloop, 60000); // 60000 milliseconds == 1 minute
+setInterval(runloop, 10*60000); // 60000 milliseconds == 1 minute
 while(1) {
   await new Promise((resolve) => setTimeout(resolve, 4*60*60000)); // 60*60000 milliseconds == 1 hour
 
-  console.log(`Auto order now at ${new Date().toISOString()}`)
   const maxAmount = +process.env[`${usr}-a`] * 5; // maximum of 5 amount increments
   const largePosition = position?.result?.list?.filter(p => Math.abs(p.size) >= maxAmount);
   if (largePosition.length > 0) {
-    console.log(`========================= LARGE POSITION SIZE ${largePosition[0].size} =========================`)
+    console.log(`============= LARGE POSITION SIZE ${largePosition[0].size} =============`);
   }
   else
   {
-    if (markP < minP + 1000) {
-      console.log(`!!!!!!!!!!!!!!!!!!!!!! PRICE CONDITIONS MET !!!!!!!!!!!!!!!!!!!!!!`)
+    if (markP < minP + 2000) {
+      console.log(`#######################################################################################`);
       await submitOrder({});
     }
     else
-      console.log(`********************** CONDITIONS NOT MET **********************`)
+      console.log(`@@@@@@@@@@@@@@@@ CONDITIONS NOT MET markP ${markP} | minP ${minP} @@@@@@@@@@@@@@@@`);
   }
 }
 
