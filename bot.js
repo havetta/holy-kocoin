@@ -130,7 +130,7 @@ async function dosetup() {
           case `[`:
           const act = await _restClient.getActiveOrders({ category: 'linear', symbol: 'BTCUSDT', });
           act?.result?.list?.forEach(e => {
-            const buyAt = (e.tpLimitPrice > 0 ? `Buy:${e.Price}` : e.stopOrderType);
+            const buyAt = (e.tpLimitPrice > 0 ? `Buy:${e.price}` : e.stopOrderType);
             const sellAt = (e.tpLimitPrice > 0 ? `Sell:${e.tpLimitPrice}` : `At:${e.price}`);
             const tp = (e.tpLimitPrice > 0 ? e.takeProfit : e.triggerPrice)
             process.stdout.write(`\x1b[1m${e.symbol} \x1b[46m${e.qty}\x1b[40m On:${e.lastPriceOnCreated} \x1b[42m${buyAt}\x1b[41m ${sellAt} \x1b[43mtpCreateOn:${tp} \x1b[44m ${e.leavesValue}\x1b[m\r\n`);
