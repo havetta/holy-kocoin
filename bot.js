@@ -2,10 +2,11 @@
 import { RestClientV5 } from 'bybit-api';
 import minimist from "minimist";
 import dotenv from 'dotenv';
+import e from 'express';
 dotenv.config();
 const cliArgs = minimist(process.argv.slice(2));
 const usr = cliArgs?._?.[0] ?? `a`;
-
+const spread = +process.env[`spread`];
 
 
 //? /////////////////////////////////////////////////////////
@@ -15,7 +16,7 @@ let minP = 0, markP = 0, orderP = 0, takeP = 0, eqv = 0;
 let params = {};
 let position = { list: [{size: 0}]};
 const _restClient = new RestClientV5({ key: process.env[`${usr}-k`], secret: process.env[`${usr}-s`], parseAPIRateLimits: true, });
-process.stdout.write(`Datetime\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[41mBuyPrice\x1b[42mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m User: ${usr}\r\n`);
+process.stdout.write(`Datetime\x1b[1m\x1b[46mMinimal\x1b[40m Mark \x1b[42mBuyPrice\x1b[41mTakeProfit\x1b[43m Total Equity\x1b[45m Pos.Size \x1b[44m Position PnL\x1b[m User: ${usr}\r\n`);
 
 
 
@@ -70,18 +71,19 @@ async function runloop() {
 async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
-  orderP = markP - 100;
-  takeP = markP + 150;
+  orderP = markP - spread;
+  takeP = markP + spread;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
   const time = new Date().toISOString().slice(8, 10) + ' ' + new Date().toISOString().slice(11, 16);
-  process.stdout.write(`${time}\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[41m ${orderP} \x1b[42m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
+  process.stdout.write(`${time}\x1b[1m\x1b[46m ${minP} \x1b[40m ${markP} \x1b[42m ${orderP} \x1b[41m ${takeP} \x1b[43m Equity: ${eqv} \x1b[45m Size: ${size} \x1b[44m PnL: ${PnL}\x1b[m\r\n`);
 }
 
 
 
 async function submitOrder({ symbol = 'BTCUSDT', side= 'Buy' }) {
   await getCurrentPrice();
+  const takeProfit = (takeP-spread+5).toString() // Make sure limit order is not executed right away, and decrease tp by spread+5
   params = {
     category: 'linear',
     symbol,
@@ -93,14 +95,14 @@ async function submitOrder({ symbol = 'BTCUSDT', side= 'Buy' }) {
   };
   if (side === 'Buy') {
     Object.assign(params, {
-      takeProfit: (takeP-200).toString(), // Make sure limit order is not executed right away
+      takeProfit: takeProfit,
       tpslMode: 'Partial',
       tpLimitPrice: takeP.toString(),
       tpOrderType: 'Limit',
     });
   }
   const response = await _restClient.submitOrder(params);
-  console.log(`${response?.retMsg} ==========>  BUY at:   ${orderP}   =====  SELL at:   ${takeP}`);
+  process.stdout.write(`\x1b[1m \x1b[43m${response?.retMsg}\x1b[m  =====>  tp:  ${takeProfit}  =====>  Buy:  \x1b[42m${orderP}\x1b[m  =====>  Sell:  \x1b[41m ${takeP} \x1b[m\r\n`);
 }
 
 
@@ -127,7 +129,13 @@ async function dosetup() {
   
           case `[`:
           const act = await _restClient.getActiveOrders({ category: 'linear', symbol: 'BTCUSDT', });
-          console.log(act?.result);
+          act?.result?.list?.forEach(e => {
+            const buyAt = (e.tpLimitPrice > 0 ? `Buy:${e.Price}` : e.stopOrderType);
+            const sellAt = (e.tpLimitPrice > 0 ? `Sell:${e.tpLimitPrice}` : `At:${e.price}`);
+            const tp = (e.tpLimitPrice > 0 ? e.takeProfit : e.triggerPrice)
+            process.stdout.write(`\x1b[1m${e.symbol} \x1b[46m${e.qty}\x1b[40m On:${e.lastPriceOnCreated} \x1b[42m${buyAt}\x1b[41m ${sellAt} \x1b[43mtpCreateOn:${tp} \x1b[44m ${e.leavesValue}\x1b[m\r\n`);
+          });
+          // console.log(act?.result);
           break;
         case `]`:
           const pos = await _restClient.getPositionInfo({ category: 'linear', symbol: 'BTCUSDT', openOnly: 1, limit: 50, });
