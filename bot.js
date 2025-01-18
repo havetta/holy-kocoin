@@ -27,7 +27,7 @@ dosetup();
 await runloop();
 setInterval(runloop, 10*60000); // 60000 milliseconds == 1 minute
 while(1) {
-  await new Promise((resolve) => setTimeout(resolve, 4*60*60000)); // 60*60000 milliseconds == 1 hour
+  await new Promise((resolve) => setTimeout(resolve, 16*60*60000)); // 60*60000 milliseconds == 1 hour
 
   const maxAmount = +process.env[`${usr}-a`] * 5; // maximum of 5 amount increments
   const largePosition = position?.result?.list?.filter(p => Math.abs(p.size) >= maxAmount);
@@ -71,7 +71,7 @@ async function runloop() {
 async function getCurrentPrice() {
   const tic = await _restClient.getTickers({ category: 'linear', symbol: 'BTCUSDT', });
   markP = Math.round(+tic?.result?.list?.[0].markPrice);
-  orderP = markP - spread;
+  orderP = markP - spread / 4;
   takeP = markP + spread;
   const size = parseFloat(position?.result?.list?.[0].size);
   const PnL = Math.round(position?.result?.list?.[0].unrealisedPnl);
